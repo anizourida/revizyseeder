@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PionQuiz API Reference</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --bg-color: #f3f4f6;
+            --sidebar-width: 280px;
+            --text-color: #1f2937;
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .sidebar h2 {
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .nav-group {
+            margin-bottom: 20px;
+        }
+
+        .nav-group-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #6b7280;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 8px 12px;
+            text-decoration: none;
+            color: var(--text-color);
+            border-radius: 6px;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+
+        .nav-item:hover {
+            background-color: #f9fafb;
+            color: var(--primary-color);
+        }
+
+        .nav-item.active {
+            background-color: #eff6ff;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .endpoint-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .endpoint-header {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .endpoint-title {
+            margin: 0 0 10px 0;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge.get {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge.post {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge.put {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge.delete {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .endpoint-url {
+            font-family: monospace;
+            color: #6b7280;
+            background: #f9fafb;
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 20px 0 10px 0;
+            color: #374151;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f9fafb;
+            font-weight: 600;
+            color: #4b5563;
+        }
+
+        code {
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+            background-color: #eff6ff;
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: #1e40af;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .auth-notice {
+            display: inline-block;
+            margin-left: 10px;
+            font-size: 0.8rem;
+            color: #ef4444;
+            border: 1px solid #fee2e2;
+            background: #fef2f2;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
+        .param-required {
+            color: #dc2626;
+            font-size: 0.8em;
+            vertical-align: super;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>API Reference</h2>
+
+        <div class="nav-group">
+            <div class="nav-group-title">Authentication</div>
+            <a href="#auth-register" class="nav-item">Register</a>
+            <a href="#auth-login" class="nav-item">Login</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-group-title">Student</div>
+            <a href="#student-infos" class="nav-item">Get Info</a>
+            <a href="#student-update" class="nav-item">Update Info</a>
+            <a href="#student-grade" class="nav-item">Get Grade & Subjects</a>
+            <a href="#student-energy" class="nav-item">Add Energy</a>
+            <a href="#student-refill" class="nav-item">Refill Energy</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-group-title">Grades & Subjects</div>
+            <a href="#grades-list" class="nav-item">List Grades</a>
+            <a href="#subject-units" class="nav-item">Get Subject Units</a>
+            <a href="#app-settings" class="nav-item">App Settings</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-group-title">Quiz</div>
+            <a href="#quiz-start" class="nav-item">Start Quiz</a>
+            <a href="#quiz-answer" class="nav-item">Submit Answer (Single)</a>
+            <a href="#quiz-submit" class="nav-item">Submit Quiz (Batch)</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-group-title">Flashcards</div>
+            <a href="#flashcard-categories" class="nav-item">List Categories</a>
+            <a href="#flashcards-list" class="nav-item">List Flashcards</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-group-title">Discussions</div>
+            <a href="#discussion-categories" class="nav-item">List Categories</a>
+            <a href="#discussion-list" class="nav-item">List Discussions</a>
+            <a href="#discussion-show" class="nav-item">Get Discussion</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-group-title">Ads</div>
+            <a href="#ads-available" class="nav-item">Get Available Ad</a>
+            <a href="#ads-impression" class="nav-item">Log Impression</a>
+            <a href="#ads-click" class="nav-item">Log Click</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-group-title">Reports & Coupons</div>
+            <a href="#reports-index" class="nav-item">Monthly Report</a>
+            <a href="#reports-show" class="nav-item">Daily Report</a>
+            <a href="#coupon-redeem" class="nav-item">Redeem Coupon</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+
+        <!-- Authentication -->
+        <div id="auth-register" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge post">POST</span> Register Student</h3>
+                <div class="endpoint-url">/api/v1/students/register</div>
+            </div>
+            <p>Register a new student and retrieve an access token.</p>
+
+            <div class="section-title">Request Body</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>name<span class="param-required">*</span></td>
+                        <td>string</td>
+                        <td>Full name of the student.</td>
+                    </tr>
+                    <tr>
+                        <td>gender<span class="param-required">*</span></td>
+                        <td>string</td>
+                        <td>'male' or 'female'.</td>
+                    </tr>
+                    <tr>
+                        <td>grade_id</td>
+                        <td>int</td>
+                        <td>Optional Grade ID to assign.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-title">Response</div>
+            <pre>{
+    "message": "Student registered successfully",
+    "data": {
+        "student": {
+            "id": 1,
+            "name": "John Doe",
+            "is_subscribed": false,
+            "subscription_plan": "free",
+            "subscription_expires_at": null,
+            ...
+        },
+        "plain_pin": "1234",
+        "token": "1|laravel_sanctum_token..."
+    }
+}</pre>
+        </div>
+
+        <div id="auth-login" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge post">POST</span> Login</h3>
+                <div class="endpoint-url">/api/v1/students/login</div>
+            </div>
+            <p>Authenticate a student using their unique code and PIN.</p>
+
+            <div class="section-title">Request Body</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>code<span class="param-required">*</span></td>
+                        <td>string</td>
+                        <td>The student code (e.g., AB-12345).</td>
+                    </tr>
+                    <tr>
+                        <td>pin<span class="param-required">*</span></td>
+                        <td>string</td>
+                        <td>The 4-digit PIN.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-title">Response</div>
+            <pre>{
+    "message": "Logged in successfully",
+    "data": {
+        "student": { ... },
+        "token": "..."
+    }
+}</pre>
+        </div>
+
+        <!-- Student -->
+        <div id="student-infos" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge get">GET</span> Student Info <span
+                        class="auth-notice">Auth Required</span></h3>
+                <div class="endpoint-url">/api/v1/student</div>
+            </div>
+            <p>Get details of the currently authenticated student.</p>
+            <div class="section-title">Response</div>
+            <pre>{
+    "message": "Student info",
+    "data": {
+        "student": {
+            "id": 1,
+            "name": "John Doe",
+            "code": "JD-12345",
+            "energy": 15,
+            "is_subscribed": true,
+            "subscription_plan": "Monthly Starter",
+            "subscription_expires_at": "2025-12-31T23:59:59+00:00",
+            "next_refill_at": "2025-12-24T07:00:00+01:00",
+            "grade_id": 1,
+            "is_active": true,
+            "avatar_url": null,
+            "created_at": "...",
+            "updated_at": "..."
+        }
+    }
+}</pre>
+
+            <div class="section-title">Field Definitions (Student Object)</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>is_subscribed</td>
+                        <td>boolean</td>
+                        <td>True if the student has an active paid subscription.</td>
+                    </tr>
+                    <tr>
+                        <td>subscription_plan</td>
+                        <td>string</td>
+                        <td>Name of the active plan or 'free'.</td>
+                    </tr>
+                    <tr>
+                        <td>subscription_expires_at</td>
+                        <td>string|null</td>
+                        <td>ISO 8601 timestamp of plan expiration.</td>
+                    </tr>
+                    <tr>
+                        <td>next_refill_at</td>
+                        <td>string</td>
+                        <td>ISO 8601 timestamp of the next scheduled energy refill.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="student-update" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge post">POST</span> Update Student <span
+                        class="auth-notice">Auth Required</span></h3>
+                <div class="endpoint-url">/api/v1/student/update</div>
+            </div>
+
+            <div class="section-title">Request Body</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>name</td>
+                        <td>string</td>
+                        <td>Updated name.</td>
+                    </tr>
+                    <tr>
+                        <td>gender</td>
+                        <td>string</td>
+                        <td>Updated gender.</td>
+                    </tr>
+                    <tr>
+                        <td>grade_id</td>
+                        <td>int</td>
+                        <td>Updated grade ID.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="student-grade" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge get">GET</span> Student Grade <span
+                        class="auth-notice">Auth Required</span></h3>
+                <div class="endpoint-url">/api/v1/student/grade</div>
+            </div>
+            <p>Get the student's assigned grade listing including all subjects within that grade.</p>
+            <div class="section-title">Response</div>
+            <pre>{
+    "message": "Student grade",
+    "data": {
+        "student": { ... },
+        "grade": {
+            "id": 1,
+            "name": "Grade 1",
+            "subjects": [ ... ]
+        }
+    }
+}</pre>
+        </div>
+
+        <div id="student-refill" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge post">POST</span> Refill Energy <span
+                        class="auth-notice">Auth Required</span></h3>
+                <div class="endpoint-url">/api/v1/student/refill</div>
+            </div>
+            <p>Attempt to claim the daily energy refill. This should only be called when the frontend determines the
+                refill is due.</p>
+            <div class="section-title">Response (Success - 200 OK)</div>
+            <pre>{
+    "message": "Refill succeeded",
+    "data": {
+        "student": {
+            "id": 1,
+            "energy": 5, // Reset to daily max
+            ...
+        }
+    }
+}</pre>
+            <div class="section-title">Response (Not Eligible - 400 Bad Request)</div>
+            <pre>{
+    "message": "Refill not authorized",
+    "data": {
+        "student": { ... }
+    }
+}</pre>
+        </div>
+
+        <div id="student-energy" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge post">POST</span> Add Energy <span
+                        class="auth-notice">Auth Required</span></h3>
+                <div class="endpoint-url">/api/v1/student/add-energy</div>
+            </div>
+
+            <div class="section-title">Request Body</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>amount<span class="param-required">*</span></td>
+                        <td>integer</td>
+                        <td>Amount of energy to add (min: 1, max: 10).</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-title">Rate Limiting (Security)</div>
+            <p>To prevent abuse, the <strong>2-energy reward</strong> (commonly used for hourly free energy) is
+                restricted to <strong>once per hour</strong> per student. Calls with <code>amount=2</code> will return a
+                <code>429 Too Many Requests</code> if the limit is exceeded.
+            </p>
+
+            <div class="section-title">Response (Rate Limited - 429)</div>
+            <pre>{
+    "message": "Veuillez patienter encore 45 minutes...",
+    "data": {
+        "next_available_at": "2026-01-09T23:59:59+00:00",
+        "wait_minutes": 45
+    }
+}</pre>
+        </div>
+
+        <div id="student-energy-balance" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge get">GET</span> Get Energy Balance <span
+                        class="auth-notice">Auth Required</span></h3>
+                <div class="endpoint-url">/api/v1/student/energy</div>
+            </div>
+            <p>Get the current energy balance for the authenticated student. Lightweight endpoint for quick energy
+                checks.</p>
+
+            <div class="section-title">Response</div>
+            <pre>{
+    "message": "Energy balance",
+    "data": {
+        "energy": 7
+    }
+}</pre>
+        </div>
+
+        <div id="app-settings" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge get">GET</span> App Setting by Key</h3>
+                <div class="endpoint-url">/api/v1/settings/{key}</div>
+            </div>
+            <p>Get a specific application setting by its key. This endpoint is public.</p>
+
+            <div class="section-title">URL Parameter</div>
+            <p><code>key</code>: The unique key of the setting (e.g., <code>REGISTRATION_REWARD</code>).</p>
+
+            <div class="section-title">Response</div>
+            <pre>{
+    "message": "Setting retrieved successfully",
+    "data": {
+        "key": "REGISTRATION_REWARD",
+        "value": "5"
+    }
+}</pre>
+        </div>
+
+        <div id="app-settings-bulk" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge post">POST</span> Bulk App Settings</h3>
+                <div class="endpoint-url">/api/v1/settings</div>
+            </div>
+            <p>Get multiple application settings at once by providing an array of keys. This endpoint is public.</p>
+
+            <div class="section-title">Request Body</div>
+            <table class="params-table">
+                <tr>
+                    <th>Parameter</th>
+                    <th>Type</th>
+                    <th>Required</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>keys</td>
+                    <td>array</td>
+                    <td>Yes</td>
+                    <td>Array of setting keys to retrieve</td>
+                </tr>
+            </table>
+
+            <div class="section-title">Request Example</div>
+            <pre>{
+    "keys": ["REGISTRATION_REWARD", "MAX_ENERGY", "DAILY_REFILL"]
+}</pre>
+
+            <div class="section-title">Response</div>
+            <pre>{
+    "message": "Settings retrieved successfully",
+    "data": {
+        "REGISTRATION_REWARD": "5",
+        "MAX_ENERGY": "10",
+        "DAILY_REFILL": null
+    }
+}</pre>
+            <p><em>Note: Keys that don't exist will have <code>null</code> values in the response.</em></p>
+        </div>
+
+        <!-- Grades & Subjects -->
+        <div id="grades-list" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge get">GET</span> List Grades</h3>
+                <div class="endpoint-url">/api/v1/grades</div>
+            </div>
+            <p>Get a list of all available grades.</p>
+        </div>
+
+        <div id="subject-units" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge get">GET</span> Subject Units <span
+                        class="auth-notice">Auth Required</span></h3>
+                <div class="endpoint-url">/api/v1/subjects/{id}/unites</div>
+            </div>
+            <p>Get all units (chapters/topics) for a specific subject.</p>
+            <div class="section-title">Response</div>
+            <pre>{
+    "data": [
+        { "id": 1, "name": "Unit 1", ... }
+    ]
+}</pre>
+        </div>
+
+        <div id="weekly-mastery" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge get">GET</span> Weekly Mastery <span
+                        class="auth-notice">Auth Required</span></h3>
+                <div class="endpoint-url">/api/v1/units/{uniteId}/weekly-mastery</div>
+            </div>
+            <p>Get the student's weekly mastery for all weeks (1-5) within a specific unit. Uses coverage-weighted
+                mastery where unattempted concepts count as 0.</p>
+
+            <div class="section-title">URL Parameter</div>
+            <p><code>uniteId</code>: The ID of the unit.</p>
+
+            <div class="section-title">Response</div>
+            <pre>{
+    "message": "Weekly mastery retrieved successfully",
+    "data": {
+        "unit_id": 1,
+        "weeks": [
+            { "week": 1, "mastery": 0.82, "status": "strong", "coverage": 0.9, "is_free": true },
+            { "week": 2, "mastery": null, "status": "premium_locked", "coverage": 0, "is_free": false },
+            { "week": 3, "mastery": null, "status": "premium_locked", "coverage": 0, "is_free": false },
+            { "week": 4, "mastery": null, "status": "premium_locked", "coverage": 0, "is_free": false },
+            { "week": 5, "mastery": null, "status": "premium_locked", "coverage": 0, "is_free": false }
+        ]
+    }
+}</pre>
+
+            <div class="section-title">Status Thresholds</div>
+            <table class="params-table">
+                <tr>
+                    <th>Status</th>
+                    <th>Condition</th>
+                </tr>
+                <tr>
+                    <td>premium_locked</td>
+                    <td>Week is not free AND user is not subscribed (requires subscription)</td>
+                </tr>
+                <tr>
+                    <td>locked</td>
+                    <td>No concepts attempted (but week is accessible)</td>
+                </tr>
+                <tr>
+                    <td>weak</td>
+                    <td>mastery &lt; 0.4</td>
+                </tr>
+                <tr>
+                    <td>medium</td>
+                    <td>0.4 ≤ mastery &lt; 0.75</td>
+                </tr>
+                <tr>
+                    <td>strong</td>
+                    <td>mastery ≥ 0.75</td>
+                </tr>
+            </table>
+            <p><code>coverage</code> = attempted concepts / total concepts in week</p>
+            <p><code>is_free</code> = whether this week is free for all users (admin-configurable per unit)</p>
+        </div>
+
+        <!-- Quiz -->
+        <div id="quiz-start" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge post">POST</span> Start Quiz <span
+                        class="auth-notice">Auth Required</span></h3>
+                <div class="endpoint-url">/api/v1/quiz/start</div>
+            </div>
+
+            <div class="section-title">Request Body</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>unite_id<span class="param-required">*</span></td>
+                        <td>int</td>
+                        <td>The ID of the unit to quiz on.</td>
+                    </tr>
+                    <tr>
+                        <td>question_count</td>
+                        <td>int</td>
+                        <td>Number of questions (min: 3, max: 10, default: 7).</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-title">Response</div>
+            <pre>{
+    "message": "Quiz started successfully",
+    "data": {
+        "quiz": {
+            "id": 350,
+            "student_id": 17,
+            "status": "in_progress",
+            "created_at": "...",
+            "updated_at": "..."
+        },
+        "remaining_energy": 2,
+        "questions": [
+            {
+                "id": 11,
+                "name": "Question Name",
+                "data": {
+                    "instruction": "...",
+                    "instruction": "...",
+                    "media": {
+                        "image": {
+                            "id": "abc123456...",
+                            "url": "https://...r2.dev/files/xyz.jpg"
+                        },
+                        "audio": {
+                            "id": "def789...",
+                            "url": "https://...r2.dev/files/abc.mp3"
+                        }
+                    },
+                    "answers": [ ... ]
+                }
+            }
+        ]
+    }
+}</pre>
+            <p><small>Note: Media fields now return an object with both the <code>id</code> (for logic/submission) and
+                    <code>url</code> (for display).</small></p>
+        </div>
+
+        <div id="quiz-answer" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge post">POST</span> Submit Single Answer <span
+                        class="auth-notice">Auth Required</span></h3>
+                <div class="endpoint-url">/api/v1/quiz/{quizId}/question/{questionId}/answer</div>
+            </div>
+            <p>Submit an answer for a single question within an active quiz.</p>
+
+            <div class="section-title">Request Body</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>answer<span class="param-required">*</span></td>
+                        <td>string</td>
+                        <td>The text content of the answer. For specific media answers, send the media <b>ID</b>.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="quiz-submit" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge post">POST</span> Submit Entire Quiz <span
+                        class="auth-notice">Auth Required</span></h3>
+                <div class="endpoint-url">/api/v1/quiz/{quizId}/submit</div>
+            </div>
+            <p>Submit answers for all questions in the quiz and complete it.</p>
+
+            <div class="section-title">Request Body</div>
+            <pre>{
+    "answers": [
+        { "question_id": 1, "answer": "User Answer Text" },
+        { "question_id": 2, "answer": "Another Answer" }
+    ]
+}</pre>
+
+            <div class="section-title">Response</div>
+            <pre>{
+    "message": "Quiz submitted successfully",
+    "results": [
+        { "question_id": 1, "is_correct": true, ... }
+    ],
+    "quiz_summary": {
+        "score": 10,
+        "total_questions": 10
+    }
+}</pre>
+        </div>
+
+        <div id="quiz-submit" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge post">POST</span> Submit Quiz <span
+                        class="auth-notice">Auth Required</span></h3>
+                <div class="endpoint-url">/api/v1/quiz/{quizId}/submit</div>
+            </div>
+            <p>Submit all answers for a quiz to complete it and calculate the score.</p>
+            <div class="section-title">Response</div>
+            <pre>{
+    "message": "Quiz submitted successfully",
+    "results": [ ... ],
+    "energy_rewarded": 3,
+    "quiz_summary": {
+        "score": 85,
+        "total_questions": 10
+    }
+}</pre>
+        </div>
+
+        <!-- Flashcards -->
+        <div id="flashcard-categories" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge get">GET</span> List Categories <span
+                        class="auth-notice">Auth Required</span></h3>
+                <div class="endpoint-url">/api/v1/flashcard-categories?grade_id={id}</div>
+            </div>
+            <p>Lists top-level flashcard categories (with their subcategories nested) for the specified grade ID +
+                global categories (where grade_id is null).</p>
+
+            <div class="section-title">Response Structure</div>
+            <pre>{
+    "data": [
+        {
+            "id": 1,
+            "parent_id": null,
+            "order_index": 0,
+            "name": "Les moyens de transport",
+            "description": "Vocabulary about transportation",
+            "subject": "francais",
+            "is_free": true,
+            "cover_image": {
+                "id": "abc123...",
+                "url": "https://..."
+            },
+            "flashcards_count": 5,
+            "children_count": 2,
+            "grade_id": 1,
+            "created_at": "2026-01-14T12:00:00Z",
+            "children": [
+                {
+                    "id": 3,
+                    "parent_id": 1,
+                    "order_index": 0,
+                    "name": "Land Transport",
+                    "description": "Cars, buses, trains",
+                    "subject": "francais",
+                    "is_free": false,
+                    "cover_image": { ... },
+                    "flashcards_count": 10,
+                    "children_count": 0,
+                    "grade_id": 1,
+                    "created_at": "..."
+                },
+                {
+                    "id": 4,
+                    "parent_id": 1,
+                    "name": "Air Transport",
+                    ...
+                }
+            ]
+        }
+    ]
+}</pre>
+
+            <div class="section-title">Field Definitions</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>parent_id</td>
+                        <td>int|null</td>
+                        <td>ID of parent category. <code>null</code> for top-level categories.</td>
+                    </tr>
+                    <tr>
+                        <td>children_count</td>
+                        <td>int</td>
+                        <td>Number of direct subcategories.</td>
+                    </tr>
+                    <tr>
+                        <td>children</td>
+                        <td>array</td>
+                        <td>Nested array of subcategories (only present for top-level categories).</td>
+                    </tr>
+                    <tr>
+                        <td>flashcards_count</td>
+                        <td>int</td>
+                        <td>Number of flashcards directly in this category.</td>
+                    </tr>
+                    <tr>
+                        <td>is_free</td>
+                        <td>boolean</td>
+                        <td>Whether this category is accessible without subscription.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-title">Hierarchy Notes</div>
+            <ul>
+                <li>Only <strong>top-level categories</strong> (parent_id = null) are returned at the root level.</li>
+                <li>Subcategories are nested inside their parent's <code>children</code> array.</li>
+                <li>Maximum nesting depth is <strong>2 levels</strong> (category → subcategory).</li>
+                <li>A category can have either subcategories OR flashcards, not both.</li>
+            </ul>
+        </div>
+
+        <div id="flashcards-list" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge get">GET</span> List Flashcards <span
+                        class="auth-notice">Auth Required</span></h3>
+                <div class="endpoint-url">/api/v1/flashcard-categories/{categoryId}/flashcards</div>
+            </div>
+            <p>Get all flashcards within a specific category. Works for both top-level categories and subcategories.</p>
+        </div>
+
+
+        <!-- Discussions -->
+        <div id="discussion-categories" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge get">GET</span> List Categories <span
+                        class="auth-notice">Auth Required</span></h3>
+                <div class="endpoint-url">/api/v1/discussion-categories</div>
+            </div>
+            <p>List all discussion categories with their metadata and discussion counts.</p>
+        </div>
+
+        <div id="discussion-list" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge get">GET</span> List Discussions <span
+                        class="auth-notice">Auth Required</span></h3>
+                <div class="endpoint-url">/api/v1/discussion-categories/{categoryId}/discussions</div>
+            </div>
+            <p>Get all discussions within a specific category.</p>
+        </div>
+
+        <div id="discussion-show" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge get">GET</span> Get Discussion <span
+                        class="auth-notice">Auth Required</span></h3>
+                <div class="endpoint-url">/api/v1/discussions/{discussionId}</div>
+            </div>
+            <p>Retrieve a discussion with a randomly selected variant (weighted) and its messages, including character
+                profiles.</p>
+
+            <div class="section-title">Response Structure</div>
+            <pre>{
+    "data": {
+        "discussion": {
+            "id": 1,
+            "title": "Introduction",
+            "category": { "id": 1, "title": "Social" },
+            "profiles": {
+                "home": {
+                    "code": "boy_10",
+                    "tts_style_prompt": "Fast pitch"
+                },
+                "away": { ... }
+            },
+            "scene_context": "..."
+        },
+        "variant_id": 10,
+        "messages": [
+            {
+                "id": 1,
+                "speaker": "home",
+                "order": 1,
+                "text": "Hello!",
+                "ar_text": "مرحباً",
+            }
+        ]
+    }
+}</pre>
+        </div>
+
+        <!-- Ads -->
+        <div id="ads-available" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge get">GET</span> Get Available Ad <span
+                        class="auth-notice">Auth Required</span></h3>
+                <div class="endpoint-url">/api/v1/ads/available</div>
+            </div>
+            <p>Get an eligible video ad for the current user based on targeting rules and frequency caps.</p>
+
+            <div class="section-title">Query Parameters</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>os</td>
+                        <td>string</td>
+                        <td>Optional. Device OS: <code>ios</code> or <code>android</code>. Used for OS targeting.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-title">Targeting Logic</div>
+            <p>An ad is eligible if ALL of the following are true:</p>
+            <ul>
+                <li>Ad is <code>is_active = true</code></li>
+                <li>Current time is within <code>start_at</code> and <code>end_at</code> (if set)</li>
+                <li>Student's gender matches <code>target_gender</code> (or ad targets "both")</li>
+                <li>OS matches <code>target_os</code> (if OS provided, otherwise ignored)</li>
+                <li>If student is subscribed, <code>allow_for_subscribers</code> must be true</li>
+                <li>Student's grade is in ad's grade list (or ad has no grade restrictions)</li>
+                <li>Ad hasn't exceeded <code>max_impressions</code> or <code>max_clicks</code></li>
+                <li>Ad hasn't exceeded <code>max_daily_impressions</code> for today</li>
+                <li>Student hasn't exceeded <code>max_per_user_daily_impressions</code> for this ad today</li>
+            </ul>
+
+            <div class="section-title">Response (200 OK)</div>
+            <pre>{
+    "ad": {
+        "id": 1,
+        "video": {
+            "id": "abc123...",
+            "url": "https://...r2.dev/files/video.mp4"
+        },
+        "cover": {
+            "id": "def456...",
+            "url": "https://...r2.dev/files/cover.jpg"
+        },
+        "external_link": "https://example.com/promo",
+        "cta_text": "Learn More",
+        "skip_after_seconds": 5,
+        "show_cta_after_seconds": 3
+    }
+}</pre>
+
+            <div class="section-title">Response (204 No Content)</div>
+            <p>No eligible ads available for this user at this time.</p>
+        </div>
+
+        <div id="ads-impression" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge post">POST</span> Log Impression <span
+                        class="auth-notice">Auth Required</span></h3>
+                <div class="endpoint-url">/api/v1/ads/{ad}/impression</div>
+            </div>
+            <p>Log that a user has viewed an ad. Call this when the ad video starts playing.</p>
+
+            <div class="section-title">URL Parameters</div>
+            <p><code>ad</code>: The ID of the ad being viewed.</p>
+
+            <div class="section-title">Response (200 OK)</div>
+            <pre>{
+    "success": true,
+    "message": "Impression recorded"
+}</pre>
+        </div>
+
+        <div id="ads-click" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge post">POST</span> Log Click <span class="auth-notice">Auth
+                        Required</span></h3>
+                <div class="endpoint-url">/api/v1/ads/{ad}/click</div>
+            </div>
+            <p>Log that a user has clicked the CTA button on an ad. Returns the external link for redirection.</p>
+
+            <div class="section-title">URL Parameters</div>
+            <p><code>ad</code>: The ID of the ad being clicked.</p>
+
+            <div class="section-title">Response (200 OK)</div>
+            <pre>{
+    "success": true,
+    "external_link": "https://example.com/promo"
+}</pre>
+        </div>
+
+        <!-- Reports -->
+        <div id="reports-index" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge get">GET</span> Monthly Report <span
+                        class="auth-notice">Auth Required</span></h3>
+                <div class="endpoint-url">/api/v1/reports</div>
+            </div>
+            <p>Get daily snapshots of student performance for a specific month. Past days are frozen (immutable), today
+                is recomputed live.</p>
+
+            <div class="section-title">Query Parameters</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>month</td>
+                        <td>int</td>
+                        <td>Target month (default: current).</td>
+                    </tr>
+                    <tr>
+                        <td>year</td>
+                        <td>int</td>
+                        <td>Target year (default: current).</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-title">Response</div>
+            <pre>{
+    "2025-12-01": {
+        "period": {
+            "start": "2025-12-01 00:00:00",
+            "end": "2025-12-01 23:59:59"
+        },
+        "questions": {
+            "total": 15,
+            "correct": 12,
+            "incorrect": 3
+        },
+        "concepts": {
+            "count": 3,
+            "average_mastery": 75.5,
+            "details": [
+                {
+                    "concept_id": 1,
+                    "concept_name": "Addition",
+                    "mastery_percentage": 85.2
+                },
+                {
+                    "concept_id": 2,
+                    "concept_name": "Subtraction",
+                    "mastery_state": "learning"
+                }
+            ]
+        },
+        "quizzes": {
+            "count": 2,
+            "total_time_seconds": 320
+        }
+    },
+    "2025-12-02": { ... }
+}</pre>
+            <div class="section-title">Mastery Display Logic</div>
+            <p>
+                For concepts with <code>weighted_attempts &lt; 3</code>, a <code>mastery_state</code> is returned
+                instead of <code>mastery_percentage</code>:
+            </p>
+            <ul>
+                <li><code>"getting_started"</code> - 1 attempt</li>
+                <li><code>"learning"</code> - 2 attempts</li>
+            </ul>
+            <p>For 3+ attempts, <code>mastery_percentage</code> is returned as a number.</p>
+        </div>
+
+        <div id="reports-show" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge get">GET</span> Daily Report <span
+                        class="auth-notice">Auth Required</span></h3>
+                <div class="endpoint-url">/api/v1/reports/{date}</div>
+            </div>
+            <p>Get detailed performance snapshot for a specific date. Past days return frozen data, today returns live
+                data.</p>
+            <div class="section-title">URL Parameter</div>
+            <p><code>date</code>: Format <strong>d-m-Y</strong> (e.g., 25-12-2024)</p>
+
+            <div class="section-title">Response</div>
+            <pre>{
+    "period": { "start": "...", "end": "..." },
+    "questions": { "total": 10, "correct": 8, "incorrect": 2 },
+    "concepts": {
+        "count": 2,
+        "average_mastery": 70.0,
+        "details": [ ... ]
+    },
+    "quizzes": { "count": 1, "total_time_seconds": 180 }
+}</pre>
+        </div>
+
+        <!-- Coupons -->
+        <div id="coupon-redeem" class="endpoint-card">
+            <div class="endpoint-header">
+                <h3 class="endpoint-title"><span class="badge post">POST</span> Redeem Coupon <span
+                        class="auth-notice">Auth Required</span></h3>
+                <div class="endpoint-url">/api/v1/coupon/redeem</div>
+            </div>
+
+            <div class="section-title">Request Body</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>code<span class="param-required">*</span></td>
+                        <td>string</td>
+                        <td>The coupon code to redeem.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,1193 @@
+.raiida-legacy{
+    --bg-body: #f3f4f6;
+    --bg-white: #ffffff;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --primary: #3b82f6;
+    --primary-hover: #2563eb;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --success: #10b981;
+    --border: #e5e7eb;
+    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.raiida-legacy *{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.raiida-legacy{
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+    height: 100vh;
+    overflow: hidden;
+}
+
+.raiida-legacy .app-container{
+    display: flex;
+    height: 100%;
+}
+
+/* Sidebar */
+.raiida-legacy .sidebar{
+    width: 250px;
+    background-color: var(--bg-white);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+}
+
+.raiida-legacy .logo{
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+}
+
+.raiida-legacy .logo-icon{
+    width: 32px;
+    height: 32px;
+    background: var(--primary);
+    color: white;
+    border-radius: 6px;
+    display: grid;
+    place-items: center;
+}
+
+.raiida-legacy .logo h1{
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.raiida-legacy .nav-menu{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.raiida-legacy .nav-item{
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border: none;
+    background: none;
+    color: var(--text-secondary);
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.raiida-legacy .nav-item:hover{
+    background-color: #f9fafb;
+    color: var(--primary);
+}
+
+.raiida-legacy .nav-item.active{
+    background-color: #eff6ff;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.raiida-legacy .sidebar-footer{
+    margin-top: auto;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+}
+
+.raiida-legacy .status-online{
+    color: var(--success);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.raiida-legacy .status-online::before{
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    background: var(--success);
+    border-radius: 50%;
+}
+
+.raiida-legacy .status-offline{
+    color: var(--danger);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.raiida-legacy .status-offline::before{
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    background: var(--danger);
+    border-radius: 50%;
+}
+
+/* Main Content */
+.raiida-legacy .main-content{
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.raiida-legacy .view{
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.raiida-legacy .view.active{
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.raiida-legacy .view-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.raiida-legacy .view-header h2{
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.raiida-legacy .btn{
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background 0.2s;
+    font-size: 0.9rem;
+}
+
+.raiida-legacy .btn-primary{
+    background: var(--primary);
+    color: white;
+}
+
+.raiida-legacy .btn-primary:hover{
+    filter: brightness(1.1);
+}
+
+.raiida-legacy .btn-success{
+    background: var(--success);
+    color: white;
+}
+
+.raiida-legacy .btn-sm{
+    padding: 0.3rem 0.8rem;
+    font-size: 0.8rem;
+    gap: 0.3rem;
+}
+
+.raiida-legacy .btn-outline{
+    background: transparent;
+    border: 1px solid currentColor;
+}
+
+.raiida-legacy .btn-outline.btn-primary{
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.raiida-legacy .btn-outline.btn-primary:hover{
+    background: var(--primary);
+    color: white;
+}
+
+.raiida-legacy .btn:active{
+    opacity: 0.8;
+}
+
+.raiida-legacy .btn:disabled{
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.raiida-legacy .btn-danger{
+    background: var(--danger);
+    color: white;
+}
+
+.raiida-legacy .btn-danger:hover{
+    filter: brightness(1.1);
+}
+
+.raiida-legacy .audio-status-box{
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background-color: #f9fafb;
+    margin-right: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    min-width: 250px;
+}
+
+.raiida-legacy .audio-status-box i{
+    color: var(--primary);
+}
+
+/* Dashboard */
+.raiida-legacy .stats-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.raiida-legacy .stat-card{
+    background: var(--bg-white);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.raiida-legacy .icon-wrapper{
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    font-size: 1.25rem;
+}
+
+.raiida-legacy .blue{
+    background: #eff6ff;
+    color: var(--primary);
+}
+
+.raiida-legacy .green{
+    background: #ecfdf5;
+    color: var(--success);
+}
+
+.raiida-legacy .purple{
+    background: #f5f3ff;
+    color: #8b5cf6;
+}
+
+.raiida-legacy .red{
+    background: #fef2f2;
+    color: var(--danger);
+}
+
+.raiida-legacy .stat-info h3{
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.raiida-legacy .stat-info p{
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.raiida-legacy .sub-text{
+    font-size: 0.85rem;
+    color: var(--success);
+    font-weight: 600;
+}
+
+.raiida-legacy .text-error{
+    color: var(--danger) !important;
+}
+
+.raiida-legacy .recent-logs-container{
+    background: var(--bg-white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+.raiida-legacy .activity-log{
+    flex: 1;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.5rem;
+    background: #f9fafb;
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+.raiida-legacy .log-item{
+    padding: 4px 8px;
+    border-bottom: 1px solid #eee;
+}
+
+.raiida-legacy .log-item:last-child{
+    border-bottom: none;
+}
+
+/* File Tree */
+.raiida-legacy .file-browser-container{
+    background: var(--bg-white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    min-height: 500px;
+}
+
+.raiida-legacy .file-tree{
+    font-size: 0.95rem;
+}
+
+.raiida-legacy .tree-node{
+    margin-left: 1.2rem;
+    display: none;
+}
+
+.raiida-legacy .tree-node.open{
+    display: block;
+}
+
+.raiida-legacy .tree-item{
+    padding: 0.4rem 0.5rem;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    user-select: none;
+}
+
+.raiida-legacy .tree-item:hover{
+    background-color: #f3f4f6;
+}
+
+.raiida-legacy .tree-toggle{
+    color: var(--text-secondary);
+    width: 16px;
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.raiida-legacy .tree-toggle.rotated{
+    transform: rotate(90deg);
+}
+
+.raiida-legacy .item-icon{
+    color: var(--text-secondary);
+    width: 20px;
+    text-align: center;
+}
+
+.raiida-legacy .type-file .item-icon{
+    color: var(--primary);
+}
+
+.raiida-legacy .type-file.corrupt .item-icon{
+    color: var(--danger);
+}
+
+.raiida-legacy .type-file.corrupt .item-name{
+    color: var(--danger);
+    text-decoration: line-through;
+}
+
+.raiida-legacy .file-meta{
+    margin-left: auto;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    display: flex;
+    gap: 1rem;
+}
+
+.raiida-legacy .status-badge{
+    color: var(--success);
+}
+
+/* Search */
+.raiida-legacy .search-box{
+    position: relative;
+    width: 300px;
+}
+
+.raiida-legacy .search-box input{
+    width: 100%;
+    padding: 0.6rem 1rem 0.6rem 2.4rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.raiida-legacy .search-box i{
+    position: absolute;
+    left: 0.8rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+}
+
+.raiida-legacy .loading{
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 2rem;
+}
+
+/* Table Styles */
+.raiida-legacy .filters-bar{
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.raiida-legacy .filter-select{
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background-color: var(--bg-white);
+    color: var(--text-primary);
+    min-width: 150px;
+    cursor: pointer;
+}
+
+.raiida-legacy .table-container{
+    background: var(--bg-white);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-top: 1rem;
+}
+
+/* Dropdown Styles */
+.raiida-legacy .dropdown{
+    position: relative;
+    display: inline-block;
+}
+
+.raiida-legacy .dropdown-toggle{
+    background-color: var(--bg-white);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+}
+
+.raiida-legacy .dropdown-menu{
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: var(--bg-white);
+    min-width: 160px;
+    box-shadow: var(--shadow);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    z-index: 100;
+    padding: 0.5rem;
+}
+
+.raiida-legacy .dropdown.active .dropdown-menu{
+    display: block;
+}
+
+.raiida-legacy .dropdown-menu label{
+    display: block;
+    padding: 0.5rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.raiida-legacy .dropdown-menu label:hover{
+    background-color: #f3f4f6;
+}
+
+.raiida-legacy .dropdown-menu input{
+    margin-right: 0.5rem;
+}
+
+/* Hidden Columns */
+.raiida-legacy .hidden-col{
+    display: none !important;
+}
+
+.raiida-legacy .data-table{
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.data-table th,
+.raiida-legacy .data-table td{
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+.raiida-legacy .data-table th{
+    background-color: #f9fafb;
+    font-weight: 600;
+    color: var(--text-secondary);
+    position: sticky;
+    top: 0;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s;
+}
+
+.raiida-legacy .data-table th:hover{
+    background-color: #f3f4f6;
+    color: var(--primary);
+}
+
+.raiida-legacy .data-table th i{
+    margin-left: 0.5rem;
+    font-size: 0.8rem;
+    opacity: 0.5;
+}
+
+.raiida-legacy .data-table th.sorted-asc i{
+    opacity: 1;
+    content: "\f0de";
+    /* FontAwesome sort-up */
+}
+
+.raiida-legacy .data-table th.sorted-desc i{
+    opacity: 1;
+    content: "\f0dd";
+    /* FontAwesome sort-down */
+}
+
+.raiida-legacy .data-table tr:hover{
+    background-color: #f3f4f6;
+}
+
+.raiida-legacy .data-table td .fa-file-powerpoint{
+    margin-right: 0.5rem;
+}
+
+.raiida-legacy .text-center{
+    text-align: center;
+}
+
+.raiida-legacy .text-secondary{
+    color: var(--text-secondary);
+}
+
+.raiida-legacy .text-primary{
+    color: var(--primary);
+}
+
+/* Vocabulary Grid */
+.raiida-legacy .vocab-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    padding-bottom: 2rem;
+}
+
+.raiida-legacy .vocab-card{
+    background: var(--bg-white);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+
+.raiida-legacy .vocab-card:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.raiida-legacy .vocab-image-container{
+    height: 160px;
+    background-color: #f9fafb;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+}
+
+.raiida-legacy .vocab-image{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 8px;
+}
+
+.raiida-legacy .vocab-content{
+    padding: 1rem;
+    text-align: center;
+}
+
+.raiida-legacy .vocab-word{
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.raiida-legacy .vocab-meta{
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.raiida-legacy .vocab-badge{
+    background: #f3f4f6;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.raiida-legacy .vocab-status-badge{
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 600;
+}
+
+.raiida-legacy .vocab-status-badge.success{
+    background: rgba(34, 197, 94, 0.1);
+    color: var(--success);
+    border: 1px solid var(--success);
+}
+
+.raiida-legacy .vocab-status-badge.warning{
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+    border: 1px solid var(--warning);
+}
+
+/* View Toggle */
+.raiida-legacy .btn-group{
+    display: inline-flex;
+    background: #e5e7eb;
+    border-radius: 6px;
+    padding: 2px;
+}
+
+.raiida-legacy .btn-group .btn{
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.raiida-legacy .btn-group .btn.active{
+    background: white;
+    color: var(--primary);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.raiida-legacy .hidden{
+    display: none !important;
+}
+
+.raiida-legacy .vocab-thumbnail{
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    border-radius: 4px;
+    background: #f9fafb;
+    border: 1px solid var(--border);
+}
+/* Pagination */
+.raiida-legacy .pagination-container{
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.raiida-legacy .pagination-btn{
+    padding: 0.5rem 0.8rem;
+    border: 1px solid var(--border);
+    background: var(--bg-white);
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    min-width: 36px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.raiida-legacy .pagination-btn:hover:not(:disabled){
+    background: #f3f4f6;
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.raiida-legacy .pagination-btn.active{
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    font-weight: 600;
+}
+
+.raiida-legacy .pagination-btn:disabled{
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.raiida-legacy .pagination-info{
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* Custom Audio Player */
+.raiida-legacy .btn-audio-play{
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--bg-white);
+    border: 1px solid var(--border);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1rem;
+}
+
+.raiida-legacy .btn-audio-play:hover{
+    background-color: var(--primary);
+    color: white;
+    transform: scale(1.1);
+    border-color: var(--primary);
+}
+
+.raiida-legacy .btn-audio-play.playing{
+    background-color: var(--success);
+    color: white;
+    border-color: var(--success);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
+}
+
+/* Shared Round Icon Button */
+.raiida-legacy .btn-icon-round{
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--bg-white);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+    margin: 0 2px;
+}
+
+.raiida-legacy .btn-icon-round:hover{
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    transform: scale(1.1);
+}
+
+.raiida-legacy .btn-icon-round.btn-action-upload-walidoi:hover{
+    background-color: #8b5cf6; /* Purple for Walidoi/External */
+    border-color: #8b5cf6;
+}
+
+/* Update btn-group to handle round buttons better */
+.raiida-legacy .btn-group-actions{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ============================================
+   Question Preview (Revizy Style)
+   ============================================ */
+
+.raiida-legacy{
+    --slate-50: #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-300: #cbd5e1;
+    --slate-400: #94a3b8;
+    --slate-600: #475569;
+    --slate-700: #334155;
+    --slate-800: #1e293b;
+    
+    --indigo-50: #eef2ff;
+    --indigo-100: #e0e7ff;
+    --indigo-500: #6366f1;
+    --indigo-600: #4f46e5;
+    --indigo-700: #4338ca;
+    
+    --green-100: #dcfce7;
+    --green-200: #bbf7d0;
+    --green-600: #16a34a;
+    --green-700: #15803d;
+    --green-800: #166534;
+    
+    --red-100: #fee2e2;
+    --red-200: #fecaca;
+    --red-500: #ef4444;
+    --red-600: #dc2626;
+    --red-800: #991b1b;
+    
+    --white: #ffffff;
+    
+    --shadow-color-primary: #373b54;
+    --shadow-color-secondary: #3730a3;
+    --shadow-color-outline: #cbd5e1;
+    
+    --brand-color: #464F71;
+    --brand-color-dark: #373b54;
+    --brand-color-light: #eef0f6;
+}
+
+.raiida-legacy .preview-phone-container{
+    background-color: var(--white);
+    width: 100%;
+    max-width: 32rem;
+    height: 700px; /* Fixed height for preview in list */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    margin: 0 auto 30px auto;
+    border-radius: 20px;
+    border: 8px solid #333; /* Phone frame look */
+    direction: rtl; /* Arabic support */
+    font-family: 'Rubik', 'Inter', sans-serif;
+}
+
+.raiida-legacy .preview-phone-container header{
+    padding: 1rem 1rem 0 1rem;
+}
+
+.raiida-legacy .preview-top-bar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 0.5rem;
+}
+
+.raiida-legacy .preview-progress-bar{
+    flex: 1;
+    display: flex;
+    gap: 0.5rem;
+    height: 0.75rem;
+}
+
+.raiida-legacy .preview-progress-segment{
+    flex: 1;
+    background-color: var(--slate-200);
+    border-radius: 9999px;
+    transition: all 0.3s;
+}
+
+.raiida-legacy .preview-progress-segment.active{
+    background-color: var(--brand-color);
+}
+
+.raiida-legacy .preview-instruction{
+    font-size: 1.25rem;
+    color: var(--slate-700);
+    margin: 1rem 0;
+    text-align: right;
+    padding: 0 1rem;
+}
+
+.raiida-legacy .preview-main{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.raiida-legacy .preview-content{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.raiida-legacy .preview-image-prompt{
+    width: 60%;
+    height: auto;
+    margin-bottom: 20px;
+    border: 8px solid #eeeeee;
+    box-shadow: 0px 9px 16px 0px #8b8b8b14;
+    border-radius: 8px;
+}
+
+.raiida-legacy .preview-options-grid{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.raiida-legacy .preview-option-btn{
+    background-color: var(--white);
+    border: 2px solid var(--slate-200);
+    border-radius: 1rem;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.1s;
+    box-shadow: 0 4px 0 0 var(--shadow-color-outline);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--slate-700);
+    font-family: inherit;
+    width: 100%;
+    text-align: center;
+}
+
+.raiida-legacy .preview-option-btn:hover{
+    background-color: var(--slate-50);
+}
+
+.raiida-legacy .preview-option-btn.selected{
+    border-color: var(--brand-color);
+    background-color: var(--white);
+    color: var(--brand-color);
+    box-shadow: 0 4px 0 0 #464f72;
+}
+
+.raiida-legacy .preview-sticky-footer{
+    width: 100%;
+    padding: 1rem 1.5rem;
+    background-color: var(--white);
+    border-top: 2px solid var(--slate-200);
+    box-sizing: border-box;
+}
+
+.raiida-legacy .preview-btn-check{
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 1rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border: none;
+    cursor: pointer;
+    background-color: var(--brand-color);
+    color: var(--white);
+    box-shadow: 0 4px 0 0 var(--shadow-color-primary);
+    font-family: 'Dosis', sans-serif;
+}
+
+.raiida-legacy .preview-option-btn .word-part{
+    direction: ltr;
+    display: inline-block;
+}
+
+/* ============================================
+   MOBILE QUIZ PREVIEW STYLES
+   ============================================ */
+
+/* Import Rubik font for Arabic text */
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap');
+
+/* Mobile Quiz Colors */
+.raiida-legacy{
+    --quiz-blue: #2E76B6;
+    --quiz-pink: #DC03A2;
+    --quiz-red: #AF0A54;
+    --quiz-green: #10B981;
+    --quiz-primary: #464F71;
+    --quiz-border: #e2e8f0;
+    --quiz-border-light: #cbd5e1;
+    --quiz-text: #334155;
+    --quiz-text-dark: #1e293b;
+    --quiz-success: #10B981;
+    --quiz-success-dark: #059669;
+    --quiz-error: #EF4444;
+    --quiz-bg: #f8fafc;
+}
+
+/* Question Card Mobile Styles */
+.raiida-legacy .question-card{
+    font-family: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.raiida-legacy .question-card .instruction{
+    font-family: 'Rubik', sans-serif;
+    line-height: 1.5;
+}
+
+/* 3D Option Button Styles */
+.raiida-legacy .option-btn-container{
+    position: relative;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.raiida-legacy .option-btn-container.grid-item{
+    width: calc(50% - 8px);
+}
+
+.raiida-legacy .option-btn-shadow{
+    position: absolute;
+    top: 4px;
+    left: 0;
+    right: 0;
+    bottom: -4px;
+    border-radius: 16px;
+    background: var(--quiz-border);
+    transition: background 0.3s ease;
+}
+
+.raiida-legacy .option-btn-shadow.correct{
+    background: var(--quiz-success);
+}
+
+.raiida-legacy .option-btn-face{
+    position: relative;
+    background: #ffffff;
+    border-radius: 16px;
+    border: 2px solid var(--quiz-border);
+    min-height: 140px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.1s ease;
+    user-select: none;
+}
+
+.raiida-legacy .option-btn-face:hover{
+    border-color: var(--quiz-border-light);
+}
+
+.raiida-legacy .option-btn-face.correct{
+    border-color: var(--quiz-success);
+    background: #f0fdf4;
+}
+
+.raiida-legacy .option-btn-face.has-text{
+    min-height: 100px;
+}
+
+/* Options Grid */
+.raiida-legacy .options-grid{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+}
+
+.raiida-legacy .options-grid.single-column{
+    flex-direction: column;
+}
+
+.raiida-legacy .option-image-large{
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-bottom: 8px;
+}
+
+.raiida-legacy .option-text{
+    font-size: 18px;
+    color: var(--quiz-text);
+    text-align: center;
+    line-height: 1.4;
+    font-family: 'Rubik', sans-serif;
+}
+
+/* Color tags in text */
+.raiida-legacy .text-blue{ color: var(--quiz-blue); }
+.raiida-legacy .text-pink{ color: var(--quiz-pink); }
+.raiida-legacy .text-red{ color: var(--quiz-red); }
+.raiida-legacy .text-green{ color: var(--quiz-green); }
+
+/* Responsive for mobile preview */
+@media (max-width: 640px) {
+    .raiida-legacy .option-btn-container.grid-item{
+        width: 100%;
+    }
+    
+    .raiida-legacy .question-card{
+        margin-left: 8px;
+        margin-right: 8px;
+    }
+}
