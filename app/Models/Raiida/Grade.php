@@ -9,6 +9,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Grade extends Model
 {
     use HasFactory;
+    
+    protected static function booted()
+    {
+        static::addGlobalScope('order_by_code', function (\Illuminate\Database\Eloquent\Builder $builder) {
+            $builder->orderBy('code', 'asc');
+        });
+    }
 
     protected $guarded = [];
 
