@@ -213,6 +213,14 @@ $(document).ready(function () {
 
         // Sort
         filtered.sort((a, b) => {
+            // Prioritize exact match if searching
+            if (search) {
+                const aExact = a.filename.toLowerCase() === search;
+                const bExact = b.filename.toLowerCase() === search;
+                if (aExact && !bExact) return -1;
+                if (!aExact && bExact) return 1;
+            }
+
             let valA = a[currentSort.column];
             let valB = b[currentSort.column];
             if (currentSort.column === 'status') {
@@ -1043,23 +1051,39 @@ $(document).ready(function () {
     }
 
     function renderVocabView() {
+        const searchTerm = $('#vocab-search').val().toLowerCase();
+        let displayVocab = currentVocab.filter(item => {
+            if (!searchTerm) return true;
+            return item.word.toLowerCase().includes(searchTerm);
+        });
+
+        if (searchTerm) {
+            displayVocab.sort((a, b) => {
+                const aExact = a.word.toLowerCase() === searchTerm;
+                const bExact = b.word.toLowerCase() === searchTerm;
+                if (aExact && !bExact) return -1;
+                if (!aExact && bExact) return 1;
+                return 0;
+            });
+        }
+
         if (currentVocabView === 'grid') {
             $('#vocab-grid').removeClass('hidden');
             $('#vocab-table-container').addClass('hidden');
             $('#btn-view-grid').addClass('active');
             $('#btn-view-table').removeClass('active');
-            renderVocabGrid(currentVocab);
+            renderVocabGrid(displayVocab, true);
         } else {
             $('#vocab-grid').addClass('hidden');
             $('#vocab-table-container').removeClass('hidden');
             $('#btn-view-grid').removeClass('active');
             $('#btn-view-table').addClass('active');
-            renderVocabTable(currentVocab);
+            renderVocabTable(displayVocab, true);
         }
         saveFilterPrefs();
     }
 
-    function renderVocabGrid(items) {
+    function renderVocabGrid(items, isPreFiltered = false) {
         const grid = $('#vocab-grid');
         grid.empty();
 
@@ -1068,11 +1092,11 @@ $(document).ready(function () {
             return;
         }
 
-        const searchTerm = $('#vocab-search').val().toLowerCase();
+        const searchTerm = isPreFiltered ? null : $('#vocab-search').val().toLowerCase();
 
         items.forEach(item => {
             // Client-side search filter
-            if (searchTerm && !item.word.toLowerCase().includes(searchTerm)) return;
+            if (!isPreFiltered && searchTerm && !item.word.toLowerCase().includes(searchTerm)) return;
 
             const imageUrl = item.image_path.startsWith('vocab_assets') ? `/${item.image_path}` : `/taalim-data/${item.image_path}`;
             const card = `
@@ -1095,7 +1119,7 @@ $(document).ready(function () {
         });
     }
 
-    function renderVocabTable(items) {
+    function renderVocabTable(items, isPreFiltered = false) {
         const tbody = $('#vocab-table-body');
         tbody.empty();
 
@@ -1104,11 +1128,11 @@ $(document).ready(function () {
             return;
         }
 
-        const searchTerm = $('#vocab-search').val().toLowerCase();
+        const searchTerm = isPreFiltered ? null : $('#vocab-search').val().toLowerCase();
 
         items.forEach(item => {
             // Client-side search filter
-            if (searchTerm && !item.word.toLowerCase().includes(searchTerm)) return;
+            if (!isPreFiltered && searchTerm && !item.word.toLowerCase().includes(searchTerm)) return;
 
             const imageUrl = item.image_path.startsWith('vocab_assets') ? `/${item.image_path}` : `/taalim-data/${item.image_path}`;
             const translation = item.ar_translation || '';
@@ -1986,6 +2010,15 @@ $(document).ready(function () {
                     (c.tense && c.tense.toLowerCase().includes(s)) ||
                     (c.raw_data && c.raw_data.toLowerCase().includes(s))
                 );
+
+                // Prioritize exact match on verbe
+                filtered.sort((a, b) => {
+                    const aExact = a.verbe && a.verbe.toLowerCase() === s;
+                    const bExact = b.verbe && b.verbe.toLowerCase() === s;
+                    if (aExact && !bExact) return -1;
+                    if (!aExact && bExact) return 1;
+                    return 0;
+                });
             }
             renderConjugaisonTable(filtered);
         });

@@ -45,6 +45,8 @@ class PageResource extends Resource
                     }),
                 Forms\Components\TextInput::make('page_number_extraction_method')
                     ->maxLength(255),
+                Forms\Components\ColorPicker::make('theme_color')
+                    ->label('Theme Color'),
                 Forms\Components\TextInput::make('md5_checksum')
                     ->maxLength(255),
                 Forms\Components\Textarea::make('page_number_extraction_error')
@@ -55,6 +57,13 @@ class PageResource extends Resource
                     ->directory('manual_uploads')
                     ->image()
                     ->required(fn (string $context): bool => $context === 'create'),
+                Forms\Components\Select::make('activity_category')
+                    ->options([
+                        'Activités de vocabulaire' => 'Activités de vocabulaire',
+                        'Activités orales' => 'Activités orales',
+                        'Activités de lecture' => 'Activités de lecture',
+                        'Activités d’écriture' => 'Activités d’écriture',
+                    ]),
             ]);
     }
 
@@ -85,7 +94,9 @@ class PageResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextInputColumn::make('page_number')
-                    ->sortable()
+                    ->sortable(query: function (Builder $query, string $direction): Builder {
+                        return $query->orderByRaw('CAST(page_number AS INTEGER) ' . $direction);
+                    })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('page_number_extraction_method')
                     ->sortable()
@@ -94,6 +105,10 @@ class PageResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
+                Tables\Columns\ColorColumn::make('theme_color')
+                    ->label('Theme')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('image_size')
                     ->label('Size')
                     ->formatStateUsing(fn ($state) => $state ? \Illuminate\Support\Number::fileSize($state) : '')
@@ -105,6 +120,18 @@ class PageResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->wrap(),
+                Tables\Columns\TextColumn::make('activity_category')
+                    ->label('Activity')
+                    ->sortable()
+                    ->searchable()
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Activités de vocabulaire' => 'info',
+                        'Activités orales' => 'success',
+                        'Activités de lecture' => 'warning',
+                        'Activités d’écriture' => 'danger',
+                        default => 'gray',
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -125,6 +152,15 @@ class PageResource extends Resource
                         4 => 'Grade 4',
                         3 => 'Grade 5',
                         2 => 'Grade 6',
+                    ]),
+                Tables\Filters\SelectFilter::make('activity_category')
+                    ->label('Activity')
+                    ->multiple()
+                    ->options([
+                        'Activités de vocabulaire' => 'Vocabulaire',
+                        'Activités orales' => 'Orales',
+                        'Activités de lecture' => 'Lecture',
+                        'Activités d’écriture' => 'Écriture',
                     ]),
                 Tables\Filters\SelectFilter::make('page_number_extraction_method')
                     ->options([
@@ -150,7 +186,7 @@ class PageResource extends Resource
                             ->whereNotNull('md5_checksum')
                             ->where('n_p_sem', 'not like', '%&%')
                             ->where('image_path', 'not like', '%&%')
-                            ->groupBy('md5_checksum')
+                            ->groupBy('md5_checksum', 'grade_id')
                             ->union(
                                 \Illuminate\Support\Facades\DB::table('pages')
                                     ->select('id')
@@ -176,6 +212,17 @@ class PageResource extends Resource
         return parent::getEloquentQuery()
             ->where('n_p_sem', 'not like', '%&%')
             ->where('image_path', 'not like', '%&%');
+    }
+
+    public static function applySearchToTableQuery(Builder $query, string $search, array $searchableColumns): Builder
+    {
+        $query = parent::applySearchToTableQuery($query, $search, $searchableColumns);
+
+        if ($search) {
+            $query->orderByRaw("CASE WHEN page_number = ? THEN 0 ELSE 1 END", [$search]);
+        }
+
+        return $query;
     }
 
     public static function getRelations(): array

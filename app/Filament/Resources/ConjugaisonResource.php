@@ -217,4 +217,15 @@ class ConjugaisonResource extends Resource
             ->whereIn('p', ['P1', 'P2', 'P3', 'P4', 'P5'])
             ->whereIn('sem', ['SEM1', 'SEM2', 'SEM3', 'SEM4', 'SEM5', 'SEM6']);
     }
+
+    public static function applySearchToTableQuery(Builder $query, string $search, array $searchableColumns): Builder
+    {
+        $query = parent::applySearchToTableQuery($query, $search, $searchableColumns);
+
+        if ($search) {
+            $query->orderByRaw("CASE WHEN name = ? OR question = ? OR verbe = ? THEN 0 ELSE 1 END", [$search, $search, $search]);
+        }
+
+        return $query;
+    }
 }

@@ -316,6 +316,22 @@ class FilesResource extends Resource
             ->with(['week.period.subject.grade']);
     }
 
+    public static function applySearchToTableQuery(Builder $query, string $search, array $searchableColumns): Builder
+    {
+        $query = parent::applySearchToTableQuery($query, $search, $searchableColumns);
+
+        if ($search) {
+            $query->orderByRaw("CASE WHEN filename = ? THEN 0 ELSE 1 END", [$search]);
+        }
+
+        return $query;
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with(['week.period.subject.grade']);
+    }
+
     private static function resolveDownloadState(FileAsset $record): string
     {
         $state = (string) ($record->download_state ?? '');

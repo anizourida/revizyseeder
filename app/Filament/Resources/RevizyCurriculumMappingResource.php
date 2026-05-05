@@ -292,6 +292,17 @@ class RevizyCurriculumMappingResource extends Resource
             ]);
     }
 
+    public static function applySearchToTableQuery(Builder $query, string $search, array $searchableColumns): Builder
+    {
+        $query = parent::applySearchToTableQuery($query, $search, $searchableColumns);
+
+        if ($search) {
+            $query->orderByRaw("CASE WHEN revizy_unite_name = ? THEN 0 ELSE 1 END", [$search]);
+        }
+
+        return $query;
+    }
+
     public static function getPages(): array
     {
         return [
