@@ -39,6 +39,9 @@ class RevizySeederLMStudioOCRJob implements ShouldQueue
 
     public function handle(): void
     {
+        // Force 30s delay between every extraction to avoid overloading LM Studio
+        sleep(30);
+
         if (WorkflowState::isPaused()) {
             Log::info("LM Studio OCR deferred for page ID {$this->pageId} because workflows are paused.");
             $this->release(300);
@@ -90,7 +93,9 @@ class RevizySeederLMStudioOCRJob implements ShouldQueue
             $pageNumber = null;
 
             if ($this->mode === 'text_only' || $this->mode === 'full') {
-                Log::info("LM Studio: Extracting TEXT for ID {$this->pageId} using: {$model}");
+                $msg = "LM Studio: Extracting TEXT for Page ID {$this->pageId} using: {$model}";
+                Log::info($msg);
+                echo "[Page {$this->pageId}] {$msg}\n"; // Print to console for the user to see
                 
                 $resText = Http::timeout(400)->post($apiUrl, [
                     'model' => $model,
@@ -99,7 +104,7 @@ class RevizySeederLMStudioOCRJob implements ShouldQueue
                         ['type' => 'image_url', 'image_url' => ['url' => $dataUrl]]
                     ]]],
                     'temperature' => 0.1,
-                    'max_tokens' => 4000,
+                    'max_tokens' => 1500, // Reduced from 4000 to prevent runaway generation
                 ]);
 
                 if ($resText->failed()) throw new \Exception("Text Extraction Failed: " . $resText->body());
@@ -152,9 +157,11 @@ class RevizySeederLMStudioOCRJob implements ShouldQueue
             }
 
             Log::info("LM Studio Task Completed for ID {$this->pageId}");
+            echo "[Page {$this->pageId}] SUCCESS: Text extraction completed.\n";
 
         } catch (\Exception $e) {
             Log::error("LM Studio Failed: " . $e->getMessage());
+            echo "[Page {$this->pageId}] FAILED: " . $e->getMessage() . "\n";
             foreach ($duplicates as $dup) $dup->update(['page_number_extraction_error' => $e->getMessage()]);
         }
     }

@@ -12,7 +12,7 @@ class RevizySeederExtractPageNumbersCommand extends Command
                             {--force : Re-extract even if already extracted}
                             {--grade= : Only extract for a specific grade ID}
                             {--sync : Run synchronously instead of dispatching to queue}
-                            {--delay=2 : Seconds between each dispatched job}';
+                            {--delay=30 : Seconds between each dispatched job}';
 
     protected $description = 'Dispatch jobs to extract page numbers for Pages using Python OCR script';
 

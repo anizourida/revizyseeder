@@ -77,6 +77,16 @@ class RevizySystemClient
         return $this->decodeOrFail($response);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
+    public function delete(string $path): array
+    {
+        $response = $this->request()->delete($path);
+
+        return $this->decodeOrFail($response);
+    }
+
     public function extractResourceId(array $payload): ?string
     {
         if (isset($payload['data']) && is_array($payload['data']) && isset($payload['data']['id'])) {

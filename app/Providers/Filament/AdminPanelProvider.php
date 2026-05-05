@@ -51,6 +51,10 @@ class AdminPanelProvider extends PanelProvider
                         ? route('filament.admin.resources.revizy-curriculum-mappings.index')
                         : url('/admin/revizy-curriculum-mappings'))
                     ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.revizy-curriculum-mappings.*')),
+                NavigationItem::make('Rapid Labeling')
+                    ->group('Tools')
+                    ->icon('heroicon-o-bolt')
+                    ->url('/rapid-labeling.php'),
             ])
             ->pages([
                 Dashboard::class,
