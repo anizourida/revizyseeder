@@ -651,7 +651,12 @@ class QuestionGeneratorService
 
     private function postProcessQuestions(array $questions): array
     {
+        $typingTypes = ['universal_fill_text', 'letter_by_letter'];
+
         foreach ($questions as &$question) {
+            $type = $question['type'] ?? '';
+            $isTypingType = in_array($type, $typingTypes, true);
+
             if (! empty($question['name'])) {
                 $question['name'] = $this->capitalizeArticle((string) $question['name']);
             }
@@ -665,9 +670,13 @@ class QuestionGeneratorService
             if (! empty($question['data']['answers']) && is_array($question['data']['answers'])) {
                 foreach ($question['data']['answers'] as &$answer) {
                     if (! empty($answer['body'])) {
-                        $answer['body'] = $this->autoColorArticles(
-                            $this->capitalizeArticle((string) $answer['body'])
-                        );
+                        $capitalized = $this->capitalizeArticle((string) $answer['body']);
+
+                        if ($isTypingType) {
+                            $answer['body'] = $capitalized;
+                        } else {
+                            $answer['body'] = $this->autoColorArticles($capitalized);
+                        }
                     }
                 }
                 unset($answer);
