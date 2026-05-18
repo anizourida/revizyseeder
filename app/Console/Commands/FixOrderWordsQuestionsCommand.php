@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Raiida\QuestionPublishAttempt;
 use App\Models\Raiida\VocabularyItem;
+use App\Services\Raiida\Exceptions\RevizyPublishException;
 use App\Services\Raiida\RevizyQuestionApiClient;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -139,14 +140,25 @@ class FixOrderWordsQuestionsCommand extends Command
                 $updated++;
             } catch (Throwable $exception) {
                 $failed++;
+                $statusCode = $exception instanceof RevizyPublishException ? $exception->statusCode() : null;
+                $responseBody = $exception instanceof RevizyPublishException ? $exception->responseBody() : null;
                 Log::warning('raiida.fix_order_words.failed', [
                     'concept_id' => (string) $item->concept_id,
                     'vocabulary_item_id' => (int) $item->id,
                     'revizy_question_id' => $revizyId,
+                    'status' => $statusCode,
+                    'response' => $responseBody !== null ? mb_substr($responseBody, 0, 500, 'UTF-8') : null,
                     'error' => $exception->getMessage(),
                 ]);
                 if ($verbose) {
-                    $this->error("Failed revizy={$revizyId}: " . $exception->getMessage());
+                    $details = $exception->getMessage();
+                    if ($statusCode !== null) {
+                        $details .= " | HTTP {$statusCode}";
+                    }
+                    if (is_string($responseBody) && trim($responseBody) !== '') {
+                        $details .= ' | ' . mb_substr(trim($responseBody), 0, 300, 'UTF-8');
+                    }
+                    $this->error("Failed revizy={$revizyId}: " . $details);
                 }
             }
         }
