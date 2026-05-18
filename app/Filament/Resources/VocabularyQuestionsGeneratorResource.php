@@ -200,7 +200,7 @@ class VocabularyQuestionsGeneratorResource extends Resource
                     ->icon('heroicon-o-sparkles')
                     ->color('success')
                     ->modalHeading('Standard Questions Preview')
-                    ->modalDescription('Generates standard questions only (no fill_text and no letter_by_letter).')
+                    ->modalDescription('Generates standard questions only (no fill_text). Adds letter_by_letter when eligible.')
                     ->modalSubmitActionLabel('Push Questions')
                     ->modalCancelActionLabel('Close')
                     ->modalWidth(MaxWidth::SevenExtraLarge)

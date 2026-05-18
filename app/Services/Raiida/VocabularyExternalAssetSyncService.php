@@ -3,6 +3,7 @@
 namespace App\Services\Raiida;
 
 use App\Models\Raiida\VocabularyItem;
+use App\Models\Raiida\VocabularyBaseWordAudio;
 use App\Services\Raiida\External\RevizySystemClient;
 use App\Services\Raiida\External\WalidioClient;
 use Illuminate\Database\Eloquent\Builder;
@@ -25,6 +26,7 @@ class VocabularyExternalAssetSyncService
      *   week?:string,
      *   sync_image_revizy?:bool,
      *   sync_audio_revizy?:bool,
+     *   sync_base_word_audio_revizy?:bool,
      *   sync_image_walidio?:bool,
      *   only_missing?:bool,
      *   wait_ms?:int
@@ -35,6 +37,7 @@ class VocabularyExternalAssetSyncService
     {
         $syncImageRevizy = (bool) ($options['sync_image_revizy'] ?? true);
         $syncAudioRevizy = (bool) ($options['sync_audio_revizy'] ?? true);
+        $syncBaseWordAudioRevizy = (bool) ($options['sync_base_word_audio_revizy'] ?? true);
         $syncImageWalidio = (bool) ($options['sync_image_walidio'] ?? true);
         $onlyMissing = (bool) ($options['only_missing'] ?? true);
         $limit = max(1, min((int) ($options['limit'] ?? 5000), 50000));
@@ -44,15 +47,18 @@ class VocabularyExternalAssetSyncService
             ->select([
                 'id',
                 'word',
+                'base_word',
                 'grade',
                 'period',
                 'week',
                 'image_path',
                 'audio_path',
+                'base_word_audio_path',
                 'revizy_image_file_id',
                 'revizy_audio_file_id',
                 'walidio_image_id',
             ])
+            ->with(['baseWordAudio:id,vocabulary_item_id,revizy_file_id'])
             ->orderBy('id');
 
         $this->applyScopeFilters($query, $options);
@@ -63,6 +69,7 @@ class VocabularyExternalAssetSyncService
             'failed_total' => 0,
             'revizy_image_synced' => 0,
             'revizy_audio_synced' => 0,
+            'revizy_base_word_audio_synced' => 0,
             'walidio_image_synced' => 0,
             'walidio_blocked_missing_revizy_image' => 0,
             'walidio_skipped_config' => 0,
@@ -75,6 +82,7 @@ class VocabularyExternalAssetSyncService
             &$summary,
             $syncImageRevizy,
             $syncAudioRevizy,
+            $syncBaseWordAudioRevizy,
             $syncImageWalidio,
             $onlyMissing,
             $waitMs,
@@ -99,6 +107,13 @@ class VocabularyExternalAssetSyncService
                         $result = $this->syncAudioToRevizy($item, $onlyMissing);
                         if ($result === 'synced') {
                             $summary['revizy_audio_synced']++;
+                        }
+                    }
+
+                    if ($syncBaseWordAudioRevizy) {
+                        $result = $this->syncBaseWordAudioToRevizy($item, $onlyMissing);
+                        if ($result === 'synced') {
+                            $summary['revizy_base_word_audio_synced']++;
                         }
                     }
 
@@ -131,6 +146,43 @@ class VocabularyExternalAssetSyncService
         $summary['targeted'] = $summary['processed_total'];
 
         return $summary;
+    }
+
+    private function syncBaseWordAudioToRevizy(VocabularyItem $item, bool $onlyMissing): string
+    {
+        $baseWord = trim((string) ($item->base_word ?? ''));
+        if ($baseWord === '' || mb_strtolower($baseWord, 'UTF-8') === mb_strtolower((string) $item->word, 'UTF-8')) {
+            return 'blocked';
+        }
+
+        if ($onlyMissing && $item->baseWordAudio instanceof VocabularyBaseWordAudio) {
+            $existing = trim((string) ($item->baseWordAudio->revizy_file_id ?? ''));
+            if ($existing !== '') {
+                return 'already';
+            }
+        }
+
+        if (trim((string) $item->base_word_audio_path) === '') {
+            throw new \RuntimeException('No base_word audio associated with this asset.');
+        }
+
+        $path = $this->locator->resolveBaseWordAudioPath($item);
+        if (! is_string($path)) {
+            throw new \RuntimeException('Base word audio file not found: ' . (string) $item->base_word_audio_path);
+        }
+
+        $response = $this->revizy->uploadFile($path, $baseWord ?: 'Base word audio ' . $item->id);
+        $secret = trim((string) ($response['secret_id'] ?? ''));
+        if ($secret === '') {
+            throw new \RuntimeException('Revizy response missing secret_id for base word audio upload.');
+        }
+
+        VocabularyBaseWordAudio::query()->updateOrCreate(
+            ['vocabulary_item_id' => (int) $item->id],
+            ['revizy_file_id' => $secret]
+        );
+
+        return 'synced';
     }
 
     private function syncImageToRevizy(VocabularyItem $item, bool $onlyMissing): string

@@ -1,16 +1,23 @@
 <?php
 
-define('LARAVEL_START', microtime(true));
-require __DIR__ . '/../vendor/autoload.php';
-$app = require_once __DIR__ . '/../bootstrap/app.php';
-$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
-$response = $kernel->handle(
-    $request = Illuminate\Http\Request::capture()
-);
+if (!defined('LARAVEL_START')) {
+    define('LARAVEL_START', microtime(true));
+    require __DIR__ . '/../vendor/autoload.php';
+    $app = require_once __DIR__ . '/../bootstrap/app.php';
+    $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+    $response = $kernel->handle(
+        $request = Illuminate\Http\Request::capture()
+    );
+}
 
 use App\Models\Raiida\Page;
+use Illuminate\Support\Facades\DB;
 
 $mode = $_GET['mode'] ?? 'manual'; // 'manual' or 'review'
+
+$baseQuery = Page::query()
+    ->where('n_p_sem', 'not like', '%&%')
+    ->where('image_path', 'not like', '%&%');
 
 // Handle Save, Skip or Confirm Request
 if (isset($_POST['action'])) {
@@ -49,36 +56,57 @@ if (isset($_POST['action'])) {
 
 if ($mode === 'review') {
     // Review mode: show python_ocr pages for double-checking
-    $record = Page::where('page_number_extraction_method', 'python_ocr')
+    $record = (clone $baseQuery)->where('page_number_extraction_method', 'python_ocr')
+        ->whereNotNull('md5_checksum')
+        ->whereIn('id', function($q) {
+            $q->select(DB::raw('MIN(id)'))
+              ->from('pages')
+              ->where('n_p_sem', 'not like', '%&%')
+              ->where('image_path', 'not like', '%&%')
+              ->groupBy('md5_checksum');
+        })
+        ->orderBy('grade_id')
         ->orderBy('n_p_sem')
-        ->orderBy('image_path')
         ->first();
     
-    $remaining = Page::where('page_number_extraction_method', 'python_ocr')->count();
+    $remaining = (clone $baseQuery)->where('page_number_extraction_method', 'python_ocr')
+        ->whereNotNull('md5_checksum')
+        ->distinct('md5_checksum')
+        ->count('md5_checksum');
 } else {
     // Manual mode: show pages needing manual labeling
-    $record = Page::where(function($q) {
+    $record = (clone $baseQuery)->where(function($q) {
             $q->whereNull('page_number')->orWhere('page_number', '');
         })
         ->where(function($q) {
             $q->whereNull('page_number_extraction_method')
               ->orWhereNotIn('page_number_extraction_method', ['skipped', 'python_ocr']);
         })
+        ->whereNotNull('md5_checksum')
+        ->whereIn('id', function($q) {
+            $q->select(DB::raw('MIN(id)'))
+              ->from('pages')
+              ->where('n_p_sem', 'not like', '%&%')
+              ->where('image_path', 'not like', '%&%')
+              ->groupBy('md5_checksum');
+        })
+        ->orderBy('grade_id')
         ->orderBy('n_p_sem')
-        ->orderBy('image_path')
         ->first();
 
-    $remaining = Page::where(function($q) {
+    $remaining = (clone $baseQuery)->where(function($q) {
         $q->whereNull('page_number')->orWhere('page_number', '');
     })
     ->where(function($q) {
         $q->whereNull('page_number_extraction_method')
           ->orWhereNotIn('page_number_extraction_method', ['skipped', 'python_ocr']);
     })
-    ->count();
+    ->whereNotNull('md5_checksum')
+    ->distinct('md5_checksum')
+    ->count('md5_checksum');
 }
 
-$pythonOcrCount = Page::where('page_number_extraction_method', 'python_ocr')->count();
+$pythonOcrCount = (clone $baseQuery)->where('page_number_extraction_method', 'python_ocr')->count();
 
 ?>
 <!DOCTYPE html>
@@ -165,6 +193,7 @@ $pythonOcrCount = Page::where('page_number_extraction_method', 'python_ocr')->co
                     </div>
 
                     <form action="rapid-labeling.php" method="POST" id="label-form" class="mt-6">
+                        <input type="hidden" name="_token" value="<?= csrf_token() ?>">
                         <input type="hidden" name="page_id" value="<?= $record->id ?>">
                         <input type="hidden" name="mode" value="<?= $mode ?>">
                         

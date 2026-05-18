@@ -26,6 +26,16 @@ class MediaFileLocator
         return $this->findExistingPath($raw, ['audios']);
     }
 
+    public function resolveBaseWordAudioPath(VocabularyItem $item): ?string
+    {
+        $raw = (string) ($item->base_word_audio_path ?? '');
+        if ($raw === '') {
+            return null;
+        }
+
+        return $this->findExistingPath($raw, ['audios', 'audios/base_words']);
+    }
+
     /**
      * @param  array<int, string>  $defaultFolders
      */

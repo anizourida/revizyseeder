@@ -223,11 +223,16 @@ class RaiidaImportCommand extends Command
         $now = now()->toDateTimeString();
 
         $payload = array_map(function (array $row) use ($now): array {
+            $word = (string) ($row['word'] ?? '');
+            $baseWord = $this->computeBaseWord($word);
+
             return [
                 'id' => (int) ($row['id'] ?? 0),
-                'word' => (string) ($row['word'] ?? ''),
+                'word' => $word,
+                'base_word' => $this->nullableString($baseWord),
                 'image_path' => $this->nullableString($row['image_path'] ?? null),
                 'audio_path' => $this->nullableString($row['audio_path'] ?? null),
+                'base_word_audio_path' => $this->nullableString($row['base_word_audio_path'] ?? null),
                 'grade' => (string) ($row['grade'] ?? ''),
                 'subject' => (string) ($row['subject'] ?? 'FR'),
                 'period' => (string) ($row['period'] ?? ''),
@@ -257,8 +262,10 @@ class RaiidaImportCommand extends Command
             ['id'],
             [
                 'word',
+                'base_word',
                 'image_path',
                 'audio_path',
+                'base_word_audio_path',
                 'grade',
                 'subject',
                 'period',
@@ -280,6 +287,26 @@ class RaiidaImportCommand extends Command
                 'updated_at',
             ]
         );
+    }
+
+    private function computeBaseWord(string $word): string
+    {
+        $word = str_replace("\u{2019}", "'", trim($word));
+
+        $prefixes = [
+            "L'", "l'",
+            'Le ', 'le ', 'La ', 'la ', 'Les ', 'les ',
+            'Un ', 'un ', 'Une ', 'une ', 'Des ', 'des ',
+            'Ou ', 'ou ',
+        ];
+
+        foreach ($prefixes as $prefix) {
+            if (str_starts_with($word, $prefix)) {
+                return trim(mb_substr($word, mb_strlen($prefix, 'UTF-8'), null, 'UTF-8'));
+            }
+        }
+
+        return $word;
     }
 
     private function importAudios(array $rows): void

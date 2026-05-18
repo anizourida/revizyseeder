@@ -38,7 +38,7 @@ class QuestionStudioService
      */
     private function generateQuestionsForAssetWithMode(int $assetId, bool $standardOnly): array
     {
-        $target = VocabularyItem::query()->find($assetId);
+        $target = VocabularyItem::query()->with('baseWordAudio')->find($assetId);
         if (! $target instanceof VocabularyItem) {
             throw new RaiidaApiException('Vocabulary item not found', 404);
         }
@@ -58,6 +58,7 @@ class QuestionStudioService
         $poolItems = VocabularyItem::query()
             ->where('grade', $target->grade)
             ->where('id', '!=', $target->id)
+            ->with('baseWordAudio')
             ->get();
 
         $targetDict = $this->toQuestionDictionary($target);
@@ -67,7 +68,7 @@ class QuestionStudioService
             $targetDict,
             $poolDicts,
             includeFillText: ! $standardOnly,
-            includeLetterByLetter: ! $standardOnly
+            includeLetterByLetter: true
         );
         if ($questions === []) {
             throw new RaiidaApiException(
@@ -474,6 +475,187 @@ class QuestionStudioService
     }
 
     /**
+     * Generate and publish standard questions (no fill_text) for vocabulary items with concept_id
+     * that have no published questions yet.
+     *
+     * @param  array{limit?:int,grade?:string,period?:string,week?:string,verbose?:bool}  $options
+     * @return array<string, mixed>
+     */
+    public function batchGenerateAndPublishStandard(array $options = []): array
+    {
+        $limit = max(1, min((int) ($options['limit'] ?? 5000), 50000));
+        $verbose = (bool) ($options['verbose'] ?? false);
+
+        $grade = strtoupper(trim((string) ($options['grade'] ?? '')));
+        if ($grade === '') {
+            $grade = null;
+        }
+
+        $period = strtoupper(trim((string) ($options['period'] ?? '')));
+        if ($period === '') {
+            $period = null;
+        }
+
+        $week = strtoupper(trim((string) ($options['week'] ?? '')));
+        if ($week === '') {
+            $week = null;
+        }
+
+        $publishedConcepts = QuestionPublishAttempt::query()
+            ->where('status', 'published')
+            ->groupBy('concept_id')
+            ->pluck('concept_id')
+            ->map(static fn ($value): string => (string) $value)
+            ->all();
+
+        $publishedConceptSet = array_fill_keys($publishedConcepts, true);
+
+        $allVocabularyQuery = VocabularyItem::query()
+            ->whereNotNull('concept_id')
+            ->where('concept_id', '!=', '')
+            ->with('baseWordAudio')
+            ->orderBy('id');
+
+        if ($grade !== null) {
+            $allVocabularyQuery->where('grade', $grade);
+        }
+        if ($period !== null) {
+            $allVocabularyQuery->where('period', $period);
+        }
+        if ($week !== null) {
+            $allVocabularyQuery->where('week', $week);
+        }
+
+        $allVocabulary = $allVocabularyQuery->get();
+
+        $itemsToProcess = $allVocabulary
+            ->filter(static function (VocabularyItem $item) use ($publishedConceptSet): bool {
+                return ! isset($publishedConceptSet[(string) $item->concept_id]);
+            })
+            ->values()
+            ->take($limit);
+
+        if ($itemsToProcess->isEmpty()) {
+            return [
+                'success' => true,
+                'message' => 'No vocabulary items found that need standard questions in the selected scope.',
+                'total' => 0,
+                'generated' => 0,
+                'published' => 0,
+                'failed' => 0,
+                'skipped' => 0,
+                'details' => [],
+            ];
+        }
+
+        $itemsByGrade = $allVocabulary->groupBy('grade');
+
+        $results = [];
+        $totalGenerated = 0;
+        $totalPublished = 0;
+        $totalFailed = 0;
+        $totalSkipped = 0;
+
+        foreach ($itemsToProcess as $item) {
+            $itemResult = [
+                'id' => $item->id,
+                'word' => $item->word,
+                'concept_id' => $item->concept_id,
+                'grade' => $item->grade,
+                'questions_generated' => 0,
+                'questions_published' => 0,
+                'questions_failed' => 0,
+                'status' => 'pending',
+                'errors' => [],
+            ];
+
+            if (empty($item->revizy_image_file_id) || empty($item->lexical_type)) {
+                $missingField = empty($item->revizy_image_file_id) ? 'image' : 'lexical_type';
+                $itemResult['status'] = 'skipped';
+                $itemResult['errors'][] = 'Missing ' . $missingField;
+                $totalSkipped++;
+                $results[] = $itemResult;
+
+                continue;
+            }
+
+            $poolItems = ($itemsByGrade[$item->grade] ?? collect())
+                ->filter(static fn (VocabularyItem $poolItem): bool => $poolItem->id !== $item->id)
+                ->values();
+
+            $targetDict = $this->toQuestionDictionary($item);
+            $poolDicts = $poolItems->map(fn (VocabularyItem $poolItem): array => $this->toQuestionDictionary($poolItem))->all();
+
+            try {
+                $questions = $this->generator->generateQuestions(
+                    $targetDict,
+                    $poolDicts,
+                    includeFillText: false,
+                    includeLetterByLetter: true
+                );
+            } catch (Throwable $exception) {
+                $itemResult['status'] = 'error';
+                $itemResult['errors'][] = 'Generation error: ' . $exception->getMessage();
+                $totalFailed++;
+                $results[] = $itemResult;
+
+                continue;
+            }
+
+            if ($questions === []) {
+                $itemResult['status'] = 'skipped';
+                $itemResult['errors'][] = 'No questions generated';
+                $totalSkipped++;
+                $results[] = $itemResult;
+
+                continue;
+            }
+
+            $itemResult['questions_generated'] = count($questions);
+            $totalGenerated += count($questions);
+
+            foreach ($questions as $index => $question) {
+                try {
+                    $result = $this->publishQuestion((int) $index, [
+                        'concept_id' => (string) ($question['concept_id'] ?? ''),
+                        'name' => (string) ($question['name'] ?? 'Question'),
+                        'type' => (string) ($question['type'] ?? 'universal'),
+                        'status' => 'published',
+                        'data' => is_array($question['data'] ?? null) ? $question['data'] : [],
+                    ]);
+
+                    if ((bool) ($result['success'] ?? false)) {
+                        $itemResult['questions_published']++;
+                        $totalPublished++;
+                    }
+                } catch (Throwable $exception) {
+                    $itemResult['questions_failed']++;
+                    $itemResult['errors'][] = 'Q' . ($index + 1) . ': '
+                        . mb_substr($exception->getMessage(), 0, 120, 'UTF-8');
+                    $totalFailed++;
+                }
+            }
+
+            $itemResult['status'] = $itemResult['questions_failed'] === 0 ? 'done' : 'partial';
+            if ($verbose) {
+                $itemResult['questions'] = $questions;
+            }
+            $results[] = $itemResult;
+        }
+
+        return [
+            'success' => true,
+            'message' => 'Processed ' . count($itemsToProcess) . ' items.',
+            'total' => count($itemsToProcess),
+            'generated' => $totalGenerated,
+            'published' => $totalPublished,
+            'failed' => $totalFailed,
+            'skipped' => $totalSkipped,
+            'details' => $results,
+        ];
+    }
+
+    /**
      * @return array<string, mixed>
      */
     private function toQuestionDictionary(VocabularyItem $item): array
@@ -481,6 +663,7 @@ class QuestionStudioService
         $data = $item->toArray();
         $data['name'] = $item->word;
         $data['name_ar'] = $item->ar_translation;
+        $data['base_word_audio_revizy_id'] = $item->baseWordAudio?->revizy_file_id;
 
         return $data;
     }

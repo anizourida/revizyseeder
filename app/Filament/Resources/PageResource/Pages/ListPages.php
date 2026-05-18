@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PageResource\Pages;
 use App\Filament\Resources\PageResource;
 use App\Jobs\RevizySeederLMStudioOCRJob;
 use Filament\Actions;
+use Filament\Forms;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 
@@ -23,10 +24,54 @@ class ListPages extends ListRecords
             Actions\Action::make('extract_pages')
                 ->label('Extract New Pages')
                 ->icon('heroicon-o-arrow-path')
-                ->action(function () {
-                    RevizySeederExtractPagesJob::dispatch();
+                ->modalHeading('Extract Pages')
+                ->modalDescription('Extract pages from presentation folders matching the selected scope (only N1–N6, no mixed grades).')
+                ->form([
+                    Forms\Components\Select::make('grade')
+                        ->label('Grade')
+                        ->options([
+                            'N1' => 'N1',
+                            'N2' => 'N2',
+                            'N3' => 'N3',
+                            'N4' => 'N4',
+                            'N5' => 'N5',
+                            'N6' => 'N6',
+                        ])
+                        ->placeholder('All grades'),
+                    Forms\Components\Select::make('period')
+                        ->label('Period')
+                        ->options([
+                            'P1' => 'P1',
+                            'P2' => 'P2',
+                            'P3' => 'P3',
+                            'P4' => 'P4',
+                            'P5' => 'P5',
+                        ])
+                        ->placeholder('All periods'),
+                    Forms\Components\Select::make('week')
+                        ->label('Week')
+                        ->options([
+                            'SEM1' => 'SEM1',
+                            'SEM2' => 'SEM2',
+                            'SEM3' => 'SEM3',
+                            'SEM4' => 'SEM4',
+                            'SEM5' => 'SEM5',
+                            'SEM6' => 'SEM6',
+                        ])
+                        ->placeholder('All weeks'),
+                ])
+                ->action(function (array $data) {
+                    $options = [
+                        'grade' => $data['grade'] ?? null,
+                        'period' => $data['period'] ?? null,
+                        'week' => $data['week'] ?? null,
+                    ];
+                    $options = array_filter($options, static fn ($value) => $value !== null);
+
+                    RevizySeederExtractPagesJob::dispatch($options);
                     Notification::make()
-                        ->title('Pages extraction has started in the background.')
+                        ->title('Pages extraction queued.')
+                        ->body('Background extraction started for selected scope.')
                         ->info()
                         ->send();
                 }),

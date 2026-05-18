@@ -47,6 +47,10 @@ class VocabularyResource extends Resource
                     Forms\Components\TextInput::make('word')
                         ->required()
                         ->maxLength(255),
+                    Forms\Components\TextInput::make('base_word')
+                        ->label('Base Word (no article)')
+                        ->maxLength(255)
+                        ->helperText("Word without articles like le/la/les/des/un/une/l'."),
                     Forms\Components\TextInput::make('ar_translation')
                         ->label('Arabic Translation')
                         ->maxLength(255),
@@ -92,12 +96,18 @@ class VocabularyResource extends Resource
                         ->maxLength(500),
                     Forms\Components\TextInput::make('audio_path')
                         ->maxLength(500),
+                    Forms\Components\TextInput::make('base_word_audio_path')
+                        ->label('Base Word Audio Path')
+                        ->maxLength(500),
                     Forms\Components\TextInput::make('revizy_image_file_id')
                         ->label('Revizy Image ID')
                         ->maxLength(100),
                     Forms\Components\TextInput::make('revizy_audio_file_id')
                         ->label('Revizy Audio ID')
                         ->maxLength(100),
+                    Forms\Components\Placeholder::make('base_word_audio_revizy_id')
+                        ->label('Base Word Audio Revizy ID')
+                        ->content(static fn (?VocabularyItem $record): string => $record?->baseWordAudio?->revizy_file_id ?: '—'),
                     Forms\Components\TextInput::make('walidio_image_id')
                         ->label('Walidio Image ID')
                         ->maxLength(100),
@@ -122,6 +132,7 @@ class VocabularyResource extends Resource
         return $table
             ->modifyQueryUsing(static function (Builder $query): Builder {
                 return $query
+                    ->with('baseWordAudio')
                     ->orderByRaw("CASE grade WHEN 'N1' THEN 1 WHEN 'N2' THEN 2 WHEN 'N3' THEN 3 WHEN 'N4' THEN 4 WHEN 'N5' THEN 5 WHEN 'N6' THEN 6 ELSE 7 END ASC")
                     ->orderByRaw("CAST(SUBSTR(period, 2) AS INTEGER) ASC")
                     ->orderByRaw("CAST(SUBSTR(week, 4) AS INTEGER) ASC")
@@ -139,6 +150,13 @@ class VocabularyResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->weight('bold'),
+                Tables\Columns\TextColumn::make('base_word')
+                    ->label('Base')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('lesson_id')
+                    ->label('Lesson')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('ar_translation')
                     ->label('Arabic')
                     ->searchable()
@@ -224,12 +242,25 @@ class VocabularyResource extends Resource
                         'title' => 'Play audio',
                     ] : [])
                     ->toggleable(),
+                Tables\Columns\IconColumn::make('base_word_audio_path')
+                    ->label('Base Audio')
+                    ->icon(fn (?string $state): string => $state ? 'heroicon-o-speaker-wave' : 'heroicon-o-speaker-x-mark')
+                    ->color(fn (?string $state): string => $state ? 'success' : 'gray')
+                    ->url(fn ($record) => $record->base_word_audio_path ? "javascript:void(0);" : null)
+                    ->extraAttributes(fn ($record) => $record->base_word_audio_path ? [
+                        'onclick' => "new Audio('" . asset('audios/' . $record->base_word_audio_path) . "').play();",
+                        'title' => 'Play base-word audio',
+                    ] : [])
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('revizy_image_file_id')
                     ->label('Img ID')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('revizy_audio_file_id')
                     ->label('Audio ID')
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('baseWordAudio.revizy_file_id')
+                    ->label('Base Audio ID')
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('flashcard_id')
                     ->label('Flashcard')
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -243,6 +274,20 @@ class VocabularyResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                Tables\Filters\Filter::make('lesson_id')
+                    ->form([
+                        Forms\Components\TextInput::make('lesson_id')
+                            ->label('Lesson code')
+                            ->placeholder('FR_N6_P5_SEM2_S1'),
+                    ])
+                    ->query(static function (Builder $query, array $data): Builder {
+                        $lessonId = trim((string) ($data['lesson_id'] ?? ''));
+                        if ($lessonId === '') {
+                            return $query;
+                        }
+
+                        return $query->where('lesson_id', 'like', '%' . $lessonId . '%');
+                    }),
                 Tables\Filters\SelectFilter::make('grade')
                     ->label('Grade')
                     ->options([
@@ -453,6 +498,9 @@ class VocabularyResource extends Resource
                         Forms\Components\Toggle::make('sync_audio_revizy')
                             ->label('Sync Audio -> Revizy')
                             ->default(true),
+                        Forms\Components\Toggle::make('sync_base_word_audio_revizy')
+                            ->label('Sync Base Word Audio -> Revizy')
+                            ->default(true),
                         Forms\Components\Toggle::make('sync_image_walidio')
                             ->label('Sync Image -> Walidio')
                             ->helperText('Requires Revizy Image ID and WALIDIO_PUBLIC_KEY.')
@@ -478,6 +526,7 @@ class VocabularyResource extends Resource
                             'week' => $data['week'] ?? null,
                             'sync_image_revizy' => (bool) ($data['sync_image_revizy'] ?? true),
                             'sync_audio_revizy' => (bool) ($data['sync_audio_revizy'] ?? true),
+                            'sync_base_word_audio_revizy' => (bool) ($data['sync_base_word_audio_revizy'] ?? true),
                             'sync_image_walidio' => (bool) ($data['sync_image_walidio'] ?? true),
                             'only_missing' => (bool) ($data['only_missing'] ?? true),
                             'wait_ms' => (int) ($data['wait_ms'] ?? 0),

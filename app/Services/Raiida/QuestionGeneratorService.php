@@ -12,6 +12,7 @@ class QuestionGeneratorService
         'spelling_select' => 'أختار الكلمة الصحيحة.',
         'fill_text' => 'أكتب الكلمة المناسبة.',
         'letter_by_letter' => 'كوّن الكلمة حرفاً حرفاً.',
+        'order_words' => 'رتّب الكلمات لتكوين جملة صحيحة.',
     ];
 
     private const GRADE_GRAMMAR_CONFIG = [
@@ -42,6 +43,11 @@ class QuestionGeneratorService
         $distractors = $this->selectDistractors($target, $allItems, 7);
 
         $questions = [];
+
+        $q = $this->buildOrderWords($target, $gradeNum);
+        if ($q !== null) {
+            $questions[] = $q;
+        }
 
         if (count($distractors) > 0) {
             $q = $this->buildUniversalTextToImage($target, $distractors, $gradeNum);
@@ -511,16 +517,33 @@ class QuestionGeneratorService
 
         $word = (string) ($target['word'] ?? '');
         $normalized = str_replace("\u{2019}", "'", trim($word));
+        $lower = mb_strtolower($normalized, 'UTF-8');
 
-        if (str_starts_with(mb_strtolower($normalized, 'UTF-8'), 'les ')
-            || str_starts_with(mb_strtolower($normalized, 'UTF-8'), 'des ')) {
+        if (str_starts_with($lower, "l'")
+            || str_starts_with($lower, 'les ')
+            || str_starts_with($lower, 'des ')) {
             return null;
         }
 
         $bare = $this->bareNoun($word);
-        $articles = $this->getArticleGender($gender);
-        if ($articles === null) {
+        if ($bare === '') {
             return null;
+        }
+
+        $useIndefinite = str_starts_with($lower, 'un ') || str_starts_with($lower, 'une ');
+        $useDefinite = str_starts_with($lower, 'le ') || str_starts_with($lower, 'la ');
+
+        if (! $useIndefinite && ! $useDefinite) {
+            return null;
+        }
+
+        $gender = (string) $gender;
+        if ($useIndefinite) {
+            $correctArticle = $gender === 'feminine' ? 'Une' : 'Un';
+            $incorrectArticle = $gender === 'feminine' ? 'Un' : 'Une';
+        } else {
+            $correctArticle = $gender === 'feminine' ? 'La' : 'Le';
+            $incorrectArticle = $gender === 'feminine' ? 'Le' : 'La';
         }
 
         $config = self::GRADE_GRAMMAR_CONFIG[$gradeNum] ?? self::GRADE_GRAMMAR_CONFIG[6];
@@ -528,8 +551,8 @@ class QuestionGeneratorService
             return null;
         }
 
-        $correctText = $articles['correct'] . ' ' . $bare;
-        $incorrectText = $articles['incorrect'] . ' ' . $bare;
+        $correctText = $correctArticle . ' ' . $bare;
+        $incorrectText = $incorrectArticle . ' ' . $bare;
 
         $answers = [
             ['body' => $correctText, 'is_correct' => true, 'media' => ['image' => null, 'audio' => null]],
@@ -611,9 +634,10 @@ class QuestionGeneratorService
     private function buildLetterByLetter(array $target, int $gradeNum): ?array
     {
         $word = (string) ($target['word'] ?? '');
-        $bare = $this->bareNoun($word);
+        $baseWord = trim((string) ($target['base_word'] ?? ''));
+        $bare = $baseWord !== '' ? $baseWord : $this->bareNoun($word);
 
-        if (mb_strlen($bare, 'UTF-8') > 7) {
+        if (mb_strlen($bare, 'UTF-8') >= 7) {
             return null;
         }
 
@@ -625,13 +649,14 @@ class QuestionGeneratorService
             return null;
         }
 
+        $baseWordAudioRevizyId = trim((string) ($target['base_word_audio_revizy_id'] ?? ''));
+        if ($baseWordAudioRevizyId === '') {
+            return null;
+        }
+
         $answers = [
             ['body' => $bare, 'is_correct' => true, 'media' => ['image' => null, 'audio' => null]],
         ];
-
-        if (mb_strtolower($word, 'UTF-8') !== mb_strtolower($bare, 'UTF-8')) {
-            $answers[] = ['body' => $word, 'is_correct' => true, 'media' => ['image' => null, 'audio' => null]];
-        }
 
         return [
             'concept_id' => $target['concept_id'] ?? null,
@@ -639,6 +664,44 @@ class QuestionGeneratorService
             'type' => 'letter_by_letter',
             'data' => [
                 'instruction' => self::INSTRUCTIONS['letter_by_letter'],
+                'body' => null,
+                'media' => [
+                    'image' => $target['revizy_image_file_id'] ?? null,
+                    'audio' => $baseWordAudioRevizyId,
+                ],
+                'answers' => $answers,
+            ],
+        ];
+    }
+
+    private function buildOrderWords(array $target, int $gradeNum): ?array
+    {
+        $word = trim((string) ($target['word'] ?? ''));
+        if ($word === '') {
+            return null;
+        }
+
+        $tokens = preg_split('/\s+/u', $word, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+        if (count($tokens) < 3) {
+            return null;
+        }
+
+        $hasImage = ! empty($target['revizy_image_file_id']);
+        $hasAudio = ! empty($target['revizy_audio_file_id']);
+        if (! $hasImage && ! $hasAudio) {
+            return null;
+        }
+
+        $answers = [
+            ['body' => $word, 'is_correct' => true, 'media' => ['image' => null, 'audio' => null]],
+        ];
+
+        return [
+            'concept_id' => $target['concept_id'] ?? null,
+            'name' => $word . ' - ترتيب الكلمات',
+            'type' => 'order_words',
+            'data' => [
+                'instruction' => self::INSTRUCTIONS['order_words'],
                 'body' => null,
                 'media' => [
                     'image' => $target['revizy_image_file_id'] ?? null,
@@ -783,6 +846,7 @@ class QuestionGeneratorService
         $prefixes = [
             "L'", "l'", 'Le ', 'le ', 'La ', 'la ', 'Les ', 'les ',
             'Un ', 'un ', 'Une ', 'une ', 'Des ', 'des ',
+            'Ou ', 'ou ',
         ];
 
         foreach ($prefixes as $prefix) {

@@ -102,7 +102,9 @@ class AudioGenerationService
             ->select([
                 'id',
                 'word',
+                'base_word',
                 'audio_path',
+                'base_word_audio_path',
                 'grade',
                 'period',
                 'week',
@@ -111,7 +113,18 @@ class AudioGenerationService
 
         if (! $force && empty($options['item_id'])) {
             $query->where(function (Builder $missing): void {
-                $missing->whereNull('audio_path')->orWhere('audio_path', '');
+                $missing
+                    ->whereNull('audio_path')
+                    ->orWhere('audio_path', '')
+                    ->orWhere(function (Builder $baseWordMissing): void {
+                        $baseWordMissing
+                            ->whereNotNull('base_word')
+                            ->where('base_word', '!=', '')
+                            ->whereColumn('base_word', '!=', 'word')
+                            ->where(function (Builder $audioMissing): void {
+                                $audioMissing->whereNull('base_word_audio_path')->orWhere('base_word_audio_path', '');
+                            });
+                    });
             });
         }
 
@@ -159,7 +172,20 @@ class AudioGenerationService
                 Log::info('raiida.audio_generator.item.started', $audit);
             }
 
-            if (! $force && trim((string) ($item->audio_path ?? '')) !== '') {
+            $hasMainAudio = trim((string) ($item->audio_path ?? '')) !== '';
+            $needsMainAudio = $force || ! $hasMainAudio;
+
+            $baseWord = trim((string) ($item->base_word ?? ''));
+            if ($baseWord === '') {
+                $baseWord = $this->computeBaseWordFromWord((string) $item->word);
+            }
+
+            $isDifferentBaseWord = $baseWord !== ''
+                && mb_strtolower($baseWord, 'UTF-8') !== mb_strtolower((string) $item->word, 'UTF-8');
+            $hasBaseAudio = trim((string) ($item->base_word_audio_path ?? '')) !== '';
+            $needsBaseAudio = $force || ($isDifferentBaseWord && ! $hasBaseAudio);
+
+            if (! $needsMainAudio && ! $needsBaseAudio) {
                 $summary['skipped_existing']++;
                 if ($verbose) {
                     Log::info('raiida.audio_generator.item.skipped_existing', $audit);
@@ -169,11 +195,19 @@ class AudioGenerationService
             }
 
             try {
-                $result = $this->generateForItem($provider, $item);
-                $summary['generated_total']++;
-                $summary['last_generated_item'] = (string) $item->word;
-                $summary['last_generated_item_id'] = (int) $item->id;
-                $summary['last_generated_file'] = (string) ($result['file'] ?? null);
+                if ($needsMainAudio) {
+                    $result = $this->generateForItem($provider, $item);
+                    $summary['generated_total']++;
+                    $summary['last_generated_item'] = (string) $item->word;
+                    $summary['last_generated_item_id'] = (int) $item->id;
+                    $summary['last_generated_file'] = (string) ($result['file'] ?? null);
+                } else {
+                    $result = $this->generateBaseWordAudioOnly($provider, $item);
+                    $summary['generated_total']++;
+                    $summary['last_generated_item'] = (string) $item->word;
+                    $summary['last_generated_item_id'] = (int) $item->id;
+                    $summary['last_generated_file'] = (string) ($result['file'] ?? null);
+                }
                 if ($verbose) {
                     Log::info('raiida.audio_generator.item.completed', $audit + [
                         'file' => (string) ($result['file'] ?? ''),
@@ -234,6 +268,37 @@ class AudioGenerationService
     }
 
     /**
+     * Generate one audio file from arbitrary text and store it under public/audios.
+     *
+     * @return array{file:string,speak_url:string,audio_url:string,signed_url:string}
+     */
+    public function generateTextAudio(string $text, string $filenameSeed, string $directory = ''): array
+    {
+        if (! (bool) config('raiida.audio_generator.enabled', false)) {
+            throw new RaiidaApiException(
+                'Audio generator is disabled. Enable RAIIDA_AUDIO_GENERATOR_ENABLED first.',
+                422
+            );
+        }
+
+        $text = trim($text);
+        if ($text === '') {
+            throw new RaiidaApiException('Cannot generate audio for empty text.', 422);
+        }
+
+        $provider = $this->resolveTypecastProvider();
+        $audioPayload = $this->requestTypecastAudio($provider, $text);
+        $filename = $this->storeAudioBinaryForText((string) $audioPayload['binary'], $filenameSeed, $directory);
+
+        return [
+            'file' => $filename,
+            'speak_url' => (string) ($audioPayload['speak_url'] ?? ''),
+            'audio_url' => (string) ($audioPayload['audio_url'] ?? ''),
+            'signed_url' => (string) ($audioPayload['signed_url'] ?? ''),
+        ];
+    }
+
+    /**
      * @return array{file:string,speak_url:string,audio_url:string,signed_url:string}
      */
     private function generateForItem(ApiProvider $provider, VocabularyItem $item): array
@@ -256,8 +321,11 @@ class AudioGenerationService
 
         if ((string) ($item->audio_path ?? '') !== $filename) {
             $item->audio_path = $filename;
-            $item->save();
         }
+
+        $this->ensureBaseWordAudio($provider, $item);
+
+        $item->save();
 
         return [
             'file' => $filename,
@@ -267,11 +335,76 @@ class AudioGenerationService
         ];
     }
 
+    private function ensureBaseWordAudio(ApiProvider $provider, VocabularyItem $item): void
+    {
+        $baseWord = trim((string) ($item->base_word ?? ''));
+        if ($baseWord === '') {
+            $baseWord = $this->computeBaseWordFromWord((string) $item->word);
+            $item->base_word = $baseWord !== '' ? $baseWord : null;
+        }
+
+        if ($baseWord === '' || mb_strtolower($baseWord, 'UTF-8') === mb_strtolower((string) $item->word, 'UTF-8')) {
+            return;
+        }
+
+        if (trim((string) ($item->base_word_audio_path ?? '')) !== '') {
+            return;
+        }
+
+        $audioPayload = $this->requestTypecastAudio($provider, $baseWord);
+        $seed = $baseWord !== '' ? $baseWord : ('base_word_' . (int) $item->id);
+        $filename = $this->storeAudioBinaryForText((string) $audioPayload['binary'], $seed, 'base_words');
+
+        $item->base_word_audio_path = $filename;
+    }
+
+    /**
+     * Generate base-word audio without regenerating the main word audio.
+     *
+     * @return array{file:string,speak_url:string,audio_url:string,signed_url:string}
+     */
+    private function generateBaseWordAudioOnly(ApiProvider $provider, VocabularyItem $item): array
+    {
+        $this->ensureBaseWordAudio($provider, $item);
+        $item->save();
+
+        return [
+            'file' => (string) ($item->base_word_audio_path ?? ''),
+            'speak_url' => '',
+            'audio_url' => '',
+            'signed_url' => '',
+        ];
+    }
+
+    private function computeBaseWordFromWord(string $word): string
+    {
+        $word = str_replace("\u{2019}", "'", trim($word));
+
+        $prefixes = [
+            "L'", "l'",
+            'Le ', 'le ', 'La ', 'la ', 'Les ', 'les ',
+            'Un ', 'un ', 'Une ', 'une ', 'Des ', 'des ',
+            'Ou ', 'ou ',
+        ];
+
+        foreach ($prefixes as $prefix) {
+            if (str_starts_with($word, $prefix)) {
+                return trim(mb_substr($word, mb_strlen($prefix, 'UTF-8'), null, 'UTF-8'));
+            }
+        }
+
+        return $word;
+    }
+
     /**
      * @return array{binary:string,speak_url:string,audio_url:string,signed_url:string}
      */
     private function requestTypecastAudio(ApiProvider $provider, string $text): array
     {
+        if ($this->usesTypecastProxy($provider)) {
+            return $this->requestTypecastProxyAudio($provider, $text);
+        }
+
         $headers = $this->typecastHeaders($provider);
         $timeout = max(20, (int) config('raiida.audio_generator.typecast.request_timeout_seconds', 90));
 
@@ -425,6 +558,325 @@ class AudioGenerationService
         ];
     }
 
+    private function usesTypecastProxy(ApiProvider $provider): bool
+    {
+        return (bool) config('raiida.audio_generator.typecast_proxy.enabled', true);
+    }
+
+    /**
+     * @return array{binary:string,speak_url:string,audio_url:string,signed_url:string}
+     */
+    private function requestTypecastProxyAudio(ApiProvider $provider, string $text): array
+    {
+        $mode = strtolower(trim((string) config('raiida.audio_generator.typecast_proxy.mode', 'sync')));
+        if ($mode === 'async') {
+            return $this->requestTypecastProxyAsyncAudio($provider, $text);
+        }
+
+        return $this->requestTypecastProxySyncAudio($provider, $text);
+    }
+
+    /**
+     * @return array{binary:string,speak_url:string,audio_url:string,signed_url:string}
+     */
+    private function requestTypecastProxySyncAudio(ApiProvider $provider, string $text): array
+    {
+        $timeout = max(20, (int) config('raiida.audio_generator.typecast_proxy.request_timeout_seconds', 90));
+
+        $baseUrl = trim((string) config('raiida.audio_generator.typecast_proxy.base_url', 'http://typecast.test'));
+        if ($baseUrl === '') {
+            $baseUrl = trim((string) ($provider->base_url ?? ''));
+        }
+        $baseUrl = rtrim($baseUrl, '/');
+
+        $endpoint = (string) config('raiida.audio_generator.typecast_proxy.sync_endpoint', '/api/tts');
+        $endpoint = '/' . ltrim($endpoint, '/');
+
+        $profileId = (int) config('raiida.audio_generator.typecast_proxy.profile_id', 1);
+
+        $headers = [
+            'accept' => 'application/json',
+        ];
+
+        $apiKey = trim((string) ($provider->api_key ?? ''));
+        if ($apiKey !== '') {
+            $headers['x-api-key'] = $apiKey;
+        }
+
+        $response = Http::timeout($timeout)
+            ->acceptJson()
+            ->withHeaders($headers)
+            ->post($baseUrl . $endpoint, [
+                'text' => $text,
+                'profile_id' => $profileId,
+            ]);
+
+        if (! $response->successful()) {
+            throw new RaiidaApiException(
+                'Typecast proxy /api/tts failed (profile_id=' . $profileId . '): HTTP '
+                    . $response->status()
+                    . ' - '
+                    . $this->responseSnippet($response->body()),
+                $response->status()
+            );
+        }
+
+        $payload = $response->json();
+        if (! is_array($payload)) {
+            throw new RaiidaApiException(
+                'Typecast proxy /api/tts failed: invalid JSON response - ' . $this->responseSnippet($response->body()),
+                502
+            );
+        }
+
+        $success = (bool) data_get($payload, 'success', false);
+        if (! $success) {
+            $message = (string) data_get($payload, 'message', 'Unknown TTS gateway error');
+            throw new RaiidaApiException('Typecast proxy generation failed: ' . $message, 502);
+        }
+
+        $audioUrl = (string) data_get($payload, 'audio_url', '');
+
+        if ($audioUrl === '') {
+            throw new RaiidaApiException('Typecast proxy generation failed: missing audio_url in response', 502);
+        }
+
+        if (str_starts_with($audioUrl, '/')) {
+            $audioUrl = $baseUrl . $audioUrl;
+        }
+
+        $download = Http::timeout($timeout * 2)
+            ->withHeaders([
+                'user-agent' => (string) config('raiida.audio_generator.typecast_proxy.user_agent', ''),
+            ])
+            ->get($audioUrl);
+
+        if (! $download->successful()) {
+            throw new RaiidaApiException(
+                'Typecast proxy download failed: HTTP '
+                    . $download->status()
+                    . ' - '
+                    . $this->responseSnippet($download->body()),
+                $download->status()
+            );
+        }
+
+        $binary = (string) $download->body();
+        if ($binary === '') {
+            throw new RaiidaApiException('Typecast proxy download failed: downloaded audio is empty', 502);
+        }
+
+        return [
+            'binary' => $binary,
+            'speak_url' => '',
+            'audio_url' => $audioUrl,
+            'signed_url' => '',
+        ];
+    }
+
+    /**
+     * @return array{binary:string,speak_url:string,audio_url:string,signed_url:string}
+     */
+    private function requestTypecastProxyAsyncAudio(ApiProvider $provider, string $text): array
+    {
+        $timeout = max(20, (int) config('raiida.audio_generator.typecast_proxy.request_timeout_seconds', 90));
+
+        $baseUrl = trim((string) config('raiida.audio_generator.typecast_proxy.base_url', 'http://typecast.test'));
+        if ($baseUrl === '') {
+            $baseUrl = trim((string) ($provider->base_url ?? ''));
+        }
+        $baseUrl = rtrim($baseUrl, '/');
+
+        $endpoint = (string) config('raiida.audio_generator.typecast_proxy.async_endpoint', '/api/tts/async');
+        $endpoint = '/' . ltrim($endpoint, '/');
+
+        $profileId = (int) config('raiida.audio_generator.typecast_proxy.profile_id', 1);
+
+        $headers = [
+            'accept' => 'application/json',
+        ];
+
+        $apiKey = trim((string) ($provider->api_key ?? ''));
+        if ($apiKey !== '') {
+            $headers['x-api-key'] = $apiKey;
+        }
+
+        $response = Http::timeout($timeout)
+            ->acceptJson()
+            ->withHeaders($headers)
+            ->post($baseUrl . $endpoint, [
+                'text' => $text,
+                'profile_id' => $profileId,
+            ]);
+
+        if (! $response->successful()) {
+            throw new RaiidaApiException(
+                'Typecast proxy /api/tts/async failed (profile_id=' . $profileId . '): HTTP '
+                    . $response->status()
+                    . ' - '
+                    . $this->responseSnippet($response->body()),
+                $response->status()
+            );
+        }
+
+        $payload = $response->json();
+        if (! is_array($payload)) {
+            throw new RaiidaApiException(
+                'Typecast proxy /api/tts/async failed: invalid JSON response - ' . $this->responseSnippet($response->body()),
+                502
+            );
+        }
+
+        $success = (bool) data_get($payload, 'success', false);
+        if (! $success) {
+            $message = (string) data_get($payload, 'message', 'Unknown TTS gateway error');
+            throw new RaiidaApiException('Typecast proxy generation failed: ' . $message, 502);
+        }
+
+        $statusUrl = (string) data_get($payload, 'status_url', '');
+        $audioId = (int) data_get($payload, 'audio_id', 0);
+
+        if ($statusUrl === '' && $audioId > 0) {
+            $statusUrl = $baseUrl . '/api/tts/status/' . $audioId;
+        }
+
+        if ($statusUrl === '') {
+            throw new RaiidaApiException('Typecast proxy async failed: missing status_url/audio_id in response', 502);
+        }
+
+        if (str_starts_with($statusUrl, '/')) {
+            $statusUrl = $baseUrl . $statusUrl;
+        }
+
+        $pollAttempts = max(1, (int) config('raiida.audio_generator.typecast_proxy.status_poll_attempts', 60));
+        $pollIntervalMs = max(100, (int) config('raiida.audio_generator.typecast_proxy.status_poll_interval_ms', 1000));
+
+        $audioUrl = $this->pollTypecastProxyStatusUrl($statusUrl, $headers, $timeout, $pollAttempts, $pollIntervalMs);
+
+        $download = Http::timeout($timeout * 2)
+            ->withHeaders([
+                'user-agent' => (string) config('raiida.audio_generator.typecast_proxy.user_agent', ''),
+            ])
+            ->get($audioUrl);
+
+        if (! $download->successful()) {
+            throw new RaiidaApiException(
+                'Typecast proxy download failed: HTTP '
+                    . $download->status()
+                    . ' - '
+                    . $this->responseSnippet($download->body()),
+                $download->status()
+            );
+        }
+
+        $binary = (string) $download->body();
+        if ($binary === '') {
+            throw new RaiidaApiException('Typecast proxy download failed: downloaded audio is empty', 502);
+        }
+
+        return [
+            'binary' => $binary,
+            'speak_url' => '',
+            'audio_url' => $audioUrl,
+            'signed_url' => '',
+        ];
+    }
+
+    private function pollTypecastProxyStatusUrl(
+        string $statusUrl,
+        array $headers,
+        int $timeout,
+        int $pollAttempts,
+        int $pollIntervalMs
+    ): string {
+        $baseUrl = $this->baseUrlFromAbsoluteUrl($statusUrl);
+
+        for ($attempt = 1; $attempt <= $pollAttempts; $attempt++) {
+            usleep($pollIntervalMs * 1000);
+
+            $response = Http::timeout($timeout)
+                ->acceptJson()
+                ->withHeaders($headers)
+                ->get($statusUrl);
+
+            if (! $response->successful()) {
+                if ($attempt === $pollAttempts) {
+                    throw new RaiidaApiException(
+                        'Typecast proxy status check failed: HTTP '
+                            . $response->status()
+                            . ' - '
+                            . $this->responseSnippet($response->body()),
+                        $response->status()
+                    );
+                }
+
+                continue;
+            }
+
+            $payload = $response->json();
+            if (! is_array($payload)) {
+                if ($attempt === $pollAttempts) {
+                    throw new RaiidaApiException(
+                        'Typecast proxy status check failed: invalid JSON response - ' . $this->responseSnippet($response->body()),
+                        502
+                    );
+                }
+
+                continue;
+            }
+
+            $success = (bool) data_get($payload, 'success', false);
+            if (! $success) {
+                $message = (string) data_get($payload, 'message', 'Unknown TTS gateway error');
+                throw new RaiidaApiException('Typecast proxy status check failed: ' . $message, 502);
+            }
+
+            $status = strtolower(trim((string) data_get($payload, 'status', '')));
+
+            if ($status === 'completed') {
+                $audioUrl = (string) data_get($payload, 'audio_url', '');
+                if ($audioUrl === '') {
+                    throw new RaiidaApiException('Typecast proxy status completed but missing audio_url', 502);
+                }
+
+                if ($baseUrl !== '' && str_starts_with($audioUrl, '/')) {
+                    $audioUrl = $baseUrl . $audioUrl;
+                }
+
+                return $audioUrl;
+            }
+
+            if ($status === 'failed') {
+                $error = (string) data_get($payload, 'error', 'Unknown async generation error');
+                throw new RaiidaApiException('Typecast proxy async generation failed: ' . $error, 502);
+            }
+        }
+
+        throw new RaiidaApiException('Typecast proxy async generation timeout waiting for completion', 504);
+    }
+
+    private function baseUrlFromAbsoluteUrl(string $url): string
+    {
+        $parts = parse_url($url);
+        if (! is_array($parts)) {
+            return '';
+        }
+
+        $scheme = (string) ($parts['scheme'] ?? '');
+        $host = (string) ($parts['host'] ?? '');
+        $port = isset($parts['port']) ? (int) $parts['port'] : null;
+
+        if ($scheme === '' || $host === '') {
+            return '';
+        }
+
+        if ($port !== null) {
+            return $scheme . '://' . $host . ':' . $port;
+        }
+
+        return $scheme . '://' . $host;
+    }
+
     /**
      * @return array<string,string>
      */
@@ -440,13 +892,6 @@ class AudioGenerationService
             );
         }
 
-        if ($cookie === '') {
-            throw new RaiidaApiException(
-                'Typecast Cookie header is missing. Update it in Admin > Audio Credentials.',
-                422
-            );
-        }
-
         $origin = (string) config('raiida.audio_generator.typecast.origin', 'https://typecast.ai');
         $referer = trim((string) data_get($provider->metadata, 'referer', ''));
         if ($referer === '') {
@@ -456,12 +901,11 @@ class AudioGenerationService
             );
         }
 
-        return [
+        $headers = [
             'accept' => 'application/json, text/plain, */*',
             'accept-language' => 'en-US,en;q=0.9',
             'authorization' => $authorization,
             'content-type' => 'application/json',
-            'cookie' => $cookie,
             'origin' => $origin,
             'referer' => $referer,
             'priority' => 'u=1, i',
@@ -476,6 +920,12 @@ class AudioGenerationService
                 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36'
             ),
         ];
+
+        if ($cookie !== '') {
+            $headers['cookie'] = $cookie;
+        }
+
+        return $headers;
     }
 
     private function resolveTypecastProvider(): ApiProvider
@@ -496,6 +946,29 @@ class AudioGenerationService
             ->first();
 
         if (! $provider instanceof ApiProvider) {
+            $configured = ApiProvider::query()
+                ->where(function (Builder $query): void {
+                    $query
+                        ->whereRaw('LOWER(provider_type) = ?', ['typecast'])
+                        ->orWhereRaw('LOWER(slug) = ?', ['typecast']);
+                })
+                ->orderBy('id')
+                ->first();
+
+            if ($configured instanceof ApiProvider) {
+                $hasAuthorization = trim((string) ($configured->api_key ?? '')) !== '';
+                if ($hasAuthorization) {
+                    return $configured;
+                }
+
+                if (! (bool) $configured->is_active) {
+                    throw new RaiidaApiException(
+                        'Typecast provider is saved but inactive and missing Authorization. Re-save Admin > Audio Credentials with a fresh cURL.',
+                        422
+                    );
+                }
+            }
+
             throw new RaiidaApiException(
                 'No active Typecast provider found. Configure Admin > Audio Credentials first.',
                 422
@@ -530,6 +1003,47 @@ class AudioGenerationService
         }
 
         return $filename;
+    }
+
+    private function storeAudioBinaryForText(string $binary, string $filenameSeed, string $directory = ''): string
+    {
+        $audioRoot = public_path('audios');
+        $relativeDirectory = trim(str_replace(['\\', '..'], ['/', ''], $directory), '/');
+
+        if ($relativeDirectory !== '') {
+            $audioRoot .= DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relativeDirectory);
+        }
+
+        if (! is_dir($audioRoot)) {
+            @mkdir($audioRoot, 0775, true);
+        }
+
+        if (! is_dir($audioRoot) || ! is_writable($audioRoot)) {
+            throw new RaiidaApiException("Audio output directory is not writable: {$audioRoot}", 500);
+        }
+
+        $base = $this->sanitizeFilename($filenameSeed);
+        if ($base === '') {
+            $base = 'tts_' . Str::random(8);
+        }
+
+        $base = mb_substr($base, 0, 70, 'UTF-8');
+        $filename = $base . '.wav';
+        $fullPath = $audioRoot . DIRECTORY_SEPARATOR . $filename;
+        $counter = 2;
+
+        while (is_file($fullPath)) {
+            $filename = $base . '_' . $counter . '.wav';
+            $fullPath = $audioRoot . DIRECTORY_SEPARATOR . $filename;
+            $counter++;
+        }
+
+        $written = @file_put_contents($fullPath, $binary);
+        if ($written === false) {
+            throw new RaiidaApiException("Failed to write audio file: {$fullPath}", 500);
+        }
+
+        return $relativeDirectory !== '' ? $relativeDirectory . '/' . $filename : $filename;
     }
 
     private function sanitizeFilename(string $text): string

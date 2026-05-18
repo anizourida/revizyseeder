@@ -57,17 +57,16 @@ class RevizySeederExtractPagesFromFolderJob implements ShouldQueue
         $parts = explode('_', $lessonId);
         $gradeName = null;
         if (count($parts) >= 2) {
-            $gradeName = str_replace('N', '', $parts[1]); 
+            if (str_contains((string) $parts[1], '&')) {
+                return;
+            }
+
+            $gradeName = str_replace('N', '', $parts[1]);
         }
 
         $gradeId = null;
-        if ($gradeName && isset($gradesByName[$gradeName])) {
+        if ($gradeName && preg_match('/^[1-6]$/', (string) $gradeName) === 1 && isset($gradesByName[$gradeName])) {
             $gradeId = $gradesByName[$gradeName]->id;
-        } elseif ($gradeName && str_contains($gradeName, '&')) {
-            $firstGrade = explode('&', $gradeName)[0];
-            if (isset($gradesByName[$firstGrade])) {
-                $gradeId = $gradesByName[$firstGrade]->id;
-            }
         }
         
         if (!$gradeId) {

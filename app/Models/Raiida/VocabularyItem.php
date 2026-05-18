@@ -22,4 +22,9 @@ class VocabularyItem extends Model
     {
         return $this->hasOne(Audio::class);
     }
+
+    public function baseWordAudio(): HasOne
+    {
+        return $this->hasOne(VocabularyBaseWordAudio::class);
+    }
 }
