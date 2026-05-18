@@ -60,6 +60,13 @@ class FixOrderWordsQuestionsCommand extends Command
         $updated = 0;
         $skipped = 0;
         $failed = 0;
+        $skipReasons = [
+            'no_attempt' => 0,
+            'missing_revizy_id' => 0,
+            'invalid_payload' => 0,
+            'missing_media' => 0,
+            'already_ok' => 0,
+        ];
 
         foreach ($items as $item) {
             $word = trim((string) $item->word);
@@ -78,12 +85,20 @@ class FixOrderWordsQuestionsCommand extends Command
 
             if (! $attempt instanceof QuestionPublishAttempt) {
                 $skipped++;
+                $skipReasons['no_attempt']++;
+                if ($verbose) {
+                    $this->line("Skip concept={$item->concept_id} word={$word}: no published order_words attempt found");
+                }
                 continue;
             }
 
             $revizyId = trim((string) $attempt->revizy_question_id);
             if ($revizyId === '') {
                 $skipped++;
+                $skipReasons['missing_revizy_id']++;
+                if ($verbose) {
+                    $this->line("Skip concept={$item->concept_id} word={$word}: missing revizy_question_id");
+                }
                 continue;
             }
 
@@ -97,6 +112,10 @@ class FixOrderWordsQuestionsCommand extends Command
 
             if (! is_array($data)) {
                 $skipped++;
+                $skipReasons['invalid_payload']++;
+                if ($verbose) {
+                    $this->line("Skip concept={$item->concept_id} revizy={$revizyId} word={$word}: invalid stored question_data JSON");
+                }
                 continue;
             }
 
@@ -104,6 +123,10 @@ class FixOrderWordsQuestionsCommand extends Command
             $hasAudio = trim((string) $item->revizy_audio_file_id) !== '';
             if (! $hasImage && ! $hasAudio) {
                 $skipped++;
+                $skipReasons['missing_media']++;
+                if ($verbose) {
+                    $this->line("Skip concept={$item->concept_id} revizy={$revizyId} word={$word}: missing revizy image/audio on vocabulary item");
+                }
                 continue;
             }
 
@@ -119,6 +142,10 @@ class FixOrderWordsQuestionsCommand extends Command
             );
             if ($alreadyOk) {
                 $skipped++;
+                $skipReasons['already_ok']++;
+                if ($verbose) {
+                    $this->line("Skip concept={$item->concept_id} revizy={$revizyId} word={$word}: already fixed");
+                }
                 continue;
             }
 
@@ -163,7 +190,10 @@ class FixOrderWordsQuestionsCommand extends Command
             }
         }
 
-        $this->info("Done. updated={$updated} skipped={$skipped} failed={$failed} dry_run=" . ($dryRun ? '1' : '0'));
+        $this->info(
+            "Done. updated={$updated} skipped={$skipped} failed={$failed} dry_run=" . ($dryRun ? '1' : '0')
+                . ' skipped_reasons=' . json_encode($skipReasons, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+        );
 
         return self::SUCCESS;
     }
