@@ -656,6 +656,205 @@ class QuestionStudioService
     }
 
     /**
+     * Backfill missing order_words questions for vocabulary concepts.
+     *
+     * A concept is considered as already having an order_words question if it has a published
+     * QuestionPublishAttempt whose name contains "ترتيب الكلمات".
+     *
+     * @param  array{limit?:int,grade?:string,period?:string,week?:string,include_payload?:bool,verbose?:bool,dry_run?:bool}  $options
+     * @return array<string, mixed>
+     */
+    public function batchGenerateAndPublishMissingOrderWords(array $options = []): array
+    {
+        $limit = max(1, min((int) ($options['limit'] ?? 5000), 50000));
+        // `verbose` is a global console option; prefer `include_payload` to avoid conflicts.
+        $includePayload = (bool) ($options['include_payload'] ?? ($options['verbose'] ?? false));
+        $dryRun = (bool) ($options['dry_run'] ?? false);
+
+        $grade = strtoupper(trim((string) ($options['grade'] ?? '')));
+        if ($grade === '') {
+            $grade = null;
+        }
+
+        $period = strtoupper(trim((string) ($options['period'] ?? '')));
+        if ($period === '') {
+            $period = null;
+        }
+
+        $week = strtoupper(trim((string) ($options['week'] ?? '')));
+        if ($week === '') {
+            $week = null;
+        }
+
+        $conceptIdsWithOrderWords = QuestionPublishAttempt::query()
+            ->where('status', 'published')
+            ->where('name', 'like', '%ترتيب الكلمات%')
+            ->groupBy('concept_id')
+            ->pluck('concept_id')
+            ->map(static fn ($value): string => (string) $value)
+            ->all();
+
+        $conceptIdSet = array_fill_keys($conceptIdsWithOrderWords, true);
+
+        $query = VocabularyItem::query()
+            ->whereNotNull('concept_id')
+            ->where('concept_id', '!=', '')
+            ->with('baseWordAudio')
+            ->orderBy('id');
+
+        if ($grade !== null) {
+            $query->where('grade', $grade);
+        }
+        if ($period !== null) {
+            $query->where('period', $period);
+        }
+        if ($week !== null) {
+            $query->where('week', $week);
+        }
+
+        $items = $query->get();
+
+        $itemsToProcess = $items
+            ->filter(static function (VocabularyItem $item) use ($conceptIdSet): bool {
+                $conceptId = (string) $item->concept_id;
+                if ($conceptId === '' || isset($conceptIdSet[$conceptId])) {
+                    return false;
+                }
+
+                $word = trim((string) $item->word);
+                $tokens = preg_split('/\s+/u', $word, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+                if (count($tokens) < 3) {
+                    return false;
+                }
+
+                $hasImage = trim((string) $item->revizy_image_file_id) !== '';
+                $hasAudio = trim((string) $item->revizy_audio_file_id) !== '';
+
+                return $hasImage || $hasAudio;
+            })
+            ->values()
+            ->take($limit);
+
+        if ($itemsToProcess->isEmpty()) {
+            return [
+                'success' => true,
+                'message' => 'No vocabulary items found that need missing order_words backfill in the selected scope.',
+                'total' => 0,
+                'generated' => 0,
+                'published' => 0,
+                'failed' => 0,
+                'skipped' => 0,
+                'dry_run' => $dryRun,
+                'details' => [],
+            ];
+        }
+
+        $results = [];
+        $totalGenerated = 0;
+        $totalPublished = 0;
+        $totalFailed = 0;
+        $totalSkipped = 0;
+
+        foreach ($itemsToProcess as $item) {
+            $itemResult = [
+                'id' => $item->id,
+                'word' => $item->word,
+                'concept_id' => $item->concept_id,
+                'grade' => $item->grade,
+                'generated' => 0,
+                'published' => 0,
+                'failed' => 0,
+                'status' => 'pending',
+                'errors' => [],
+            ];
+
+            $targetDict = $this->toQuestionDictionary($item);
+
+            try {
+                $questions = $this->generator->generateQuestions(
+                    $targetDict,
+                    [],
+                    includeFillText: false,
+                    includeLetterByLetter: false
+                );
+            } catch (Throwable $exception) {
+                $itemResult['status'] = 'error';
+                $itemResult['errors'][] = 'Generation error: ' . $exception->getMessage();
+                $totalFailed++;
+                $results[] = $itemResult;
+
+                continue;
+            }
+
+            $orderWords = collect($questions)->firstWhere('type', 'order_words');
+            if (! is_array($orderWords)) {
+                $itemResult['status'] = 'skipped';
+                $itemResult['errors'][] = 'No order_words generated';
+                $totalSkipped++;
+                $results[] = $itemResult;
+
+                continue;
+            }
+
+            $itemResult['generated'] = 1;
+            $totalGenerated++;
+
+            if ($dryRun) {
+                $itemResult['status'] = 'dry_run';
+                if ($includePayload) {
+                    $itemResult['question'] = $orderWords;
+                }
+                $results[] = $itemResult;
+                continue;
+            }
+
+            try {
+                $result = $this->publishQuestion((int) $item->id, [
+                    'concept_id' => (string) ($orderWords['concept_id'] ?? ''),
+                    'name' => (string) ($orderWords['name'] ?? 'Order words'),
+                    'type' => 'order_words',
+                    'status' => 'published',
+                    'data' => is_array($orderWords['data'] ?? null) ? $orderWords['data'] : [],
+                ]);
+
+                if ((bool) ($result['success'] ?? false)) {
+                    $itemResult['published'] = 1;
+                    $totalPublished++;
+                    $itemResult['status'] = 'done';
+                } else {
+                    $itemResult['failed'] = 1;
+                    $totalFailed++;
+                    $itemResult['status'] = 'error';
+                    $itemResult['errors'][] = 'Publish returned success=false';
+                }
+            } catch (Throwable $exception) {
+                $itemResult['failed'] = 1;
+                $totalFailed++;
+                $itemResult['status'] = 'error';
+                $itemResult['errors'][] = 'Publish error: ' . mb_substr($exception->getMessage(), 0, 160, 'UTF-8');
+            }
+
+            if ($includePayload) {
+                $itemResult['question'] = $orderWords;
+            }
+
+            $results[] = $itemResult;
+        }
+
+        return [
+            'success' => true,
+            'message' => 'Processed ' . count($itemsToProcess) . ' items for missing order_words backfill.',
+            'total' => count($itemsToProcess),
+            'generated' => $totalGenerated,
+            'published' => $totalPublished,
+            'failed' => $totalFailed,
+            'skipped' => $totalSkipped,
+            'dry_run' => $dryRun,
+            'details' => $results,
+        ];
+    }
+
+    /**
      * @return array<string, mixed>
      */
     private function toQuestionDictionary(VocabularyItem $item): array

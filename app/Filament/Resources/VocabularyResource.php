@@ -251,7 +251,7 @@ class VocabularyResource extends Resource
                         'onclick' => "new Audio('" . asset('audios/' . $record->base_word_audio_path) . "').play();",
                         'title' => 'Play base-word audio',
                     ] : [])
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('revizy_image_file_id')
                     ->label('Img ID')
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -606,6 +606,20 @@ class VocabularyResource extends Resource
                         Forms\Components\Toggle::make('force')
                             ->label('Regenerate even if audio exists')
                             ->default(false),
+                        Forms\Components\TextInput::make('wait_ms_min')
+                            ->label('Min delay (ms)')
+                            ->numeric()
+                            ->minValue(0)
+                            ->maxValue(300000)
+                            ->default(1000)
+                            ->helperText('Delay between items to reduce Typecast 429 rate limits.'),
+                        Forms\Components\TextInput::make('wait_ms_max')
+                            ->label('Max delay (ms)')
+                            ->numeric()
+                            ->minValue(0)
+                            ->maxValue(300000)
+                            ->default(3000)
+                            ->helperText('Random jitter between min/max. Set both to 0 to disable.'),
                         Forms\Components\Toggle::make('verbose')
                             ->label('Verbose logs (per item)')
                             ->helperText('Write a log line for each item processed. Check storage/logs/laravel.log to see item IDs and errors.')
@@ -621,6 +635,8 @@ class VocabularyResource extends Resource
                             'period' => $data['period'] ?? null,
                             'week' => $data['week'] ?? null,
                             'force' => (bool) ($data['force'] ?? false),
+                            'wait_ms_min' => isset($data['wait_ms_min']) ? (int) $data['wait_ms_min'] : null,
+                            'wait_ms_max' => isset($data['wait_ms_max']) ? (int) $data['wait_ms_max'] : null,
                             'verbose' => (bool) ($data['verbose'] ?? false),
                         ];
 

@@ -516,7 +516,7 @@ class QuestionGeneratorService
         }
 
         $word = (string) ($target['word'] ?? '');
-        $normalized = str_replace("\u{2019}", "'", trim($word));
+        $normalized = $this->normalizeVocabularyText($word);
         $lower = mb_strtolower($normalized, 'UTF-8');
 
         if (str_starts_with($lower, "l'")
@@ -841,7 +841,7 @@ class QuestionGeneratorService
 
     private function bareNoun(string $word): string
     {
-        $word = str_replace("\u{2019}", "'", trim($word));
+        $word = $this->normalizeVocabularyText($word);
 
         $prefixes = [
             "L'", "l'", 'Le ', 'le ', 'La ', 'la ', 'Les ', 'les ',
@@ -856,6 +856,16 @@ class QuestionGeneratorService
         }
 
         return $word;
+    }
+
+    private function normalizeVocabularyText(string $text): string
+    {
+        $text = str_replace("\u{2019}", "'", $text);
+        $text = str_replace(["\u{00A0}", "\u{202F}"], ' ', $text);
+        $text = trim($text);
+        $text = preg_replace('/\s+/u', ' ', $text) ?? $text;
+
+        return $text;
     }
 
     private function getArticleGender(string $gender): ?array

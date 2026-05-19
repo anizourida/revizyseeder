@@ -80,7 +80,7 @@ class AudioGenerationService
     }
 
     /**
-     * @param  array{limit?:int,grade?:string,period?:string,week?:string,force?:bool,item_id?:int,verbose?:bool}  $options
+     * @param  array{limit?:int,grade?:string,period?:string,week?:string,force?:bool,item_id?:int,verbose?:bool,wait_ms_min?:int,wait_ms_max?:int}  $options
      * @return array<string,mixed>
      */
     public function generateBatch(array $options = []): array
@@ -97,6 +97,7 @@ class AudioGenerationService
         $verbose = (bool) ($options['verbose'] ?? false);
 
         $provider = $this->resolveTypecastProvider();
+        $waitRange = $this->resolveWaitRangeMs($options, (string) ($provider->provider_type ?? ''));
 
         $query = VocabularyItem::query()
             ->select([
@@ -254,6 +255,8 @@ class AudioGenerationService
                     'exception' => $exception::class,
                     'error' => $message,
                 ]);
+            } finally {
+                $this->sleepBetweenItemsMs($waitRange['min'], $waitRange['max']);
             }
         }
 
@@ -265,6 +268,46 @@ class AudioGenerationService
         $summary['remaining_missing_in_scope'] = (int) $remaining->count();
 
         return $summary;
+    }
+
+    /**
+     * @param  array{wait_ms_min?:int,wait_ms_max?:int}  $options
+     * @return array{min:int,max:int}
+     */
+    private function resolveWaitRangeMs(array $options, string $providerType): array
+    {
+        $rawMin = (int) ($options['wait_ms_min'] ?? 0);
+        $rawMax = (int) ($options['wait_ms_max'] ?? 0);
+
+        $min = max(0, min($rawMin, 300000));
+        $max = max(0, min($rawMax, 300000));
+        if ($max < $min) {
+            $max = $min;
+        }
+
+        // Default jitter to reduce provider throttling (Typecast is rate-limited).
+        if ($min === 0 && $max === 0 && $providerType === 'typecast') {
+            return ['min' => 1000, 'max' => 3000];
+        }
+
+        return ['min' => $min, 'max' => $max];
+    }
+
+    private function sleepBetweenItemsMs(int $minMs, int $maxMs): void
+    {
+        if ($maxMs <= 0) {
+            return;
+        }
+
+        $minMs = max(0, $minMs);
+        $maxMs = max($minMs, $maxMs);
+
+        $delay = $minMs === $maxMs ? $minMs : random_int($minMs, $maxMs);
+        if ($delay <= 0) {
+            return;
+        }
+
+        usleep($delay * 1000);
     }
 
     /**

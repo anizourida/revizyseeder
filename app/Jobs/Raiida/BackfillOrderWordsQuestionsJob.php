@@ -2,7 +2,7 @@
 
 namespace App\Jobs\Raiida;
 
-use App\Services\Raiida\AudioGenerationService;
+use App\Services\Raiida\QuestionStudioService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -11,7 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
-class GenerateVocabularyAudiosJob implements ShouldQueue
+class BackfillOrderWordsQuestionsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -20,7 +20,7 @@ class GenerateVocabularyAudiosJob implements ShouldQueue
     public int $tries = 1;
 
     /**
-     * @param  array{limit?:int,grade?:string,period?:string,week?:string,force?:bool,item_id?:int,verbose?:bool,wait_ms_min?:int,wait_ms_max?:int}  $options
+     * @param  array{limit?:int,grade?:string,period?:string,week?:string,include_payload?:bool,dry_run?:bool}  $options
      */
     public function __construct(
         public readonly array $options = [],
@@ -32,7 +32,7 @@ class GenerateVocabularyAudiosJob implements ShouldQueue
         $this->queue = (string) config('raiida.workflow_queue', 'revizyseeder-workflows');
     }
 
-    public function handle(AudioGenerationService $service): void
+    public function handle(QuestionStudioService $service): void
     {
         $audit = [
             'workflow_context_id' => $this->workflowContextId,
@@ -42,12 +42,12 @@ class GenerateVocabularyAudiosJob implements ShouldQueue
             'options' => $this->options,
         ];
 
-        Log::info('raiida.admin_mutation.job.generate_vocab_audio.started', $audit);
+        Log::info('raiida.admin_mutation.job.backfill_order_words.started', $audit);
 
         try {
-            $summary = $service->generateBatch($this->options);
+            $summary = $service->batchGenerateAndPublishMissingOrderWords($this->options);
         } catch (Throwable $exception) {
-            Log::error('raiida.admin_mutation.job.generate_vocab_audio.failed', $audit + [
+            Log::error('raiida.admin_mutation.job.backfill_order_words.failed', $audit + [
                 'exception' => $exception::class,
                 'error' => $exception->getMessage(),
             ]);
@@ -55,6 +55,6 @@ class GenerateVocabularyAudiosJob implements ShouldQueue
             throw $exception;
         }
 
-        Log::info('raiida.admin_mutation.job.generate_vocab_audio.completed', $audit + $summary);
+        Log::info('raiida.admin_mutation.job.backfill_order_words.completed', $audit + $summary);
     }
 }
