@@ -715,19 +715,20 @@ class QuestionGeneratorService
     private function postProcessQuestions(array $questions): array
     {
         $typingTypes = ['universal_fill_text', 'letter_by_letter'];
+        $noStyleTypes = ['universal_fill_text', 'letter_by_letter', 'order_words'];
 
         foreach ($questions as &$question) {
             $type = $question['type'] ?? '';
             $isTypingType = in_array($type, $typingTypes, true);
+            $isNoStyleType = in_array($type, $noStyleTypes, true);
 
             if (! empty($question['name'])) {
                 $question['name'] = $this->capitalizeArticle((string) $question['name']);
             }
 
             if (isset($question['data']['body']) && is_string($question['data']['body'])) {
-                $question['data']['body'] = $this->autoColorArticles(
-                    $this->capitalizeArticle((string) $question['data']['body'])
-                );
+                $capitalizedBody = $this->capitalizeArticle((string) $question['data']['body']);
+                $question['data']['body'] = $isNoStyleType ? $capitalizedBody : $this->autoColorArticles($capitalizedBody);
             }
 
             if (! empty($question['data']['answers']) && is_array($question['data']['answers'])) {
@@ -735,7 +736,7 @@ class QuestionGeneratorService
                     if (! empty($answer['body'])) {
                         $capitalized = $this->capitalizeArticle((string) $answer['body']);
 
-                        if ($isTypingType) {
+                        if ($isTypingType || $isNoStyleType) {
                             $answer['body'] = $capitalized;
                         } else {
                             $answer['body'] = $this->autoColorArticles($capitalized);
