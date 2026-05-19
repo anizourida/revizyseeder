@@ -517,6 +517,11 @@ class QuestionGeneratorService
 
         $word = (string) ($target['word'] ?? '');
         $normalized = $this->normalizeVocabularyText($word);
+        $tokens = preg_split('/\s+/u', trim($normalized), -1, PREG_SPLIT_NO_EMPTY) ?: [];
+        if (count($tokens) > 3) {
+            // Rule: do not generate article/gender traps (Le/La/Un/Une) for phrases longer than 3 words.
+            return null;
+        }
         $lower = mb_strtolower($normalized, 'UTF-8');
 
         if (str_starts_with($lower, "l'")
