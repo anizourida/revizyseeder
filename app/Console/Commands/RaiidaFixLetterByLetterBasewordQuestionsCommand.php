@@ -71,6 +71,7 @@ class RaiidaFixLetterByLetterBasewordQuestionsCommand extends Command
             'not_eligible_length' => 0,
             'missing_image' => 0,
             'missing_base_audio_revizy_id' => 0,
+            'missing_audio_revizy_id' => 0,
             'no_attempt' => 0,
             'missing_revizy_question_id' => 0,
             'invalid_payload' => 0,
@@ -93,26 +94,10 @@ class RaiidaFixLetterByLetterBasewordQuestionsCommand extends Command
                 continue;
             }
 
-            if (! $this->isEligibleBareWord($item, $bare)) {
-                $skipped++;
-                $skipReasons['not_eligible_length']++;
-                continue;
-            }
-
             $imageId = trim((string) $item->revizy_image_file_id);
             if ($imageId === '') {
                 $skipped++;
                 $skipReasons['missing_image']++;
-                continue;
-            }
-
-            $baseWordAudioRevizyId = trim((string) ($item->baseWordAudio?->revizy_file_id ?? ''));
-            if ($baseWordAudioRevizyId === '') {
-                $skipped++;
-                $skipReasons['missing_base_audio_revizy_id']++;
-                if ($verbose) {
-                    $this->line("Skip concept={$conceptId} word=\"{$word}\": missing base_word_audio_revizy_id (upload base-word audios to Revizy first)");
-                }
                 continue;
             }
 
@@ -122,6 +107,22 @@ class RaiidaFixLetterByLetterBasewordQuestionsCommand extends Command
                 if (! $createMissing) {
                     $skipped++;
                     $skipReasons['no_attempt']++;
+                    continue;
+                }
+
+                if (! $this->isEligibleBareWord($item, $bare)) {
+                    $skipped++;
+                    $skipReasons['not_eligible_length']++;
+                    continue;
+                }
+
+                $baseWordAudioRevizyId = trim((string) ($item->baseWordAudio?->revizy_file_id ?? ''));
+                if ($baseWordAudioRevizyId === '') {
+                    $skipped++;
+                    $skipReasons['missing_base_audio_revizy_id']++;
+                    if ($verbose) {
+                        $this->line("Skip create concept={$conceptId} word=\"{$word}\": missing base_word_audio_revizy_id");
+                    }
                     continue;
                 }
 
@@ -192,12 +193,22 @@ class RaiidaFixLetterByLetterBasewordQuestionsCommand extends Command
                 continue;
             }
 
+            $audioRevizyId = $this->resolveLetterByLetterAudioRevizyId($item, $bare);
+            if ($audioRevizyId === null) {
+                $skipped++;
+                $skipReasons['missing_audio_revizy_id']++;
+                if ($verbose) {
+                    $this->line("Skip fix concept={$conceptId} word=\"{$word}\": missing base_word_audio_revizy_id and revizy_audio_file_id");
+                }
+                continue;
+            }
+
             $next = $stored;
             $next['instruction'] = self::INSTRUCTION;
             $next['body'] = null;
             $next['media'] = is_array($next['media'] ?? null) ? $next['media'] : [];
             $next['media']['image'] = $imageId;
-            $next['media']['audio'] = $baseWordAudioRevizyId;
+            $next['media']['audio'] = $audioRevizyId;
             $next['answers'] = [
                 ['body' => $bare, 'is_correct' => true, 'media' => ['image' => null, 'audio' => null]],
             ];
@@ -210,7 +221,7 @@ class RaiidaFixLetterByLetterBasewordQuestionsCommand extends Command
             }
 
             if ($verbose) {
-                $this->line("Fix concept={$conceptId} revizy={$revizyId} word=\"{$word}\" base_word=\"{$bare}\" base_word_audio_revizy_id={$baseWordAudioRevizyId}");
+                $this->line("Fix concept={$conceptId} revizy={$revizyId} word=\"{$word}\" base_word=\"{$bare}\" audio_revizy_id={$audioRevizyId}");
             }
 
             if ($dryRun) {
@@ -261,6 +272,31 @@ class RaiidaFixLetterByLetterBasewordQuestionsCommand extends Command
         }
 
         return true;
+    }
+
+    private function resolveLetterByLetterAudioRevizyId(VocabularyItem $item, string $bare): ?string
+    {
+        $baseWordAudio = trim((string) ($item->baseWordAudio?->revizy_file_id ?? ''));
+        if ($baseWordAudio !== '') {
+            return $baseWordAudio;
+        }
+
+        // If there is no dedicated base-word audio, fallback to the general vocab audio
+        // when the "base word" is effectively the same as the vocabulary word.
+        $audio = trim((string) ($item->revizy_audio_file_id ?? ''));
+        if ($audio === '') {
+            return null;
+        }
+
+        $word = $this->normalizeText((string) $item->word);
+        if ($word === '') {
+            return null;
+        }
+
+        $bareNorm = mb_strtolower($this->normalizeText($bare), 'UTF-8');
+        $wordNorm = mb_strtolower($this->normalizeText($word), 'UTF-8');
+
+        return $bareNorm === $wordNorm ? $audio : null;
     }
 
     private function determineBaseWord(VocabularyItem $item): string
@@ -317,4 +353,3 @@ class RaiidaFixLetterByLetterBasewordQuestionsCommand extends Command
         ]);
     }
 }
-
