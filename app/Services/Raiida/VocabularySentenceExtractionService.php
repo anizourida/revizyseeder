@@ -408,15 +408,16 @@ class VocabularySentenceExtractionService
             return false;
         }
 
-        // Check if any search term matches as a word boundary
+        // Check if any search term matches as a standalone word/phrase (excluding hyphenated compound words like grands-parents matching parents)
         $matchesTerm = false;
         foreach ($searchTerms as $term) {
             if (mb_strlen($term) < 2) {
                 continue;
             }
 
-            // Word boundary regex that accounts for French letters and apostrophes
-            $pattern = '/(?:\b|[\'\’])' . preg_quote($term, '/') . '(?:\b|s\b|es\b)/iu';
+            // Word boundary regex that accounts for French letters, apostrophes, and avoids false compound matches
+            $escaped = preg_quote($term, '/');
+            $pattern = '/(?<![\p{L}\p{N}\-_])(?:' . $escaped . '|' . $escaped . 's|' . $escaped . 'es)(?![\p{L}\p{N}\-_])/iu';
             if (preg_match($pattern, $sentence)) {
                 $matchesTerm = true;
                 break;
