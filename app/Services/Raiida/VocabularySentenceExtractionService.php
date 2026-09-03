@@ -334,6 +334,7 @@ class VocabularySentenceExtractionService
             '/^(?:Il|Elle|On|Le professeur|L[\'’]enseignant|L[\'’]enseignante|L[\'’]élève)\s+(?:lui\s+)?dit\b/ui',
             '/\bdit\s*:\s*[«"“]/ui',
             '/\b(?:dit|répond|demande)\s+[«"“]/ui',
+            '/\b(?:ça veut dire|veut dire|signifie|sens du mot)\b/ui',
             '/\b(?:sur|sous|dans|de|du|des|le|la|les|un|une|et|à|en|pour|avec)$/ui', // dangling preposition
         ];
 
@@ -343,8 +344,13 @@ class VocabularySentenceExtractionService
             }
         }
 
-        // Filter out fill-in-the-blank questions like "Le garçon donne un _____ à son ______"
-        if (str_contains($sentence, '___') || str_contains($sentence, '...')) {
+        // Filter out fill-in-the-blank blanks (Arabic Tatweel ـ, underscores, multiple dots, dashes, box symbols)
+        if (
+            preg_match('/[\x{0640}_]/u', $sentence) ||
+            preg_match('/[.]{2,}|[…]{1,}|[-—–]{2,}/u', $sentence) ||
+            preg_match('/[□▢⬜]/u', $sentence) ||
+            preg_match('/\(\s*\.{2,}\s*\)|\(\s*_{1,}\s*\)/u', $sentence)
+        ) {
             return false;
         }
 
