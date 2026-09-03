@@ -4,6 +4,7 @@ namespace App\Models\Raiida;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class VocabularyItem extends Model
@@ -26,5 +27,10 @@ class VocabularyItem extends Model
     public function baseWordAudio(): HasOne
     {
         return $this->hasOne(VocabularyBaseWordAudio::class);
+    }
+
+    public function sentences(): HasMany
+    {
+        return $this->hasMany(VocabularySentence::class, 'vocabulary_item_id');
     }
 }
