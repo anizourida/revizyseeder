@@ -20,6 +20,54 @@ class VocabularySentence extends Model
         return $this->belongsTo(VocabularyItem::class, 'vocabulary_item_id');
     }
 
+    public function fileAsset(): BelongsTo
+    {
+        return $this->belongsTo(FileAsset::class, 'file_asset_id');
+    }
+
+    /**
+     * Resolve the corresponding FileAsset for presentation preview.
+     */
+    public function resolveFileAsset(): ?FileAsset
+    {
+        if ($this->file_asset_id) {
+            return $this->fileAsset;
+        }
+
+        $asset = null;
+        if ($this->source_session) {
+            $prefix = 'FR_' . $this->grade . '_' . $this->period . '_' . $this->week . '_' . $this->source_session;
+            $asset = FileAsset::where('filename', 'like', $prefix . '%')
+                ->orWhere('presentation_json_path', 'like', '%' . $prefix . '%')
+                ->first();
+        }
+
+        if (! $asset && $this->lesson_id) {
+            $asset = FileAsset::where('filename', 'like', $this->lesson_id . '%')
+                ->orWhere('presentation_json_path', 'like', '%' . $this->lesson_id . '%')
+                ->first();
+        }
+
+        return $asset;
+    }
+
+    /**
+     * Get the direct preview URL to the PPT presentation slide with highlighted text emplacement.
+     */
+    public function getPreviewUrlAttribute(): ?string
+    {
+        $asset = $this->file_asset_id ? $this->fileAsset : $this->resolveFileAsset();
+        if (! $asset) {
+            return null;
+        }
+
+        return route('admin.files.preview', [
+            'fileAsset' => $asset->id,
+            'slide' => $this->source_slide ?: 1,
+            'highlight' => $this->sentence ?: $this->word,
+        ]);
+    }
+
     public function scopeGrade(Builder $query, string $grade): Builder
     {
         return $query->where('grade', $grade);

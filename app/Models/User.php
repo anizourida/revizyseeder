@@ -15,6 +15,7 @@ class User extends Authenticatable implements FilamentUser
     use HasApiTokens, HasFactory, Notifiable;
 
     public const ROLE_ADMIN = 'admin';
+    public const ROLE_OPERATOR = 'operator';
 
     /**
      * The attributes that are mass assignable.

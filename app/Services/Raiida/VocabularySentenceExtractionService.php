@@ -157,9 +157,15 @@ class VocabularySentenceExtractionService
         $candidates = $this->findSentencesForWord($vocab, $presentationTexts, $ocrTexts);
 
         if (empty($candidates)) {
+            // Find default file asset for this lesson
+            $defaultAssetId = \App\Models\Raiida\FileAsset::where('filename', 'like', $vocab->lesson_id . '%')
+                ->orWhere('presentation_json_path', 'like', '%' . $vocab->lesson_id . '%')
+                ->value('id');
+
             // Save placeholder record so vocabulary is copied and accounted for
             VocabularySentence::create([
                 'vocabulary_item_id' => $vocab->id,
+                'file_asset_id' => $defaultAssetId,
                 'word' => $vocab->word,
                 'base_word' => $vocab->base_word,
                 'grade' => $vocab->grade,
@@ -181,8 +187,17 @@ class VocabularySentenceExtractionService
 
         $created = 0;
         foreach ($candidates as $cand) {
+            $assetId = $cand['file_asset_id'] ?? null;
+            if (! $assetId && ! empty($cand['session'])) {
+                $prefix = 'FR_' . $vocab->grade . '_' . $vocab->period . '_' . $vocab->week . '_' . $cand['session'];
+                $assetId = \App\Models\Raiida\FileAsset::where('filename', 'like', $prefix . '%')
+                    ->orWhere('presentation_json_path', 'like', '%' . $prefix . '%')
+                    ->value('id');
+            }
+
             VocabularySentence::create([
                 'vocabulary_item_id' => $vocab->id,
+                'file_asset_id' => $assetId,
                 'word' => $vocab->word,
                 'base_word' => $vocab->base_word,
                 'grade' => $vocab->grade,
@@ -241,6 +256,7 @@ class VocabularySentenceExtractionService
                     'sentence' => $sentence,
                     'session' => $item['session'] ?? null,
                     'slide' => $item['slide_id'] ?? null,
+                    'file_asset_id' => $item['file_asset_id'] ?? null,
                     'type' => 'slide',
                 ];
             }
@@ -424,6 +440,10 @@ class VocabularySentenceExtractionService
                     $session = strtoupper($sMatches[1]);
                 }
 
+                $fileAssetId = \App\Models\Raiida\FileAsset::where('presentation_json_path', 'like', "%{$dirName}%")
+                    ->orWhere('filename', 'like', "{$dirName}%")
+                    ->value('id');
+
                 $json = json_decode((string) file_get_contents($filePath), true);
                 if (! is_array($json) || empty($json['slides'])) {
                     continue;
@@ -440,6 +460,7 @@ class VocabularySentenceExtractionService
                                 $results[] = [
                                     'session' => $session,
                                     'slide_id' => $slideId,
+                                    'file_asset_id' => $fileAssetId,
                                     'text' => $text,
                                 ];
                             }

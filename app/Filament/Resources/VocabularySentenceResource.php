@@ -109,6 +109,19 @@ class VocabularySentenceResource extends Resource
                         ])
                         ->default('slide')
                         ->required(),
+                    Forms\Components\Placeholder::make('source_preview')
+                        ->label('Aperçu PPT Source')
+                        ->content(function (?VocabularySentence $record): \Illuminate\Support\HtmlString {
+                            if (! $record || ! $record->preview_url) {
+                                return new \Illuminate\Support\HtmlString('<span style="color:#94a3b8; font-size:13px;">Aucun aperçu disponible</span>');
+                            }
+                            return new \Illuminate\Support\HtmlString(
+                                '<a href="' . e($record->preview_url) . '" target="_blank" style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:8px; background:#e0f2fe; color:#0369a1; font-weight:600; font-size:12px; text-decoration:none; border:1px solid #bae6fd;">' .
+                                '<svg style="width:16px; height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>' .
+                                'Ouvrir la Diapositive #' . ($record->source_slide ?: 1) . ' dans l\'aperçu PPT' .
+                                '</a>'
+                            );
+                        }),
                 ]),
 
             Forms\Components\Section::make('Media')
@@ -131,6 +144,7 @@ class VocabularySentenceResource extends Resource
         return $table
             ->modifyQueryUsing(static function (Builder $query): Builder {
                 return $query
+                    ->with('fileAsset')
                     ->orderByRaw("CASE grade WHEN 'N1' THEN 1 WHEN 'N2' THEN 2 WHEN 'N3' THEN 3 WHEN 'N4' THEN 4 WHEN 'N5' THEN 5 WHEN 'N6' THEN 6 ELSE 7 END ASC")
                     ->orderByRaw("CAST(SUBSTR(period, 2) AS INTEGER) ASC")
                     ->orderByRaw("CAST(SUBSTR(week, 4) AS INTEGER) ASC")
@@ -188,7 +202,12 @@ class VocabularySentenceResource extends Resource
                         return $record->source_type ?: '—';
                     })
                     ->badge()
-                    ->color('gray'),
+                    ->color(fn ($record) => $record->preview_url ? 'info' : 'gray')
+                    ->icon(fn ($record) => $record->preview_url ? 'heroicon-m-arrow-top-right-on-square' : null)
+                    ->iconPosition('after')
+                    ->url(fn ($record) => $record->preview_url)
+                    ->openUrlInNewTab()
+                    ->tooltip(fn ($record) => $record->preview_url ? 'Ouvrir l\'aperçu PPT et voir l\'emplacement du texte' : null),
                 Tables\Columns\TextColumn::make('lesson_id')
                     ->label('Lesson')
                     ->searchable()
@@ -238,6 +257,13 @@ class VocabularySentenceResource extends Resource
                     ]),
             ])
             ->actions([
+                Tables\Actions\Action::make('view_source')
+                    ->label('Voir Source')
+                    ->icon('heroicon-o-arrow-top-right-on-square')
+                    ->color('info')
+                    ->url(fn ($record) => $record->preview_url)
+                    ->openUrlInNewTab()
+                    ->visible(fn ($record) => $record->preview_url !== null),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
