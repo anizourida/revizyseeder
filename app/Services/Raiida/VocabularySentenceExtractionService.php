@@ -330,6 +330,10 @@ class VocabularySentenceExtractionService
             '/^(?:Lire|Écrire|Ecrire|Dire|Parler|Écouter|Ecouter)\s+(?:des|les|un|une|le|la)\s+[a-zà-öø-ÿ]+(?:\.)?$/ui',
             '/^[a-zà-öø-ÿ]\b/u', // starts with lowercase letter (fragment)
             '/[.]{3,}|[…]{1,}|_{2,}/u', // dotted or underscore blanks
+            '/\b(?:lui\s+dit|leur\s+dit|me\s+dit|te\s+dit|nous\s+dit|vous\s+dit)\b/ui',
+            '/^(?:Il|Elle|On|Le professeur|L[\'’]enseignant|L[\'’]enseignante|L[\'’]élève)\s+(?:lui\s+)?dit\b/ui',
+            '/\bdit\s*:\s*[«"“]/ui',
+            '/\b(?:dit|répond|demande)\s+[«"“]/ui',
             '/\b(?:sur|sous|dans|de|du|des|le|la|les|un|une|et|à|en|pour|avec)$/ui', // dangling preposition
         ];
 
@@ -438,6 +442,11 @@ class VocabularySentenceExtractionService
                 $session = 'S1';
                 if (preg_match('/_(S[1-6](?:_V\d+)?)$/i', $dirName, $sMatches)) {
                     $session = strtoupper($sMatches[1]);
+                }
+
+                // Avoid S6 (assessment / remediation / instruction sessions)
+                if (preg_match('/^S6/i', $session) || str_contains($dirName, '_S6')) {
+                    continue;
                 }
 
                 $fileAssetId = \App\Models\Raiida\FileAsset::where('presentation_json_path', 'like', "%{$dirName}%")

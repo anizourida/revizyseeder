@@ -52,7 +52,7 @@ class VocabularySentence extends Model
     }
 
     /**
-     * Get the direct preview URL to the PPT presentation slide with highlighted text emplacement.
+     * Get the direct preview URL to the PPT presentation slide.
      */
     public function getPreviewUrlAttribute(): ?string
     {
@@ -64,7 +64,6 @@ class VocabularySentence extends Model
         return route('admin.files.preview', [
             'fileAsset' => $asset->id,
             'slide' => $this->source_slide ?: 1,
-            'highlight' => $this->sentence ?: $this->word,
         ]);
     }
 

@@ -88,9 +88,7 @@ class VocabularySentenceSourcePreviewTest extends TestCase
         $response->assertOk()
             ->assertSee('FR_N1_P1_SEM1_S1.ppsx')
             ->assertSee('Slide 6')
-            ->assertSee('text-highlighted')
-            ->assertSee('Emplacement ciblé')
-            ->assertSee('matched-phrase');
+            ->assertSee('Bonjour les enfants ! Bienvenue dans la classe.');
 
         File::deleteDirectory($presentationDir);
     }

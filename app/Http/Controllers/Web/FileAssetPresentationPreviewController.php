@@ -79,7 +79,6 @@ class FileAssetPresentationPreviewController extends Controller
         }
 
         $requestedSlide = max(0, (int) $request->query('slide', 0));
-        $requestedHighlight = trim((string) $request->query('highlight', $request->query('q', '')));
         $activeSlide = $requestedSlide > 0
             ? collect($slides)->firstWhere('id', $requestedSlide)
             : null;
@@ -91,7 +90,6 @@ class FileAssetPresentationPreviewController extends Controller
             'slideHeight' => $slideHeight,
             'requestedSlide' => $requestedSlide,
             'requestedSlideExists' => $activeSlide !== null,
-            'requestedHighlight' => $requestedHighlight,
         ]);
     }
 
