@@ -295,6 +295,34 @@ class VocabularySentenceExtractionService
             }
         }
 
+        // Strict regex filters for classroom directions, meta-instructions, exercise templates, phonics, and questions
+        $instructionPatterns = [
+            '/^(?:Nous allons|On va|Je vais|Vous allez|Il faut|Il convient|Maintenant,?\s*(?:nous|on|je|vous)|Aujourd[\'’\`´]hui)/ui',
+            '/^(?:Sur vos|Dans vos|Sur le|Sur votre|Prenez|Rangez|Ouvrez|Fermez|À la maison|A la maison)/ui',
+            '/^(?:Écrivez|Ecrivez|Lisez|Regardez|Écoutez|Ecoutez|Observez|Trouvez|Complétez|Soulignez|Entourez|Cochez|Reliez|Mettez|Placez|Répétez|Montrez|Devinez|Dites|Faîtes comme|Faites comme|Posez|Répondez)/ui',
+            '/^(?:Chacun|Tout le monde|À tour de rôle|A tour de rôle)/ui',
+            '/^(?:La (?:bonne )?réponse est|Les (?:bonnes )?réponses sont|Les deux mots|Le mot qui|(?:Une|La) phrase correcte|(?:Une|La) réponse peut être)/ui',
+            '/^(?:Il y a des noms|C’est le mot|C\'est le mot|Observez le mot|On dit (?:un|une|le|la))\b/ui',
+            '/^(?:Situation|Dialogue|Consigne|Activité|Exercice|Conjugaison|Grammaire|Orthographe|Vocabulaire|Lecture|Acte de parole)\b/ui',
+            '/^(?:Les (?:deux )?images? qui|L[\'’]image qui)\b/ui',
+            '/\b(?:passer au tableau|passez au tableau|entre les rangs|mot invisible|mots invisibles|nom masculin|nom féminin|mode diaporama)\b/ui',
+            '/\//', // slashes like un / une
+            '/\?$/', // questions (e.g. "Où est le livre ?", "Est-ce que c’est un stylo ?")
+            '/^(?:Que dit|Que fait|Que faisait|Pourquoi|Où sont|Qui est|Quel est|Quelle est|Quels sont|Quelles sont|Comment|Qu’est-ce qu’on dit|Qu\'est-ce qu\'on dit)\b/ui',
+            '/\b(?:j’entends le son|j\'entends le son|je vois la lettre|entendez(?:-vous)? le son|fait le son|font le son)\b/ui',
+            '/^Dans le mot\b/ui',
+            '/^(?:Lire|Écrire|Ecrire|Dire|Parler|Écouter|Ecouter)\s+(?:des|les|un|une|le|la)\s+[a-zà-öø-ÿ]+(?:\.)?$/ui',
+            '/^[a-zà-öø-ÿ]\b/u', // starts with lowercase letter (fragment)
+            '/[.]{3,}|[…]{1,}|_{2,}/u', // dotted or underscore blanks
+            '/\b(?:sur|sous|dans|de|du|des|le|la|les|un|une|et|à|en|pour|avec)$/ui', // dangling preposition
+        ];
+
+        foreach ($instructionPatterns as $pattern) {
+            if (preg_match($pattern, $sentence)) {
+                return false;
+            }
+        }
+
         // Filter out fill-in-the-blank questions like "Le garçon donne un _____ à son ______"
         if (str_contains($sentence, '___') || str_contains($sentence, '...')) {
             return false;
@@ -313,6 +341,21 @@ class VocabularySentenceExtractionService
         // Filter out comma-separated lists of 4+ items
         if (substr_count($sentence, ',') >= 3 && ! str_ends_with($sentence, '.')) {
             return false;
+        }
+
+        // Filter out spaced word lists (e.g., columns of words with 3+ spaces without sentence structure)
+        if (preg_match('/\s{3,}/', $sentence)) {
+            $frenchIndicators = ['a', 'est', 'sont', 'ont', 'va', 'vont', 'fait', 'font', 'aiment', 'aime', 'habite', 'joue', 'mange', 'boit', 'porte', 'regarde', 'voit', 'dit', 'parle', 'donne', 'prend', 'aide', 'se', 'me', 'te', 'nous', 'vous', 'le', 'la', 'les', 'un', 'une', 'des', 'du', 'de', 'au', 'aux', 'dans', 'sur', 'sous', 'avec', 'pour', 'qui', 'que', 'il', 'elle', 'ils', 'elles', 'je', 'tu', 'mon', 'ma', 'mes', 'son', 'sa', 'ses', 'notre', 'nos', 'votre', 'vos', 'leur', 'leurs', 'ce', 'cet', 'cette', 'ces'];
+            $normalizedTokens = explode(' ', mb_strtolower(preg_replace('/\s+/u', ' ', $sentence)));
+            $indicatorCount = 0;
+            foreach ($normalizedTokens as $tok) {
+                if (in_array($tok, $frenchIndicators, true)) {
+                    $indicatorCount++;
+                }
+            }
+            if ($indicatorCount < 2 && ! str_ends_with(trim($sentence), '.')) {
+                return false;
+            }
         }
 
         // Must contain at least 3 words
@@ -474,7 +517,7 @@ class VocabularySentenceExtractionService
                 $parts = [$line];
             }
             foreach ($parts as $part) {
-                $cleaned = trim($part, " \t\n\r\0\x0B\"'«»");
+                $cleaned = trim(preg_replace('/\s+/u', ' ', $part), " \t\n\r\0\x0B\"'«»");
                 if ($cleaned !== '') {
                     $sentences[] = $cleaned;
                 }
