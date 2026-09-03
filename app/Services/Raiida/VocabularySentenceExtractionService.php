@@ -49,11 +49,19 @@ class VocabularySentenceExtractionService
         'la bonne réponse est',
         'situation :',
         'je vais vous expliquer',
-        'description de la scène',
         'graphème',
         'phonème',
         'lecture du graphème',
         'écriture du graphème',
+        'prendre la parole',
+        'prend la parole',
+        'prenez la parole',
+        'prise de parole',
+        'acte de parole',
+        'actes de parole',
+        'à propos du modelage',
+        'a propos du modelage',
+        'jouer un dialogue',
     ];
 
     /**
@@ -335,6 +343,11 @@ class VocabularySentenceExtractionService
             '/\bdit\s*:\s*[«"“]/ui',
             '/\b(?:dit|répond|demande)\s+[«"“]/ui',
             '/\b(?:ça veut dire|veut dire|signifie|sens du mot)\b/ui',
+            '/\b(?:prendre|prend|prenez|prenons|prise\s+de)\s+la\s+parole\b/ui',
+            '/\b(?:acte|actes)\s+de\s+parole\b/ui',
+            '/\b(?:jouer\s+un\s+dialogue|joue\s+le\s+dialogue|jouez\s+le\s+dialogue)\b/ui',
+            '/\b(?:étape|etape)\s+\d+\b/ui',
+            '/\b(?:à\s+propos\s+du|a\s+propos\s+du)\s+modelage\b/ui',
             '/\b(?:sur|sous|dans|de|du|des|le|la|les|un|une|et|à|en|pour|avec)$/ui', // dangling preposition
         ];
 
