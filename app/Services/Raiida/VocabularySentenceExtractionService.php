@@ -548,7 +548,7 @@ class VocabularySentenceExtractionService
      */
     protected function splitIntoSentences(string $text): array
     {
-        // Split by lines or sentence end markers (. ! ?)
+        // Split by lines
         $lines = preg_split('/\r\n|\r|\n/', $text, -1, PREG_SPLIT_NO_EMPTY);
         if (! is_array($lines)) {
             return [];
@@ -561,15 +561,28 @@ class VocabularySentenceExtractionService
                 continue;
             }
 
-            // If line contains multiple punctuation-terminated sentences
-            $parts = preg_split('/(?<=[.!?])\s+(?=[A-ZÀ-ÖØ-ß])/u', $line, -1, PREG_SPLIT_NO_EMPTY);
-            if (! is_array($parts)) {
-                $parts = [$line];
+            // If line contains multiple spaces or tabs (e.g. columns of isolated words), split into separate items
+            $columnItems = preg_split('/\s{2,}|\t/u', $line, -1, PREG_SPLIT_NO_EMPTY);
+            if (! is_array($columnItems)) {
+                $columnItems = [$line];
             }
-            foreach ($parts as $part) {
-                $cleaned = trim(preg_replace('/\s+/u', ' ', $part), " \t\n\r\0\x0B\"'«»");
-                if ($cleaned !== '') {
-                    $sentences[] = $cleaned;
+
+            foreach ($columnItems as $item) {
+                $item = trim($item);
+                if ($item === '') {
+                    continue;
+                }
+
+                // If item contains multiple punctuation-terminated sentences
+                $parts = preg_split('/(?<=[.!?])\s+(?=[A-ZÀ-ÖØ-ß])/u', $item, -1, PREG_SPLIT_NO_EMPTY);
+                if (! is_array($parts)) {
+                    $parts = [$item];
+                }
+                foreach ($parts as $part) {
+                    $cleaned = trim(preg_replace('/\s+/u', ' ', $part), " \t\n\r\0\x0B\"'«»");
+                    if ($cleaned !== '') {
+                        $sentences[] = $cleaned;
+                    }
                 }
             }
         }
