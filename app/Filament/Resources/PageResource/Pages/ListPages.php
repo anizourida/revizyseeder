@@ -129,19 +129,19 @@ class ListPages extends ListRecords
                         return;
                     }
 
-                    $delayIncrementSeconds = 120;
+                    $delayIncrementSeconds = 0;
                     $workflowQueue = WorkflowState::workflowQueue();
 
                     foreach ($pages as $index => $page) {
-                        RevizySeederLMStudioOCRJob::dispatch($page->id, 'allenai/olmocr-2-7b', 'text_only')
-                            ->onQueue($workflowQueue)
-                            ->delay(now()->addSeconds($index * $delayIncrementSeconds));
+                        $job = RevizySeederLMStudioOCRJob::dispatch($page->id, 'allenai/olmocr-2-7b', 'text_only')
+                            ->onQueue($workflowQueue);
+                        if ($delayIncrementSeconds > 0) {
+                            $job->delay(now()->addSeconds($index * $delayIncrementSeconds));
+                        }
                     }
 
-                    $totalQueueSeconds = $pages->count() * $delayIncrementSeconds;
                     Notification::make()
-                        ->title("Queued {$pages->count()} N6 text OCR jobs (largest first).")
-                        ->body("Delay: {$delayIncrementSeconds}s between jobs. Estimated queue span: {$totalQueueSeconds}s.")
+                        ->title("Queued {$pages->count()} N6 text OCR jobs immediately.")
                         ->info()
                         ->send();
                 }),

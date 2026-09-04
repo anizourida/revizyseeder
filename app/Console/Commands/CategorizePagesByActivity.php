@@ -11,7 +11,7 @@ class CategorizePagesByActivity extends Command
      *
      * @var string
      */
-    protected $signature = 'app:categorize-pages-by-activity {--force : Re-process already categorized pages} {--limit= : Limit the number of pages to process} {--delay=30 : Delay in seconds between each page}';
+    protected $signature = 'app:categorize-pages-by-activity {--force : Re-process already categorized pages} {--limit= : Limit the number of pages to process} {--delay=0 : Delay in seconds between each page}';
 
     /**
      * The console command description.

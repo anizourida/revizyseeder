@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Raiida\Page;
+use App\Models\Raiida\BookPage;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -39,8 +40,7 @@ class RevizySeederLMStudioOCRJob implements ShouldQueue
 
     public function handle(): void
     {
-        // Force 30s delay between every extraction to avoid overloading LM Studio
-        sleep(30);
+        $startTime = microtime(true);
 
         if (WorkflowState::isPaused()) {
             Log::info("LM Studio OCR deferred for page ID {$this->pageId} because workflows are paused.");
@@ -71,6 +71,17 @@ class RevizySeederLMStudioOCRJob implements ShouldQueue
         $publicPath = storage_path('app/public/' . ltrim((string) $page->image_path, '/'));
         $imagePath = file_exists($localPath) ? $localPath : $publicPath;
 
+        if (!file_exists($imagePath) && $page->md5_checksum) {
+            $standardLocalPath = Storage::disk('local')->path("pages/{$page->md5_checksum}.png");
+            $standardPublicPath = Storage::disk('public')->path("pages/{$page->md5_checksum}.png");
+
+            if (file_exists($standardLocalPath)) {
+                $imagePath = $standardLocalPath;
+            } elseif (file_exists($standardPublicPath)) {
+                $imagePath = $standardPublicPath;
+            }
+        }
+
         if (!file_exists($imagePath)) {
             $message = 'Image file not found for OCR at local or public storage path.';
             Log::warning("LM Studio OCR aborted for page ID {$this->pageId}: {$message}", [
@@ -87,6 +98,18 @@ class RevizySeederLMStudioOCRJob implements ShouldQueue
 
         $apiUrl = env('LM_STUDIO_API_URL', 'http://localhost:1234/v1/chat/completions');
         $model = $this->modelOverride ?: env('LM_STUDIO_MODEL', 'allenai/olmocr-2-7b');
+
+        $log = \App\Models\Raiida\ExtractionLog::create([
+            'model_type' => get_class($page),
+            'model_id' => $page->id,
+            'type' => 'ocr',
+            'status' => 'pending',
+            'payload' => [
+                'model' => $model,
+                'mode' => $this->mode,
+                'image_path' => $page->image_path
+            ]
+        ]);
 
         try {
             $htmlRelativePath = null;
@@ -110,10 +133,11 @@ class RevizySeederLMStudioOCRJob implements ShouldQueue
                 if ($resText->failed()) throw new \Exception("Text Extraction Failed: " . $resText->body());
 
                 $htmlContent = $this->postProcessOCR($resText->json('choices.0.message.content'));
-                // Save to model-specific path
-                $suffix = str_contains(strtolower($model), 'chandra') ? '_chandra.html' : '_olmocr.html';
-                $htmlRelativePath = preg_replace('/\.[^.]+$/', '', $page->image_path) . $suffix;
-                Storage::disk('local')->put($htmlRelativePath, $htmlContent);
+                // Use PathResolver for standardized pathing
+                $resolver = app(\App\Services\Raiida\PathResolver::class);
+                $suffix = str_contains(strtolower($model), 'chandra') ? 'chandra' : 'olmocr';
+                $htmlRelativePath = $resolver->getOcrPath($this->pageId, $suffix, $page->md5_checksum);
+                Storage::disk('public')->put($htmlRelativePath, $htmlContent);
             }
 
             if ($this->mode === 'page_only' || $this->mode === 'full') {
@@ -154,15 +178,40 @@ class RevizySeederLMStudioOCRJob implements ShouldQueue
                 }
 
                 $dup->update($updateData);
+
+                if ($htmlRelativePath) {
+                    BookPage::where('page_id', $dup->id)->update([
+                        $col => $htmlRelativePath,
+                    ]);
+                }
             }
 
             Log::info("LM Studio Task Completed for ID {$this->pageId}");
             echo "[Page {$this->pageId}] SUCCESS: Text extraction completed.\n";
 
+            // Trigger categorization after successful OCR
+            if ($htmlRelativePath) {
+                \App\Jobs\CategorizePageActivityJob::dispatch($this->pageId);
+            }
+
+            $log->update([
+                'status' => 'success',
+                'duration' => microtime(true) - $startTime,
+                'result' => ['path' => $htmlRelativePath ?? null, 'page_number' => $pageNumber ?? null]
+            ]);
+
         } catch (\Exception $e) {
             Log::error("LM Studio Failed: " . $e->getMessage());
             echo "[Page {$this->pageId}] FAILED: " . $e->getMessage() . "\n";
             foreach ($duplicates as $dup) $dup->update(['page_number_extraction_error' => $e->getMessage()]);
+
+            if (isset($log)) {
+                $log->update([
+                    'status' => 'failed',
+                    'message' => $e->getMessage(),
+                    'duration' => microtime(true) - $startTime
+                ]);
+            }
         }
     }
 

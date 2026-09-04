@@ -16,7 +16,7 @@ class RevizySeederBatchGradeOCRCommand extends Command
     protected $signature = 'revizyseeder:batch-grade-ocr 
                             {grade : The Grade ID to process}
                             {--mode=page_only : page_only or text_only}
-                            {--delay=10 : Seconds between each job}';
+                            {--delay=0 : Seconds between each job}';
 
     /**
      * The console command description.
@@ -54,7 +54,11 @@ class RevizySeederBatchGradeOCRCommand extends Command
         }
 
         $count = $pages->count();
-        $this->info("Found {$count} unique images. Dispatching jobs with {$delayIncrement}s staggered delay...");
+        if ($delayIncrement > 0) {
+            $this->info("Found {$count} unique images. Dispatching jobs with {$delayIncrement}s staggered delay...");
+        } else {
+            $this->info("Found {$count} unique images. Dispatching jobs immediately...");
+        }
 
         $bar = $this->output->createProgressBar($count);
         $bar->start();
@@ -62,14 +66,16 @@ class RevizySeederBatchGradeOCRCommand extends Command
         foreach ($pages->values() as $index => $page) {
             $seconds = $index * $delayIncrement;
             
-            RevizySeederLMStudioOCRJob::dispatch($page->id, 'allenai/olmocr-2-7b', $mode)
-                ->delay(now()->addSeconds($seconds));
+            $job = RevizySeederLMStudioOCRJob::dispatch($page->id, 'allenai/olmocr-2-7b', $mode);
+            if ($seconds > 0) {
+                $job->delay(now()->addSeconds($seconds));
+            }
 
             $bar->advance();
         }
 
         $bar->finish();
         $this->newLine();
-        $this->info("Successfully scheduled {$count} jobs. Total queue time: " . ($count * $delayIncrement) . " seconds.");
+        $this->info("Successfully scheduled {$count} jobs." . ($delayIncrement > 0 ? " Total queue time: " . ($count * $delayIncrement) . " seconds." : ""));
     }
 }

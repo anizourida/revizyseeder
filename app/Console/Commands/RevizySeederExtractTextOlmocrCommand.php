@@ -15,14 +15,15 @@ class RevizySeederExtractTextOlmocrCommand extends Command
      */
     protected $signature = 'revizyseeder:extract-text-olmocr 
                             {grade? : Optional Grade ID to process. If omitted, processes all grades.}
-                            {--delay=30 : Seconds between each job (default 30)}';
+                            {--book : Only extract pages that are linked to Book Pages (textbook booklet)}
+                            {--delay=0 : Seconds between each job (default 0)}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Schedules text extraction jobs using olmOCR with a 30-second delay between each job.';
+    protected $description = 'Schedules text extraction jobs using olmOCR without delay.';
 
     /**
      * Execute the console command.
@@ -30,20 +31,38 @@ class RevizySeederExtractTextOlmocrCommand extends Command
     public function handle()
     {
         $gradeId = $this->argument('grade');
+        $forBook = (bool) $this->option('book');
         $delayIncrement = (int) $this->option('delay');
 
-        $query = Page::whereNotNull('md5_checksum')
-            ->whereNull('ocr_olmocr_path');
+        if ($forBook) {
+            $bookQuery = \App\Models\Raiida\BookPage::query()
+                ->whereNotNull('page_id')
+                ->whereNull('ocr_olmocr_path');
 
-        if ($gradeId) {
-            $this->info("Fetching pages needing text extraction for Grade ID: {$gradeId}...");
-            $query->where('grade_id', $gradeId);
+            if ($gradeId) {
+                $bookQuery->whereHas('book', fn ($b) => $b->where('n', $gradeId)->orWhere('id', $gradeId));
+                $this->info("Fetching missing Book Pages for Grade: {$gradeId}...");
+            } else {
+                $this->info("Fetching missing Book Pages across ALL grades...");
+            }
+
+            $pageIds = $bookQuery->pluck('page_id')->unique()->filter()->values();
+            $pages = Page::whereIn('id', $pageIds)->whereNull('ocr_olmocr_path')->get()->unique('md5_checksum');
         } else {
-            $this->info("Fetching pages needing text extraction across ALL grades...");
-        }
+            $query = Page::whereNotNull('md5_checksum')
+                ->whereNull('ocr_olmocr_path')
+                ->where('n_p_sem', 'NOT LIKE', '%&%');
 
-        // Only dispatch one job per unique image checksum to avoid redundant LM Studio calls
-        $pages = $query->get()->unique('md5_checksum');
+            if ($gradeId) {
+                $this->info("Fetching pages needing text extraction for Grade ID: {$gradeId}...");
+                $query->where('grade_id', $gradeId);
+            } else {
+                $this->info("Fetching pages needing text extraction across ALL grades...");
+            }
+
+            // Only dispatch one job per unique image checksum to avoid redundant LM Studio calls
+            $pages = $query->get()->unique('md5_checksum');
+        }
 
         if ($pages->isEmpty()) {
             $this->warn("No pages found that require text extraction.");
@@ -52,7 +71,11 @@ class RevizySeederExtractTextOlmocrCommand extends Command
 
         $count = $pages->count();
         $this->info("Found {$count} unique images needing text extraction.");
-        $this->info("Dispatching jobs with a {$delayIncrement}-second delay between each...");
+        if ($delayIncrement > 0) {
+            $this->info("Dispatching jobs with a {$delayIncrement}-second delay between each...");
+        } else {
+            $this->info("Dispatching jobs immediately without delay...");
+        }
 
         $bar = $this->output->createProgressBar($count);
         $bar->start();
@@ -61,8 +84,10 @@ class RevizySeederExtractTextOlmocrCommand extends Command
             $seconds = $index * $delayIncrement;
             
             // Dispatch with mode = 'text_only' because page numbers are already handled
-            RevizySeederLMStudioOCRJob::dispatch($page->id, 'allenai/olmocr-2-7b', 'text_only')
-                ->delay(now()->addSeconds($seconds));
+            $job = RevizySeederLMStudioOCRJob::dispatch($page->id, 'allenai/olmocr-2-7b', 'text_only');
+            if ($seconds > 0) {
+                $job->delay(now()->addSeconds($seconds));
+            }
 
             $bar->advance();
         }
@@ -70,6 +95,8 @@ class RevizySeederExtractTextOlmocrCommand extends Command
         $bar->finish();
         $this->newLine();
         $this->info("Successfully scheduled {$count} jobs.");
-        $this->info("Total queue time required: " . gmdate("H:i:s", $count * $delayIncrement) . " (Hours:Minutes:Seconds).");
+        if ($delayIncrement > 0) {
+            $this->info("Total queue time required: " . gmdate("H:i:s", $count * $delayIncrement) . " (Hours:Minutes:Seconds).");
+        }
     }
 }

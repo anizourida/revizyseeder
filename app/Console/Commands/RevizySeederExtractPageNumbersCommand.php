@@ -12,7 +12,7 @@ class RevizySeederExtractPageNumbersCommand extends Command
                             {--force : Re-extract even if already extracted}
                             {--grade= : Only extract for a specific grade ID}
                             {--sync : Run synchronously instead of dispatching to queue}
-                            {--delay=30 : Seconds between each dispatched job}';
+                            {--delay=0 : Seconds between each dispatched job}';
 
     protected $description = 'Dispatch jobs to extract page numbers for Pages using Python OCR script';
 
@@ -23,7 +23,7 @@ class RevizySeederExtractPageNumbersCommand extends Command
         $sync = $this->option('sync');
         $delayIncrement = (int) $this->option('delay');
 
-        $query = Page::query();
+        $query = Page::query()->where('n_p_sem', 'NOT LIKE', '%&%');
 
         // Filter by grade if specified
         if ($gradeId) {
@@ -69,22 +69,28 @@ class RevizySeederExtractPageNumbersCommand extends Command
             $this->newLine();
             $this->info('Page number extraction completed!');
         } else {
-            $this->info("Dispatching {$count} jobs to queue with {$delayIncrement}s staggered delay...");
+            if ($delayIncrement > 0) {
+                $this->info("Dispatching {$count} jobs to queue with {$delayIncrement}s staggered delay...");
+            } else {
+                $this->info("Dispatching {$count} jobs to queue immediately...");
+            }
             $bar = $this->output->createProgressBar($count);
             $bar->start();
 
             foreach ($pages->values() as $index => $page) {
                 $seconds = $index * $delayIncrement;
 
-                ExtractPageNumberJob::dispatch($page->id)
-                    ->delay(now()->addSeconds($seconds));
+                $job = ExtractPageNumberJob::dispatch($page->id);
+                if ($seconds > 0) {
+                    $job->delay(now()->addSeconds($seconds));
+                }
 
                 $bar->advance();
             }
 
             $bar->finish();
             $this->newLine();
-            $this->info("Successfully dispatched {$count} jobs. Estimated queue time: " . gmdate('H:i:s', $count * $delayIncrement));
+            $this->info("Successfully dispatched {$count} jobs." . ($delayIncrement > 0 ? " Estimated queue time: " . gmdate('H:i:s', $count * $delayIncrement) : ""));
         }
 
         return self::SUCCESS;

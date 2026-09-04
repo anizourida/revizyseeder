@@ -20,7 +20,7 @@ class RevizySeederDispatchLMStudioPageNumberBatchJob implements ShouldQueue
     public function __construct(
         public ?string $model = null,
         public int $limit = 200,
-        public int $delayIncrementSeconds = 2,
+        public int $delayIncrementSeconds = 0,
         public bool $includeSuspiciousLowNumbers = true,
     ) {
         $this->onQueue(WorkflowState::workflowQueue());
@@ -66,8 +66,11 @@ class RevizySeederDispatchLMStudioPageNumberBatchJob implements ShouldQueue
         }
 
         foreach ($pages->values() as $index => $page) {
-            RevizySeederLMStudioOCRJob::dispatch((int) $page->id, $model, 'page_only')
-                ->delay(now()->addSeconds($index * max(0, $this->delayIncrementSeconds)));
+            $job = RevizySeederLMStudioOCRJob::dispatch((int) $page->id, $model, 'page_only');
+            $seconds = $index * max(0, $this->delayIncrementSeconds);
+            if ($seconds > 0) {
+                $job->delay(now()->addSeconds($seconds));
+            }
         }
 
         Log::info('RevizySeederDispatchLMStudioPageNumberBatchJob: dispatched ' . $pages->count() . ' LM Studio jobs.');

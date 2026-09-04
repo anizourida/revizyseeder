@@ -19,7 +19,7 @@ class RevizySeederDispatchPageNumberOCRBatchJob implements ShouldQueue
 
     public function __construct(
         public int $limit = 500,
-        public int $delayIncrementSeconds = 1,
+        public int $delayIncrementSeconds = 0,
     ) {
         $this->onQueue(WorkflowState::workflowQueue());
     }
@@ -51,8 +51,11 @@ class RevizySeederDispatchPageNumberOCRBatchJob implements ShouldQueue
         }
 
         foreach ($pages->values() as $index => $page) {
-            ExtractPageNumberJob::dispatch((int) $page->id)
-                ->delay(now()->addSeconds($index * max(0, $this->delayIncrementSeconds)));
+            $job = ExtractPageNumberJob::dispatch((int) $page->id);
+            $seconds = $index * max(0, $this->delayIncrementSeconds);
+            if ($seconds > 0) {
+                $job->delay(now()->addSeconds($seconds));
+            }
         }
 
         Log::info('RevizySeederDispatchPageNumberOCRBatchJob: dispatched ' . $pages->count() . ' OCR jobs.');
