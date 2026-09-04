@@ -514,28 +514,39 @@ class VocabularySentenceExtractionService
         $gradeNorm = str_ireplace('N', '', $grade);
         $periodNorm = str_ireplace('P', '', $period);
         $weekNorm = str_ireplace('SEM', '', $week);
-        $key = "FR_N{$gradeNorm}_P{$periodNorm}_SEM{$weekNorm}";
+        $key = 'FR_N' . $gradeNorm . '_P' . $periodNorm . '_SEM' . $weekNorm;
 
         $results = [];
 
         try {
-            $pages = Page::where('n_p_sem', 'like', "{$key}%")
+            $pages = Page::where('n_p_sem', 'like', $key . '%')
                 ->where(function ($q) {
-                    $q->whereNotNull('ocr_text')->orWhereNotNull('raw_text');
+                    $q->whereNotNull('ocr_olmocr_path')
+                      ->orWhereNotNull('ocr_chandra_path')
+                      ->orWhereNotNull('ocr_full_text_path');
                 })
-                ->get(['page_number', 'ocr_text', 'raw_text']);
+                ->get(['page_number', 'ocr_olmocr_path', 'ocr_chandra_path', 'ocr_full_text_path']);
 
             foreach ($pages as $p) {
-                $text = trim((string) ($p->ocr_text ?: $p->raw_text));
-                if ($text !== '') {
-                    $results[] = [
-                        'page_number' => (int) $p->page_number,
-                        'text' => $text,
-                    ];
+                $path = $p->ocr_olmocr_path ?: $p->ocr_chandra_path ?: $p->ocr_full_text_path;
+                $fullPath = storage_path('app/public/' . $path);
+                if (! file_exists($fullPath)) {
+                    $fullPath = storage_path('app/' . $path);
+                }
+
+                if (file_exists($fullPath)) {
+                    $content = (string) file_get_contents($fullPath);
+                    $text = trim(strip_tags($content));
+                    if ($text !== '') {
+                        $results[] = [
+                            'page_number' => (int) $p->page_number,
+                            'text' => $text,
+                        ];
+                    }
                 }
             }
         } catch (Throwable $e) {
-            // Ignore if columns missing or query fails
+            Log::warning('Failed collecting OCR texts for week ' . $key . ': ' . $e->getMessage());
         }
 
         return $results;
