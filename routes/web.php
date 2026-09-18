@@ -12,13 +12,22 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/raiida', [RaiidaUiController::class, 'index'])->name('raiida.index');
-Route::get('/raiida/question-studio', fn () => redirect()->route('raiida.module', ['module' => 'questions-studio']));
-Route::get('/roadmap.html', fn () => redirect()->route('raiida.module', ['module' => 'roadmap']));
-Route::get('/grammaire.html', fn () => redirect()->route('raiida.module', ['module' => 'grammaire']));
-Route::get('/conjugaison.html', fn () => redirect()->route('raiida.module', ['module' => 'conjugaison']));
+Route::get('/seeder', [RaiidaUiController::class, 'index'])->name('seeder.index');
+Route::get('/seeder/question-studio', fn () => redirect()->route('seeder.module', ['module' => 'questions-studio']));
+Route::get('/roadmap.html', fn () => redirect()->route('seeder.module', ['module' => 'roadmap']));
+Route::get('/grammaire.html', fn () => redirect()->route('seeder.module', ['module' => 'grammaire']));
+Route::get('/conjugaison.html', fn () => redirect()->route('seeder.module', ['module' => 'conjugaison']));
 
-Route::get('/raiida/{module}', [RaiidaUiController::class, 'module'])
+Route::get('/seeder/{module}', [RaiidaUiController::class, 'module'])
+    ->where('module', 'dashboard|files|browser|vocabulary|audios|assets|flashcards-uploader|concept-creator|questions-studio|conjugaison|grammaire|roadmap')
+    ->name('seeder.module');
+
+Route::get('/arabic-vocabulary-platform', [\App\Http\Controllers\Web\ArabicVocabularyPlatformController::class, 'index'])->name('arabic-vocabulary.platform');
+Route::get('/seeder/arabic-vocabulary', [\App\Http\Controllers\Web\ArabicVocabularyPlatformController::class, 'index'])->name('seeder.arabic-vocabulary');
+
+Route::get('/raiida', fn () => redirect()->route('seeder.index'))->name('raiida.index');
+Route::get('/raiida/question-studio', fn () => redirect()->route('seeder.module', ['module' => 'questions-studio']));
+Route::get('/raiida/{module}', fn (string $module) => redirect()->route('seeder.module', ['module' => $module]))
     ->where('module', 'dashboard|files|browser|vocabulary|audios|assets|flashcards-uploader|concept-creator|questions-studio|conjugaison|grammaire|roadmap')
     ->name('raiida.module');
 
@@ -34,12 +43,29 @@ Route::middleware('auth')->group(function (): void {
         $pathCol = ($model === 'chandra') ? 'ocr_chandra_path' : 'ocr_olmocr_path';
         $path = $page->{$pathCol};
 
-        if (!$path || !\Illuminate\Support\Facades\Storage::disk('local')->exists($path)) {
+        if (! $path) {
             abort(404, 'OCR content for ' . $model . ' not found.');
         }
-        return response(\Illuminate\Support\Facades\Storage::disk('local')->get($path))
+
+        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+            $content = \Illuminate\Support\Facades\Storage::disk('public')->get($path);
+        } elseif (\Illuminate\Support\Facades\Storage::disk('local')->exists($path)) {
+            $content = \Illuminate\Support\Facades\Storage::disk('local')->get($path);
+        } else {
+            abort(404, 'OCR content for ' . $model . ' not found.');
+        }
+
+        return response($content)
             ->header('Content-Type', 'text/html');
     })->name('ocr.view');
+
+    Route::any('/rapid-labeling.php', function () {
+        require public_path('rapid-labeling.php');
+    });
+
+    Route::any('/conjugaison-forms.php', function () {
+        require public_path('conjugaison-forms.php');
+    });
 });
 
 // ═══════════════════════════════════════════════════════════

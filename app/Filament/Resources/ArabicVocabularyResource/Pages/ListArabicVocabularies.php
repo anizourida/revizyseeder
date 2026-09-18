@@ -11,6 +11,13 @@ class ListArabicVocabularies extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [];
+        return [
+            \Filament\Actions\Action::make('open_platform')
+                ->label('منصة المفردات المصورة (Visual Platform)')
+                ->icon('heroicon-o-squares-2x2')
+                ->color('success')
+                ->url(url('/arabic-vocabulary-platform'))
+                ->openUrlInNewTab(),
+        ];
     }
 }
