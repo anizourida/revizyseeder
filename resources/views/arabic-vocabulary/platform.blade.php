@@ -584,6 +584,42 @@
             font-weight: 600;
         }
 
+        /* Linked Sentences Box */
+        .linked-sentences-box {
+            background: rgba(16, 185, 129, 0.06);
+            border: 1px dashed rgba(16, 185, 129, 0.25);
+            border-radius: 6px;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .linked-sentences-box small {
+            font-size: 0.72rem;
+            color: #34d399;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .linked-tags {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .linked-tag {
+            background: rgba(255, 255, 255, 0.04);
+            border-right: 2px solid #10b981;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            color: #e2e8f0;
+            line-height: 1.4;
+        }
+
         /* Card Footer Meta */
         .card-footer-meta {
             margin-top: auto;
@@ -976,6 +1012,17 @@
                                     @endif
                                 </small>
                                 {{ $item->example_sentence }}
+                            </div>
+                        @endif
+
+                        @if (! empty($item->linked_sentences) && count($item->linked_sentences) > 0)
+                            <div class="linked-sentences-box">
+                                <small><i class="fa-solid fa-link"></i> جمل تطبيقية مرتبطة ({{ count($item->linked_sentences) }}):</small>
+                                <div class="linked-tags">
+                                    @foreach ($item->linked_sentences as $sent)
+                                        <div class="linked-tag">{{ $sent }}</div>
+                                    @endforeach
+                                </div>
                             </div>
                         @endif
 

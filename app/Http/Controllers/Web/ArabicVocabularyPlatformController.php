@@ -72,6 +72,23 @@ class ArabicVocabularyPlatformController extends Controller
             ->orderBy('id', 'asc')
             ->get();
 
+        $itemIds = $items->pluck('id');
+        $sentencesByItemId = \Illuminate\Support\Facades\DB::table('vocabulary_sentences')
+            ->whereIn('vocabulary_item_id', $itemIds)
+            ->where('subject', 'AR')
+            ->get()
+            ->groupBy('vocabulary_item_id');
+
+        $items->transform(function ($item) use ($sentencesByItemId) {
+            $item->linked_sentences = $sentencesByItemId->get($item->id, collect())
+                ->pluck('sentence')
+                ->filter()
+                ->unique()
+                ->values();
+
+            return $item;
+        });
+
         // Calculate statistics
         $stats = [
             'total' => ArabicVocabularyItem::count(),
