@@ -287,6 +287,15 @@ class ArabicVocabularyExtractionService
         $seenWords = [];
         $dedupeImages = [];
 
+        // In N1 and N2 (including combined levels like N1&2), weekly vocabulary words are exclusively taught in Session 1 (S1).
+        // Sessions S2-S6 cover story characters, narrative structure, phonics drills, and evaluation.
+        if (preg_match('/_S([2-6])\b/i', $lessonId)) {
+            $isN1orN2 = preg_match('/N[12](?:[&_et]+[12])?/i', $grade) || preg_match('/_N[12](?:[&_et]+[12])?_/i', $lessonId);
+            if ($isN1orN2) {
+                return [];
+            }
+        }
+
         // Count media frequencies across all slides to distinguish unique content images from recurrent template chrome/mascots
         $mediaFrequency = [];
         for ($i = 0; $i < $zip->numFiles; $i++) {
@@ -522,32 +531,107 @@ class ArabicVocabularyExtractionService
     /**
      * Check if slide is a vocabulary banner / list slide.
      */
-    protected function isVocabularyHeaderSlide(array $texts): bool
+    protected function isValidVocabularyWord(string $word): bool
     {
-        if (count($texts) > 8) {
+        if (str_contains($word, '[') || str_contains($word, ']') || str_contains($word, '') || str_contains($word, '؟') || str_contains($word, '?')) {
             return false;
         }
 
-        $full = implode(' ', $texts);
-        $isNav = str_contains($full, 'نشاط اعتيادي') && (str_contains($full, 'استماع وتحدث') || str_contains($full, 'استـماع وتحدث')) && str_contains($full, 'اخت');
-        if ($isNav) {
+        if (preg_match('/[\d\+\=\/]/u', $word)) {
             return false;
         }
 
-        $hasHeader = false;
-        foreach (array_slice($texts, 0, 3) as $text) {
-            $t = $this->stripArabicDiacritics(trim($text));
-            if (in_array($t, ['معجم', 'المعجم', 'مفردات', 'المفردات', 'الرصيد المعجمي'], true)) {
-                $hasHeader = true;
-                break;
+        $raw = $this->stripArabicDiacritics($word);
+        if (mb_strlen($raw, 'UTF-8') < 3 || count(explode(' ', $raw)) > 3) {
+            return false;
+        }
+
+        $unAl = preg_replace('/^ال/u', '', $raw);
+
+        $forbidden = [
+            // Pedagogical stages & lesson structure
+            'توقع', 'تسميع', 'تحقق', 'ملاحظه', 'فهم', 'استثمار', 'تقويم', 'دعم', 'تشخيص', 'انطلاق',
+            'بناء', 'تثبيت', 'تطبيق', 'انتاج', 'قاعده', 'استنتاج', 'تذكر', 'تقديم', 'اهداف', 'هدف',
+            'كفايه', 'كفايات', 'تخطيط', 'تدبير', 'توجيه', 'شرح', 'حصص', 'حصه', 'اسبوع', 'وحده',
+
+            // Sight words (الكلمات البصرية)
+            'انا', 'نحن', 'انت', 'انتما', 'انتم', 'انتن', 'هو', 'هي', 'هما', 'هم', 'هن',
+            'هذا', 'هذه', 'ذلك', 'تلك', 'هولاء', 'اولئك', 'الذي', 'التي', 'الذين', 'اللواتي', 'اللاتي',
+            'اسمي', 'ندي', 'مجد', 'نعم', 'لا',
+
+            // Story elements & character labels
+            'عنوان', 'حكايه', 'قصه', 'شخصيه', 'شخصيات', 'مكان', 'امكنه', 'زمان', 'ازمنه', 'حدث', 'احداث',
+            'بدايه', 'تحول', 'مشكل', 'حل', 'نهايه', 'سرد', 'حوار', 'عناصر', 'بنيه', 'دودو', 'مراد', 'معلمه',
+            'فراشه', 'متعلمون', 'اطفال',
+
+            // Phonics & letter names
+            'حرف', 'حروف', 'صوت', 'اصوات', 'مقطع', 'مقاطع', 'تنوين', 'مد', 'سكون', 'فتحه', 'ضمه', 'كسره', 'شده',
+            'هجاء', 'تهجئه', 'وعي', 'صوتي', 'الفبائي', 'طلاقه', 'دو', 'دود', 'ديد', 'دي', 'دا',
+            'الف', 'باء', 'تاء', 'ثاء', 'جيم', 'حاء', 'خاء', 'دال', 'ذال', 'راء', 'زاي', 'سين', 'شين',
+            'صاد', 'ضاد', 'طاء', 'ظاء', 'عين', 'غين', 'فاء', 'قاف', 'كاف', 'لام', 'ميم', 'نون', 'هاء', 'واو', 'ياء', 'همزه',
+
+            // Teacher commands & classroom interaction
+            'جماعه', 'فردي', 'فرديا', 'ثنائي', 'ثنائيا', 'تناوب', 'بالتناوب', 'اقراوا', 'اقرؤوا', 'مثلي',
+            'رددوا', 'نردد', 'تعلمنا', 'استمعوا', 'انتبهوا', 'خذوا', 'ضعوا', 'افتحوا', 'اغلقوا', 'ارفعوا',
+            'اكتبوا', 'صححوا', 'انجزوا', 'شاهدوا', 'لاحظوا', 'عبروا', 'اشيروا', 'صلوا', 'احيطوا', 'لونوا',
+            'رتبوا', 'اختاروا', 'اذكروا', 'تذكروا', 'مرحبا', 'احسنتم', 'ممتاز', 'جيد', 'الواح', 'كراسه',
+            'دفتر البحث', 'دفاتر', 'سبوره', 'مقاعد', 'فئه', 'مجموعه',
+
+            // Lexical & metalanguage tokens
+            'كلمه', 'كلمات', 'جمله', 'جمل', 'نص', 'نصوص', 'فقره', 'فقرات', 'سؤال', 'اسئله', 'جواب', 'اجوبه',
+            'معجم', 'مفردات', 'معني', 'مرادف', 'ضد', 'عائله', 'شبكه', 'خريطه', 'اشتقاق', 'مساعد', 'استراتيجيه',
+            'مفتاح', 'مفاتيح', 'انشوده', 'نشيد', 'تمرين', 'تفريغ'
+        ];
+
+        foreach ($forbidden as $f) {
+            if ($raw === $f || $unAl === $f || str_starts_with($raw, $f . ' ') || str_starts_with($unAl, $f . ' ')) {
+                return false;
             }
         }
 
-        if (! $hasHeader) {
+        return ! $this->isNavToken($raw);
+    }
+
+    protected function isVocabularyHeaderSlide(array $texts): bool
+    {
+        $full = implode(' ', $texts);
+        $fullRaw = $this->stripArabicDiacritics($full);
+
+        // Skip static overview / schedule / phonics / song slides
+        if ($this->containsAny($fullRaw, [
+            'تنظيم حصص', 'هيكله حصه', 'شروط الحصول', 'عند نهايه الحصة', 'عند نهايه الحصه',
+            'توجيهات و شرح', 'كلمات بصريه', 'الصوت [', 'حرف ', 'انشوده الحروف', 'نشيد'
+        ])) {
             return false;
         }
 
-        return (bool) (preg_match('/[\-–—،:\/]/u', $full) || str_contains($full, 'ـ'));
+        // Must not be sight words slide (e.g. أنا – اسمي – ندى – مجد)
+        if (str_contains($fullRaw, 'انا') && str_contains($fullRaw, 'اسمي') && str_contains($fullRaw, 'ندي')) {
+            return false;
+        }
+
+        // Find a text line containing at least 3 distinct valid words separated by dashes
+        foreach ($texts as $t) {
+            $rawT = $this->stripArabicDiacritics($t);
+            if (in_array($rawT, ['معجم', 'المعجم', 'نشاط اعتيادي', 'استماع وتحدث', 'اختتام الحصة', 'قراءة كتابة', 'قراءة/ كتابة'])) {
+                continue;
+            }
+
+            $parts = preg_split('/[–—\-]+|\x{0640}{3,}/u', $t);
+            $validParts = 0;
+            foreach ($parts as $p) {
+                $cp = trim(preg_replace('/^(?:معجم|المعجم|مرافق المدرسة|معجم المدرسة|الأنشطة المدرسية|المدرسة والأدوات المدرسية|المدرسة|ورشة المعجم)[^:]*:\s*/u', '', $p));
+                $rawP = $this->stripArabicDiacritics($cp);
+                if ($this->isValidVocabularyWord($rawP)) {
+                    $validParts++;
+                }
+            }
+            if ($validParts >= 3) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -610,8 +694,44 @@ class ArabicVocabularyExtractionService
                 $cleanedWord = preg_replace('/^(?:معجم|المعجم|معــــــــــجم|مفردات)\s+/u', '', $cleaned);
                 $cleanedWord = preg_replace('/\s+(?:معجم|المعجم|معــــــــــجم|مفردات)$/u', '', $cleanedWord);
                 $cleanedWord = $this->cleanArabicBoundary($cleanedWord);
-                if ($cleanedWord !== '' && ! $this->isNavToken($cleanedWord)) {
+                if ($cleanedWord !== '' && $this->isValidVocabularyWord($cleanedWord)) {
                     $words[] = $cleanedWord;
+                }
+            }
+        }
+
+        return array_values(array_unique($words));
+    }
+
+    /**
+     * Extract word tokens from a vocabulary header slide.
+     */
+    protected function extractWordsFromHeaderSlide(array $texts): array
+    {
+        $words = [];
+
+        foreach ($texts as $t) {
+            $rawT = $this->stripArabicDiacritics($t);
+            if (in_array($rawT, ['معجم', 'المعجم', 'نشاط اعتيادي', 'استماع وتحدث', 'اختتام الحصة', 'قراءة كتابة', 'قراءة/ كتابة'])) {
+                continue;
+            }
+
+            $parts = preg_split('/[–—\-]+|\x{0640}{3,}/u', $t);
+            $candidateWords = [];
+            foreach ($parts as $part) {
+                $p = $this->cleanArabicBoundary((string) $part);
+                $p = preg_replace('/^(?:معجم|المعجم|معــــــــــجم|مـــعــجـــم|مفردات|الأسرة والعائلة|المدرسة والأدوات المدرسية|معجم المدرسة والأدوات المدرسية|معجم المدرسة|مرافق المدرسة|معجم مرافق المدرسة|معجم الأنشطة المدرسية|الأنشطة المدرسية)[^:]*:\s*/u', '', $p);
+                $p = preg_replace('/\s*(?:معجم|المعجم|معــــــــــجم|مـــعــجـــم|مفردات)$/u', '', $p);
+                $p = $this->cleanArabicBoundary($p);
+
+                if ($this->isValidVocabularyWord($p)) {
+                    $candidateWords[] = $p;
+                }
+            }
+
+            if (count($candidateWords) >= 3) {
+                foreach ($candidateWords as $cw) {
+                    $words[] = $cw;
                 }
             }
         }
@@ -627,37 +747,6 @@ class ArabicVocabularyExtractionService
         return trim($cleaned);
     }
 
-    /**
-     * Extract word tokens from a vocabulary header slide.
-     */
-    protected function extractWordsFromHeaderSlide(array $texts): array
-    {
-        $words = [];
-        $fullText = implode(' ', $texts);
-
-        $parts = preg_split('/[\-–—،,\/:\r\n\t]+|ــــ+/u', $fullText);
-        foreach ($parts as $part) {
-            $p = $this->cleanArabicBoundary((string) $part);
-            $p = preg_replace('/^(?:معجم|المعجم|معــــــــــجم|مـــعــجـــم|مفردات|الأسرة والعائلة|المدرسة والأدوات المدرسية|معجم المدرسة والأدوات المدرسية|معجم المدرسة|مرافق المدرسة|معجم مرافق المدرسة|معجم الأنشطة المدرسية|الأنشطة المدرسية)\s*/u', '', $p);
-            $p = preg_replace('/\s*(?:معجم|المعجم|معــــــــــجم|مـــعــجـــم|مفردات)$/u', '', $p);
-            $p = $this->cleanArabicBoundary($p);
-
-            $pStripped = $this->stripArabicDiacritics($p);
-            if ($pStripped === '' || $this->isNavToken($pStripped) || is_numeric($pStripped)) {
-                continue;
-            }
-
-            if ($this->containsAny($pStripped, ['حصه', 'اسبوع', 'نشاط', 'استماع', 'قراءه', 'استراتيجيه', 'إستراتيجية']) || in_array($pStripped, ['المدرسه والادوات المدرسيه', 'المدرسه', 'مرافق المدرسه', 'الانشطه المدرسيه', 'الاسره والعائله', 'عالم الحيوان'], true)) {
-                continue;
-            }
-
-            if (count(explode(' ', $pStripped)) <= 3 && mb_strlen($pStripped, 'UTF-8') >= 2) {
-                $words[] = $p;
-            }
-        }
-
-        return array_values(array_unique($words));
-    }
 
     /**
      * Extract glossary items from المعجم المساعد or مُعْجَمي slides (Reading text vocabulary).
@@ -715,15 +804,16 @@ class ArabicVocabularyExtractionService
         $targetWord = null;
         if (preg_match('/(?:لِشَبَكَةِ|شَبَكَةِ|شبكة)\s+(?:كَلِمَةِ|كلمة)?\s*["«\'\s]*([^"»\'\s\.\-–]+)["»\']?/u', $full, $m)) {
             $candidate = $this->cleanArabicBoundary($m[1]);
-            $candRaw = $this->stripArabicDiacritics($candidate);
-            $stopwords = ['المفردات', 'التي', 'هذه', 'الكلمة', 'الكلمات', 'المعجم', 'انشاها', 'أنشأها'];
-            if (! in_array($candRaw, $stopwords, true) && mb_strlen($candRaw, 'UTF-8') >= 2) {
+            if ($this->isValidVocabularyWord($candidate)) {
                 $targetWord = $candidate;
             }
         }
 
         if ($targetWord === null && preg_match('/شبكة[^\"]*\"([^\"]+)\"/u', $full, $m)) {
-            $targetWord = $this->cleanArabicBoundary($m[1]);
+            $candidate = $this->cleanArabicBoundary($m[1]);
+            if ($this->isValidVocabularyWord($candidate)) {
+                $targetWord = $candidate;
+            }
         }
 
         if ($targetWord === null) {
@@ -770,15 +860,16 @@ class ArabicVocabularyExtractionService
         $targetWord = null;
         if (preg_match('/(?:خَريطَةُ|خريطة)\s+(?:كَلِمَةِ|كلمة)?\s*["«\'\s]*([^"»\'\s\.\-–]+)["»\']?/u', $full, $m)) {
             $candidate = $this->cleanArabicBoundary($m[1]);
-            $candRaw = $this->stripArabicDiacritics($candidate);
-            $stopwords = ['الكلمة', 'الكلمات', 'هذه', 'المعجم', 'فقط', 'بناء', 'وكيفية'];
-            if (! in_array($candRaw, $stopwords, true) && mb_strlen($candRaw, 'UTF-8') >= 2) {
+            if ($this->isValidVocabularyWord($candidate)) {
                 $targetWord = $candidate;
             }
         }
 
         if ($targetWord === null && preg_match('/خريطة[^\"]*\"([^\"]+)\"/u', $full, $m)) {
-            $targetWord = $this->cleanArabicBoundary($m[1]);
+            $candidate = $this->cleanArabicBoundary($m[1]);
+            if ($this->isValidVocabularyWord($candidate)) {
+                $targetWord = $candidate;
+            }
         }
 
         if ($targetWord === null) {
@@ -817,13 +908,29 @@ class ArabicVocabularyExtractionService
             return null;
         }
 
+        // Only allow heuristic extraction if the slide explicitly contains an authentic vocabulary banner (excluding solitary footer navbar tokens)
+        $hasExplicitVocabBanner = false;
+        foreach ($texts as $text) {
+            $t = $this->stripArabicDiacritics(trim($text));
+            if (in_array($t, ['معجم', 'المعجم', 'معــــــــــجم', 'مـــعــجـــم', 'مفردات'], true)) {
+                continue;
+            }
+            if (str_starts_with($t, 'معجم ') || str_starts_with($t, 'المعجم ') || str_starts_with($t, 'مفردات ') || str_contains($t, 'ورشة المعجم')) {
+                $hasExplicitVocabBanner = true;
+                break;
+            }
+        }
+        if (! $hasExplicitVocabBanner) {
+            return null;
+        }
+
         // Pattern B: Look for prompt cues like "الكلمة الأولى هي X - رددوا : X" or "رددوا : X" or "هذه X. رددوا: X"
         foreach ($texts as $t) {
             // Regex for "الكلمة ... هي (Word)"
             if (preg_match('/(?:الكلمة\s+(?:الأولى|الثانية|الثالثة|الرابعة|الخامسة|الموالية|التالية)\s+هي\s+)([^\.\-؛:،]+)/u', $t, $m)) {
                 $word = $this->cleanArabicBoundary((string) $m[1]);
-                $raw = $this->stripArabicDiacritics($word);
-                if (mb_strlen($raw, 'UTF-8') >= 2 && ! $this->isNavToken($raw)) {
+                if ($this->isValidVocabularyWord($word)) {
+                    $raw = $this->stripArabicDiacritics($word);
                     $sentence = $this->findExampleSentence($texts, $raw);
 
                     return [
@@ -836,8 +943,8 @@ class ArabicVocabularyExtractionService
             // Regex for "رددوا\s*[:\s]+([^\.\-؛:،]+)"
             if (preg_match('/(?:رددوا|رَدِّدوا|ردد)\s*[:\s]+([^\.\-؛:،]+)/u', $t, $m)) {
                 $candidate = $this->cleanArabicBoundary((string) $m[1]);
-                $candRaw = $this->stripArabicDiacritics($candidate);
-                if (count(explode(' ', $candRaw)) <= 2 && mb_strlen($candRaw, 'UTF-8') >= 2 && ! $this->isNavToken($candRaw)) {
+                if ($this->isValidVocabularyWord($candidate)) {
+                    $candRaw = $this->stripArabicDiacritics($candidate);
                     $sentence = $this->findExampleSentence($texts, $candRaw);
 
                     return [
@@ -850,8 +957,8 @@ class ArabicVocabularyExtractionService
             // Regex for "هذه (Word) ــــ (Word)"
             if (preg_match('/^هذه\s+([^\.\-؛:،]+)/u', $t, $m)) {
                 $candidate = $this->cleanArabicBoundary((string) $m[1]);
-                $candRaw = $this->stripArabicDiacritics($candidate);
-                if (count(explode(' ', $candRaw)) <= 2 && mb_strlen($candRaw, 'UTF-8') >= 2 && ! $this->isNavToken($candRaw)) {
+                if ($this->isValidVocabularyWord($candidate)) {
+                    $candRaw = $this->stripArabicDiacritics($candidate);
                     $sentence = $this->findExampleSentence($texts, $candRaw);
 
                     return [
@@ -916,6 +1023,11 @@ class ArabicVocabularyExtractionService
      *
      * @return array<int, array{sentence: string, raw: string, slide_index: int}>
      */
+    /**
+     * Extract practice and application sentences across all slides of the lesson.
+     *
+     * @return array<int, array{sentence: string, raw: string, slide_index: int}>
+     */
     protected function extractLessonPracticeSentences(ZipArchive $zip, array $slides): array
     {
         $sentences = [];
@@ -927,65 +1039,65 @@ class ArabicVocabularyExtractionService
                 continue;
             }
 
-            $cleanTexts = [];
             foreach ($texts as $t) {
-                $raw = $this->stripArabicDiacritics($t);
-                if (! $this->isNavToken($raw)) {
-                    $cleanTexts[] = trim($t);
-                }
-            }
-
-            $full = implode(' ', $cleanTexts);
-            $candidates = [];
-
-            // Pattern 1: Prompt target repetition: 'لديَّ محفظة. رددوا: لديَّ محفظة.'
-            if (preg_match('/(?:رددوا|رَدِّدوا|ردد)\s*[:\s]+([^.،؛\-\x{2013}\x{2014}\x{0640}\r\n\?؟]+)/u', $full, $m)) {
-                $candidates[] = $m[1];
-            }
-
-            // Pattern 2: Before prompt: 'الدفتر والمقلمة والأقلام الملونة أدوات مدرسية – رددوا' or 'يفوز الطفل بالجائزة. رددوا.'
-            if (preg_match('/([^.،؛?؟\-\x{2013}\x{2014}\x{0640}\r\n]{5,})\s*(?:[\-\x{2013}\x{2014}\x{0640}.]+|\s+)\s*(?:رددوا|رَدِّدوا|ردد)/u', $full, $m)) {
-                $candidates[] = $m[1];
-            }
-
-            // Pattern 3: Demonstrative application: 'هذه مقلمة – مقلمة' or 'هذا دفتر – دفتر'
-            if (preg_match('/(?:هذه|هذا)\s+([^.،؛?؟\-\x{2013}\x{2014}\x{0640}\r\n]{3,})/u', $full, $m)) {
-                $candidates[] = $m[0];
-            }
-
-            foreach ($candidates as $cand) {
-                $c = $this->cleanArabicBoundary((string) $cand);
-                $c = preg_replace('/^(?:معا|جميعا|الآن|نردد معا|رددوا|رَدِّدوا)\s*[:\s]*/u', '', $c);
-                $c = $this->cleanArabicBoundary($c);
-                $raw = $this->stripArabicDiacritics($c);
-                $wordCount = count(explode(' ', $raw));
-
-                $cleanWords = preg_split('/[\s\.\-،؛:]+/u', $raw, -1, PREG_SPLIT_NO_EMPTY);
-                $uniqueWords = array_unique($cleanWords ?: []);
-                if (count($uniqueWords) <= 1) {
+                $rawT = $this->stripArabicDiacritics($t);
+                if ($this->isNavToken($rawT)) {
                     continue;
                 }
 
-                if ($wordCount >= 2 && $wordCount <= 14) {
-                    if (! $this->isNavToken($raw) &&
-                        ! str_starts_with($raw, 'حرف ') &&
-                        ! str_starts_with($raw, 'خذوا ') &&
-                        ! str_starts_with($raw, 'انتبهوا ') &&
-                        ! str_starts_with($raw, 'سوف ') &&
-                        ! str_starts_with($raw, 'ستنجزون ') &&
-                        ! str_starts_with($raw, 'عنوان ') &&
-                        ! str_starts_with($raw, 'هيكله ') &&
-                        ! str_starts_with($raw, 'اري في ') &&
-                        ! str_starts_with($raw, 'نسمع الصوت ')
-                    ) {
-                        // Avoid simple 2-word lists with dashes like "مدرسة – محفظة"
-                        if (! str_contains($c, '–') && ! str_contains($c, 'ــــ')) {
-                            $sentences[$raw] = [
-                                'sentence' => $c,
-                                'raw' => $raw,
-                                'slide_index' => $slideNum,
-                            ];
-                        }
+                $candidates = [];
+
+                // Pattern 1: Prompt target repetition: 'لديَّ محفظة. رددوا: لديَّ محفظة.'
+                if (preg_match('/(?:رددوا|رَدِّدوا|ردد)\s*[:\s]+([^.،؛\-\x{2013}\x{2014}\x{0640}\r\n\?؟]+)/u', $t, $m)) {
+                    $candidates[] = $m[1];
+                }
+
+                // Pattern 2: Before prompt: 'الدفتر والمقلمة والأقلام الملونة أدوات مدرسية – رددوا'
+                if (preg_match('/([^.،؛?؟\-\x{2013}\x{2014}\x{0640}\r\n]{5,})\s*(?:[\-\x{2013}\x{2014}\x{0640}.]+|\s+)\s*(?:رددوا|رَدِّدوا|ردد)/u', $t, $m)) {
+                    $candidates[] = $m[1];
+                }
+
+                // Pattern 3: Demonstrative application: 'هذه مقلمة' or 'هذا دفتر'
+                if (preg_match('/^(?:هذه|هذا)\s+([^.،؛?؟\-\x{2013}\x{2014}\x{0640}\r\n]{3,})/u', $t, $m)) {
+                    $candidates[] = $m[0];
+                }
+
+                foreach ($candidates as $cand) {
+                    $c = $this->cleanArabicBoundary((string) $cand);
+                    $c = preg_replace('/^(?:معا|جميعا|الآن|نردد معا|رددوا|رَدِّدوا)\s*[:\s]*/u', '', $c);
+                    $c = $this->cleanArabicBoundary($c);
+                    $raw = $this->stripArabicDiacritics($c);
+
+                    // Discard if contains list dashes
+                    if (str_contains($c, '–') || str_contains($c, '—') || str_contains($c, 'ــــ')) {
+                        continue;
+                    }
+
+                    // Discard story titles, comprehension expectations, and teacher directives
+                    $forbidden = [
+                        'عنوان', 'حكاية', 'حكايتنا', 'اول يوم في المدرسه', 'اري في الصوره', 'اتوقع', 'توقع',
+                        'تسميع', 'تحقق', 'للتحدث عن', 'سوف نتعلم', 'ستتعلمون', 'سنتعلم', 'استراحه', 'سنردد',
+                        'نردد معا', 'ضعوا', 'خذوا', 'الكراسه', 'اللوحه', 'اشير', 'تقول', 'ثنائيات', 'اشاره',
+                        'حرف', 'انشوده', 'نشيد', 'المقاطع', 'شخصيه', 'شخصيات', 'الفقره', 'تمرين', 'صوت',
+                        'مجموعه من الكلمات'
+                    ];
+                    if ($this->containsAny($raw, $forbidden)) {
+                        continue;
+                    }
+
+                    $cleanWords = preg_split('/[\s\.\-،؛:]+/u', $raw, -1, PREG_SPLIT_NO_EMPTY);
+                    $uniqueWords = array_unique($cleanWords ?: []);
+                    if (count($uniqueWords) <= 1) {
+                        continue;
+                    }
+
+                    $wordCount = count($cleanWords);
+                    if ($wordCount >= 2 && $wordCount <= 12) {
+                        $sentences[$raw] = [
+                            'sentence' => $c,
+                            'raw' => $raw,
+                            'slide_index' => $slideNum,
+                        ];
                     }
                 }
             }
@@ -1002,13 +1114,11 @@ class ArabicVocabularyExtractionService
      */
     protected function findMatchingSentencesForWord(string $rawWord, array $sentences): array
     {
-        $stem = preg_replace('/^ال/u', '', $rawWord);
-        // Remove feminine ending so 'محفظه' matches 'محفظتي', 'المحفظة'
-        if (str_ends_with($stem, 'ه') || str_ends_with($stem, 'ة')) {
-            $stem = mb_substr($stem, 0, -1, 'UTF-8');
-        }
+        $rawWord = $this->stripArabicDiacritics($rawWord);
+        $targetTokens = preg_split('/[\s\.\-،؛:–—ـ!?؟\(\)]+/u', $rawWord, -1, PREG_SPLIT_NO_EMPTY);
+        $targetCleanTokens = array_map(fn ($w) => preg_replace('/^(?:وال|بال|فال|كال|لل|ال|[وبفكل])/u', '', $w), $targetTokens);
 
-        if (mb_strlen($stem, 'UTF-8') < 2) {
+        if ($targetCleanTokens === []) {
             return [];
         }
 
@@ -1016,7 +1126,38 @@ class ArabicVocabularyExtractionService
         foreach ($sentences as $s) {
             $sRaw = $s['raw'];
             $sText = $s['sentence'];
-            if (str_contains($sRaw, $stem)) {
+
+            $sentTokens = preg_split('/[\s\.\-،؛:–—ـ!?؟\(\)]+/u', $sRaw, -1, PREG_SPLIT_NO_EMPTY);
+            $sentCleanTokens = array_map(fn ($w) => preg_replace('/^(?:وال|بال|فال|كال|لل|ال|[وبفكل])/u', '', $w), $sentTokens);
+
+            $matched = false;
+            if (count($targetCleanTokens) === 1) {
+                $target = $targetCleanTokens[0];
+                $isFeminine = str_ends_with($target, 'ه') || str_ends_with($target, 'ة');
+                $base = $isFeminine ? mb_substr($target, 0, -1, 'UTF-8') : $target;
+                $suffixes = $isFeminine
+                    ? ['تي', 'تنا', 'تك', 'تها', 'تهم', 'ته']
+                    : ['ي', 'نا', 'ك', 'ها', 'هم', 'ه'];
+
+                foreach ($sentCleanTokens as $tok) {
+                    if ($tok === $target) {
+                        $matched = true;
+                        break;
+                    }
+                    foreach ($suffixes as $suf) {
+                        if ($tok === $base . $suf) {
+                            $matched = true;
+                            break 2;
+                        }
+                    }
+                }
+            } else {
+                $targetJoined = implode(' ', $targetCleanTokens);
+                $sentJoined = implode(' ', $sentCleanTokens);
+                $matched = str_contains($sentJoined, $targetJoined);
+            }
+
+            if ($matched) {
                 $matches[] = $sText;
             }
         }
