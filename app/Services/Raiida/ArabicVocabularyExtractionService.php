@@ -610,10 +610,28 @@ class ArabicVocabularyExtractionService
             return false;
         }
 
+        // Must have an authentic 'معجم' or 'المعجم' section title shape (as in the curriculum slide format)
+        $hasVocabTitle = false;
+        foreach ($texts as $t) {
+            $rawT = $this->stripArabicDiacritics(trim($t));
+            if ($rawT === 'معجم' || $rawT === 'المعجم' || str_starts_with($rawT, 'معجم ') || str_starts_with($rawT, 'المعجم ') || str_contains($rawT, 'ورشة المعجم')) {
+                $hasVocabTitle = true;
+                break;
+            }
+        }
+        if (! $hasVocabTitle) {
+            return false;
+        }
+
         // Find a text line containing at least 3 distinct valid words separated by dashes
         foreach ($texts as $t) {
             $rawT = $this->stripArabicDiacritics($t);
             if (in_array($rawT, ['معجم', 'المعجم', 'نشاط اعتيادي', 'استماع وتحدث', 'اختتام الحصة', 'قراءة كتابة', 'قراءة/ كتابة'])) {
+                continue;
+            }
+
+            // Exclude oral repetition flashcards
+            if (str_contains($rawT, 'رددوا') || str_contains($rawT, 'نردد') || str_starts_with($rawT, 'هذا ') || str_starts_with($rawT, 'هذه ') || str_starts_with($rawT, 'هولاء ')) {
                 continue;
             }
 
@@ -712,31 +730,41 @@ class ArabicVocabularyExtractionService
 
         foreach ($texts as $t) {
             $rawT = $this->stripArabicDiacritics($t);
-            if (in_array($rawT, ['معجم', 'المعجم', 'نشاط اعتيادي', 'استماع وتحدث', 'اختتام الحصة', 'قراءة كتابة', 'قراءة/ كتابة'])) {
+            if (in_array($rawT, ['معجم', 'المعجم', 'نشاط اعتيادي', 'استماع وتحدث', 'اختتام الحصة', 'قراءة كتابة', 'قراءة/ كتابة', '1', '2', '3'])) {
+                continue;
+            }
+
+            // Exclude oral repetition flashcards
+            if (str_contains($rawT, 'رددوا') || str_contains($rawT, 'نردد') || str_starts_with($rawT, 'هذا ') || str_starts_with($rawT, 'هذه ') || str_starts_with($rawT, 'هولاء ')) {
+                continue;
+            }
+
+            // If the text block is just a theme title (e.g. 'مرافق المدرسة:') without dashes, skip it
+            if (str_ends_with(trim($t), ':') || ! (str_contains($t, '–') || str_contains($t, '—') || str_contains($t, '-') || str_contains($t, 'ـ'))) {
                 continue;
             }
 
             $parts = preg_split('/[–—\-]+|\x{0640}{3,}/u', $t);
-            $candidateWords = [];
             foreach ($parts as $part) {
                 $p = $this->cleanArabicBoundary((string) $part);
                 $p = preg_replace('/^(?:معجم|المعجم|معــــــــــجم|مـــعــجـــم|مفردات|الأسرة والعائلة|المدرسة والأدوات المدرسية|معجم المدرسة والأدوات المدرسية|معجم المدرسة|مرافق المدرسة|معجم مرافق المدرسة|معجم الأنشطة المدرسية|الأنشطة المدرسية)[^:]*:\s*/u', '', $p);
                 $p = preg_replace('/\s*(?:معجم|المعجم|معــــــــــجم|مـــعــجـــم|مفردات)$/u', '', $p);
                 $p = $this->cleanArabicBoundary($p);
 
-                if ($this->isValidVocabularyWord($p)) {
-                    $candidateWords[] = $p;
+                $rawP = $this->stripArabicDiacritics($p);
+                if (in_array($rawP, ['مرافق المدرسه', 'المدرسه والادوات المدرسيه', 'الاسره والعائله', 'الانشطه المدرسيه', 'معجم المدرسه'], true)) {
+                    continue;
                 }
-            }
 
-            if (count($candidateWords) >= 3) {
-                foreach ($candidateWords as $cw) {
-                    $words[] = $cw;
+                if ($this->isValidVocabularyWord($p)) {
+                    $words[] = $p;
                 }
             }
         }
 
-        return array_values(array_unique($words));
+        $uniqueWords = array_values(array_unique($words));
+
+        return count($uniqueWords) >= 3 ? $uniqueWords : [];
     }
 
     protected function cleanArabicBoundary(string $text): string
