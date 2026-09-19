@@ -930,6 +930,14 @@ class ArabicVocabularyExtractionService
      */
     protected function detectVocabularySlide(array $texts, array $announcedWords): ?array
     {
+        $fullText = implode(' ', $texts);
+        $fullRaw = $this->stripArabicDiacritics($fullText);
+
+        // Skip non-vocabulary slides (phonics, songs, sight words, schedule)
+        if ($this->containsAny($fullRaw, ['الصوت [', 'حرف ', 'انشوده', 'نشيد', 'كلمات بصريه', 'تنظيم حصص', 'هيكله حصه'])) {
+            return null;
+        }
+
         // Pattern A: Match against announced vocabulary words
         foreach ($announcedWords as $raw => $vocalized) {
             foreach ($texts as $t) {
@@ -946,68 +954,74 @@ class ArabicVocabularyExtractionService
             }
         }
 
-        // If explicit announced words list was found, do not add loose heuristic matches
-        if ($announcedWords !== []) {
-            return null;
-        }
-
-        // Only allow heuristic extraction if the slide explicitly contains an authentic vocabulary banner (excluding solitary footer navbar tokens)
-        $hasExplicitVocabBanner = false;
+        // Pattern B: Look for prompt cues like "الكلمة الأولى هي X - رددوا : X" or "رددوا : X" or "هذه X. رددوا: X"
+        $hasVocabContext = false;
         foreach ($texts as $text) {
             $t = $this->stripArabicDiacritics(trim($text));
-            if (in_array($t, ['معجم', 'المعجم', 'معــــــــــجم', 'مـــعــجـــم', 'مفردات'], true)) {
-                continue;
-            }
-            if (str_starts_with($t, 'معجم ') || str_starts_with($t, 'المعجم ') || str_starts_with($t, 'مفردات ') || str_contains($t, 'ورشة المعجم')) {
-                $hasExplicitVocabBanner = true;
+            if (in_array($t, ['معجم', 'المعجم', 'معــــــــــجم', 'مـــعــجـــم', 'مفردات'], true) ||
+                str_starts_with($t, 'معجم ') || str_starts_with($t, 'المعجم ') || str_starts_with($t, 'مفردات ') || str_contains($t, 'ورشة المعجم')) {
+                $hasVocabContext = true;
                 break;
             }
         }
-        if (! $hasExplicitVocabBanner) {
-            return null;
-        }
 
-        // Pattern B: Look for prompt cues like "الكلمة الأولى هي X - رددوا : X" or "رددوا : X" or "هذه X. رددوا: X"
+        $raddiduRegex = '/ر[\x{064B}-\x{065F}]*د[\x{064B}-\x{065F}]*د[\x{064B}-\x{065F}]*(?:وا|و|ي)?\s*[:：\s]+([^\.\-؛:،!]+)/u';
+        $hadiheRegex = '/^(?:هذا|هذِهِ|هذه|هٰذا|هـذا)\s+([^\.\-؛:،!]+)/u';
+
         foreach ($texts as $t) {
             // Regex for "الكلمة ... هي (Word)"
-            if (preg_match('/(?:الكلمة\s+(?:الأولى|الثانية|الثالثة|الرابعة|الخامسة|الموالية|التالية)\s+هي\s+)([^\.\-؛:،]+)/u', $t, $m)) {
+            if (preg_match('/(?:الكلمة\s+(?:الأولى|الثانية|الثالثة|الرابعة|الخامسة|الموالية|التالية)\s+هي\s+)([^\.\-؛:،!]+)/u', $t, $m)) {
                 $word = $this->cleanArabicBoundary((string) $m[1]);
                 if ($this->isValidVocabularyWord($word)) {
                     $raw = $this->stripArabicDiacritics($word);
-                    $sentence = $this->findExampleSentence($texts, $raw);
+                    if (! $this->isNavToken($raw)) {
+                        $sentence = $this->findExampleSentence($texts, $raw);
 
-                    return [
-                        'word' => $word,
-                        'example_sentence' => $sentence,
-                    ];
+                        return [
+                            'word' => $word,
+                            'example_sentence' => $sentence,
+                        ];
+                    }
                 }
             }
 
-            // Regex for "رددوا\s*[:\s]+([^\.\-؛:،]+)"
-            if (preg_match('/(?:رددوا|رَدِّدوا|ردد)\s*[:\s]+([^\.\-؛:،]+)/u', $t, $m)) {
+            // Regex for "رددوا : (Word)"
+            if (preg_match($raddiduRegex, $t, $m)) {
                 $candidate = $this->cleanArabicBoundary((string) $m[1]);
                 if ($this->isValidVocabularyWord($candidate)) {
                     $candRaw = $this->stripArabicDiacritics($candidate);
-                    $sentence = $this->findExampleSentence($texts, $candRaw);
+                    if (! $this->isNavToken($candRaw) && $hasVocabContext) {
+                        $bestWord = $candidate;
+                        foreach ($texts as $otherT) {
+                            $cleanOther = $this->cleanArabicBoundary(trim($otherT));
+                            $otherRaw = $this->stripArabicDiacritics($cleanOther);
+                            if ($otherRaw === $candRaw && mb_strlen($cleanOther, 'UTF-8') > mb_strlen($bestWord, 'UTF-8') && ! str_contains($cleanOther, 'ردد')) {
+                                $bestWord = $cleanOther;
+                            }
+                        }
+                        $sentence = $this->findExampleSentence($texts, $candRaw);
 
-                    return [
-                        'word' => $candidate,
-                        'example_sentence' => $sentence,
-                    ];
+                        return [
+                            'word' => $bestWord,
+                            'example_sentence' => $sentence,
+                        ];
+                    }
                 }
             }
 
             // Regex for "هذه (Word) ــــ (Word)"
-            if (preg_match('/^هذه\s+([^\.\-؛:،]+)/u', $t, $m)) {
+            if (preg_match($hadiheRegex, $t, $m)) {
                 $candidate = $this->cleanArabicBoundary((string) $m[1]);
                 if ($this->isValidVocabularyWord($candidate)) {
                     $candRaw = $this->stripArabicDiacritics($candidate);
-                    $sentence = $this->findExampleSentence($texts, $candRaw);
+                    if (! $this->isNavToken($candRaw) && $hasVocabContext) {
+                        $sentence = $this->findExampleSentence($texts, $candRaw);
 
-                    return [
-                        'word' => $candidate,
-                        'example_sentence' => $sentence,
-                    ];
+                        return [
+                            'word' => $candidate,
+                            'example_sentence' => $sentence,
+                        ];
+                    }
                 }
             }
         }
@@ -1159,7 +1173,7 @@ class ArabicVocabularyExtractionService
     {
         $rawWord = $this->stripArabicDiacritics($rawWord);
         $targetTokens = preg_split('/[\s\.\-،؛:–—ـ!?؟\(\)]+/u', $rawWord, -1, PREG_SPLIT_NO_EMPTY);
-        $targetCleanTokens = array_map(fn ($w) => preg_replace('/^(?:وال|بال|فال|كال|لل|ال|[وبفكل])/u', '', $w), $targetTokens);
+        $targetCleanTokens = array_map(fn ($w) => preg_replace('/^(?:وال|بال|فال|كال|لل|ال)/u', '', $w), $targetTokens);
 
         if ($targetCleanTokens === []) {
             return [];
@@ -1171,7 +1185,7 @@ class ArabicVocabularyExtractionService
             $sText = $s['sentence'];
 
             $sentTokens = preg_split('/[\s\.\-،؛:–—ـ!?؟\(\)]+/u', $sRaw, -1, PREG_SPLIT_NO_EMPTY);
-            $sentCleanTokens = array_map(fn ($w) => preg_replace('/^(?:وال|بال|فال|كال|لل|ال|[وبفكل])/u', '', $w), $sentTokens);
+            $sentCleanTokens = array_map(fn ($w) => preg_replace('/^(?:وال|بال|فال|كال|لل|ال)/u', '', $w), $sentTokens);
 
             $matched = false;
             if (count($targetCleanTokens) === 1) {
