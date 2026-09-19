@@ -464,6 +464,9 @@ class ArabicVocabularyExtractionService
             $detectedItem = $this->detectVocabularySlide($texts, $announcedWords);
             if ($detectedItem !== null) {
                 $word = $detectedItem['word'];
+                if ($this->slideHasDammatanImage($zip, $slidePath)) {
+                    $word = $this->appendDammatanIfNeeded($word);
+                }
                 $rawWord = $this->stripArabicDiacritics($word);
 
                 if ($rawWord === '' || mb_strlen($rawWord, 'UTF-8') < 2 || $this->isNavToken($rawWord)) {
@@ -475,6 +478,9 @@ class ArabicVocabularyExtractionService
 
                 if (isset($seenWords[$rawWord])) {
                     $existingIdx = $seenWords[$rawWord];
+                    if ($this->slideHasDammatanImage($zip, $slidePath)) {
+                        $extracted[$existingIdx]['word'] = $this->appendDammatanIfNeeded($extracted[$existingIdx]['word']);
+                    }
                     if (empty($extracted[$existingIdx]['image_path']) && $imagePath !== null) {
                         $extracted[$existingIdx]['image_path'] = $imagePath;
                     }
@@ -1685,6 +1691,65 @@ class ArabicVocabularyExtractionService
         }
 
         return false;
+    }
+
+    /**
+     * Check if a slide contains the external dammatan (ضمتان) image glyph.
+     */
+    protected function slideHasDammatanImage(ZipArchive $zip, string $slidePath): bool
+    {
+        $relsPath = dirname($slidePath) . '/_rels/' . basename($slidePath) . '.rels';
+        $xml = $zip->getFromName($relsPath);
+        if (! is_string($xml) || $xml === '') {
+            return false;
+        }
+
+        $rels = $this->parseXml($xml);
+        if ($rels === null) {
+            return false;
+        }
+
+        foreach ($rels->Relationship as $rel) {
+            if (str_contains((string) $rel['Type'], '/image')) {
+                $target = (string) $rel['Target'];
+                if (basename($target) === 'image66.png') {
+                    return true;
+                }
+                $resolved = $this->resolveRelativePath(dirname($slidePath), $target);
+                $blob = $zip->getFromName($resolved);
+                if (is_string($blob) && $blob !== '') {
+                    if (md5($blob) === '491ee301641d0e9c9ec2d10d2305218f') {
+                        return true;
+                    }
+                    $sz = @getimagesizefromstring($blob);
+                    if ($sz && $sz[0] === 48 && $sz[1] === 36) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Append dammatan (ضمتان / tanween damm) to word if last letter does not have tachkil.
+     */
+    protected function appendDammatanIfNeeded(string $word): string
+    {
+        $cleanWord = trim($word);
+        if ($cleanWord === '') {
+            return $word;
+        }
+
+        $lastChar = mb_substr($cleanWord, -1, 1, 'UTF-8');
+        $tachkilRegex = '/[\x{064B}-\x{0652}\x{0670}]/u';
+
+        if (! preg_match($tachkilRegex, $lastChar)) {
+            return $cleanWord . "\u{064C}";
+        }
+
+        return $cleanWord;
     }
 
     protected function deleteDirectory(string $path): void
