@@ -66,6 +66,8 @@ class ArabicVocabularyExtractionService
             $savedCount = 0;
 
             foreach ($extractedItems as $item) {
+                $cleanWord = $item['clean_word'] ?? $this->stripTatweel($item['word']);
+
                 $savedItem = ArabicVocabularyItem::query()->updateOrCreate(
                     [
                         'word' => $item['word'],
@@ -73,6 +75,7 @@ class ArabicVocabularyExtractionService
                         'grade' => $grade,
                     ],
                     [
+                        'clean_word' => $cleanWord,
                         'raw_word' => $item['raw_word'],
                         'example_sentence' => $item['example_sentence'] ?? null,
                         'strategy' => $item['strategy'] ?? null,
@@ -392,6 +395,7 @@ class ArabicVocabularyExtractionService
                         $seenWords[$raw] = count($extracted);
                         $extracted[] = [
                             'word' => $mItem['word'],
+                            'clean_word' => $this->stripTatweel($mItem['word']),
                             'raw_word' => $raw,
                             'example_sentence' => $mItem['meaning'],
                             'strategy' => 'المعجم المساعد',
@@ -414,6 +418,7 @@ class ArabicVocabularyExtractionService
                         $seenWords[$raw] = count($extracted);
                         $extracted[] = [
                             'word' => $networkItem['word'],
+                            'clean_word' => $this->stripTatweel($networkItem['word']),
                             'raw_word' => $raw,
                             'example_sentence' => $networkItem['example_sentence'],
                             'strategy' => 'شبكة المفردات',
@@ -444,6 +449,7 @@ class ArabicVocabularyExtractionService
                         $seenWords[$raw] = count($extracted);
                         $extracted[] = [
                             'word' => $mapItem['word'],
+                            'clean_word' => $this->stripTatweel($mapItem['word']),
                             'raw_word' => $raw,
                             'example_sentence' => $mapItem['example_sentence'],
                             'strategy' => 'خريطة الكلمة',
@@ -480,6 +486,7 @@ class ArabicVocabularyExtractionService
                     $existingIdx = $seenWords[$rawWord];
                     if ($this->slideHasDammatanImage($zip, $slidePath)) {
                         $extracted[$existingIdx]['word'] = $this->appendDammatanIfNeeded($extracted[$existingIdx]['word']);
+                        $extracted[$existingIdx]['clean_word'] = $this->stripTatweel($extracted[$existingIdx]['word']);
                     }
                     if (empty($extracted[$existingIdx]['image_path']) && $imagePath !== null) {
                         $extracted[$existingIdx]['image_path'] = $imagePath;
@@ -493,6 +500,7 @@ class ArabicVocabularyExtractionService
                 $seenWords[$rawWord] = count($extracted);
                 $extracted[] = [
                     'word' => $word,
+                    'clean_word' => $this->stripTatweel($word),
                     'raw_word' => $rawWord,
                     'example_sentence' => $detectedItem['example_sentence'] ?? null,
                     'strategy' => $activeStrategy ?? 'معجم مصور',
@@ -508,6 +516,7 @@ class ArabicVocabularyExtractionService
                 $seenWords[$raw] = count($extracted);
                 $extracted[] = [
                     'word' => $vocalized,
+                    'clean_word' => $this->stripTatweel($vocalized),
                     'raw_word' => $raw,
                     'example_sentence' => null,
                     'strategy' => $activeStrategy ?? 'المفردات',
@@ -1226,6 +1235,14 @@ class ArabicVocabularyExtractionService
     /**
      * Strip Arabic vowels and diacritics.
      */
+    /**
+     * Remove Arabic tatweel / kashida (ـ) while preserving all diacritics / tachkil.
+     */
+    public function stripTatweel(string $text): string
+    {
+        return trim(preg_replace('/\x{0640}+/u', '', $text) ?? $text);
+    }
+
     public function stripArabicDiacritics(string $text): string
     {
         $clean = preg_replace(self::ARABIC_DIACRITICS_REGEX, '', $text) ?? $text;

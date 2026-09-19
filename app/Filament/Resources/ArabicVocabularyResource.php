@@ -37,10 +37,14 @@ class ArabicVocabularyResource extends Resource
                 ->aside()
                 ->columns(2)
                 ->schema([
-                    Forms\Components\TextInput::make('word')
-                        ->label('Word (المفردة / الكلمة)')
-                        ->required()
+                    Forms\Components\TextInput::make('clean_word')
+                        ->label('Clean Word (الكلمة النظيفة)')
                         ->extraInputAttributes(['dir' => 'rtl', 'style' => 'font-size: 1.25rem; font-weight: bold;'])
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('word')
+                        ->label('Word in Slide (المفردة في الشريحة)')
+                        ->required()
+                        ->extraInputAttributes(['dir' => 'rtl', 'style' => 'font-size: 1.2rem;'])
                         ->maxLength(255),
                     Forms\Components\TextInput::make('raw_word')
                         ->label('Raw Word (بدون تشكيل)')
@@ -150,12 +154,18 @@ class ArabicVocabularyResource extends Resource
                     ->getStateUsing(fn ($record) => $record->image_path ? asset($record->image_path) : null)
                     ->circular(false)
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('word')
-                    ->label('المفردة / الكلمة')
+                Tables\Columns\TextColumn::make('clean_word')
+                    ->label('الكلمة النظيفة')
                     ->searchable()
                     ->sortable()
                     ->weight('bold')
-                    ->extraAttributes(['dir' => 'rtl', 'style' => 'font-size: 1.15rem; font-weight: 700;']),
+                    ->extraAttributes(['dir' => 'rtl', 'style' => 'font-size: 1.2rem; font-weight: 700;']),
+                Tables\Columns\TextColumn::make('word')
+                    ->label('المفردة في الشريحة')
+                    ->searchable()
+                    ->sortable()
+                    ->extraAttributes(['dir' => 'rtl', 'style' => 'font-size: 1.05rem;'])
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('raw_word')
                     ->label('بدون تشكيل')
                     ->searchable()
