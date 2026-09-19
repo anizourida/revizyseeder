@@ -1340,6 +1340,21 @@ class ArabicVocabularyExtractionService
                     }
 
                     $resolved = $imageRels[$rid];
+                    $blob = $zip->getFromName($resolved);
+                    if (! is_string($blob) || $blob === '') {
+                        continue;
+                    }
+
+                    $sz = @getimagesizefromstring($blob);
+                    $w = $sz ? (int) $sz[0] : 0;
+                    $h = $sz ? (int) $sz[1] : 0;
+                    $ratio = ($h > 0) ? ($w / $h) : 0;
+
+                    // Immediately disqualify tiny images (like 48x36 diacritics / dammat or 28x28 bullet icons)
+                    if ($w > 0 && $h > 0 && ($w < 150 || $h < 150)) {
+                        continue;
+                    }
+
                     $baseName = basename($resolved);
                     $freq = $mediaFrequency[$baseName] ?? 1;
 
@@ -1348,33 +1363,49 @@ class ArabicVocabularyExtractionService
                     $cDescr = (string) ($pic->xpath('.//p:cNvPr/@descr')[0] ?? '');
 
                     $score = 0;
-                    // Primary placeholder images
-                    if ($ph !== [] || str_contains($cName, 'réservé') || str_contains($cName, 'Placeholder')) {
-                        $score += 20000;
-                    }
 
-                    // Vocabulary illustrations are unique or near-unique (freq 1-3).
-                    // Template icons/buttons/recurrent characters (like cartoon teachers) appear on 4+ slides.
-                    if ($freq <= 1) {
+                    // Good-sized image dimensions
+                    if ($w >= 300 && $h >= 300) {
+                        $score += 35000;
+                    } elseif ($w >= 200 && $h >= 200) {
                         $score += 15000;
-                    } elseif ($freq <= 3) {
-                        $score += 8000;
-                    } elseif ($freq >= 10) {
-                        $score -= 30000;
-                    } elseif ($freq >= 4) {
-                        $score -= 10000;
                     }
 
-                    if (str_contains($cDescr, 'fourniture') || str_contains($cDescr, 'bureau') || str_contains($cDescr, 'Approvisionnement')) {
-                        $score += 5000;
+                    // Authentic vocabulary images have an aspect ratio close to 1:1 (often 0.80 - 1.25 with bottom margin)
+                    if ($ratio >= 0.70 && $ratio <= 1.40) {
+                        $score += 25000;
                     }
 
+                    // Slide bounding area
                     $area = 0;
                     $extNodes = $pic->xpath('.//a:xfrm/a:ext') ?: [];
                     if ($extNodes !== []) {
                         $cx = (int) ($extNodes[0]['cx'] ?? 0);
                         $cy = (int) ($extNodes[0]['cy'] ?? 0);
                         $area = $cx * $cy;
+                    }
+                    if ($area >= 1000000000000) {
+                        $score += 20000;
+                    }
+
+                    // Primary placeholder images
+                    if ($ph !== [] || str_contains($cName, 'réservé') || str_contains($cName, 'Placeholder')) {
+                        $score += 10000;
+                    }
+
+                    // Recurrent template icons / mascots appear frequently across slides
+                    if ($freq <= 2) {
+                        $score += 20000;
+                    } elseif ($freq <= 5) {
+                        $score += 5000;
+                    } elseif ($freq >= 20) {
+                        $score -= 60000;
+                    } elseif ($freq >= 10) {
+                        $score -= 25000;
+                    }
+
+                    if (str_contains($cDescr, 'fourniture') || str_contains($cDescr, 'bureau') || str_contains($cDescr, 'Approvisionnement')) {
+                        $score += 5000;
                     }
 
                     $candidates[] = [
