@@ -289,6 +289,31 @@ class VocabularySentenceExtractionService
             }
         }
 
+        // 3rd group / irregular verbs conjugations
+        $lowerWord = mb_strtolower($word);
+        $lowerBase = mb_strtolower($baseWord);
+        foreach ([$lowerWord, $lowerBase] as $w) {
+            if ($w === 'boire') {
+                $terms = array_merge($terms, ['bois', 'boit', 'buvons', 'buvez', 'boivent', 'boire']);
+            } elseif ($w === 'voir') {
+                $terms = array_merge($terms, ['vois', 'voit', 'voyons', 'voyez', 'voient', 'voir']);
+            } elseif ($w === 'prendre') {
+                $terms = array_merge($terms, ['prends', 'prend', 'prenons', 'prenez', 'prennent', 'prendre']);
+            } elseif ($w === 'faire') {
+                $terms = array_merge($terms, ['fais', 'fait', 'faisons', 'faites', 'font', 'faire']);
+            } elseif ($w === 'aller') {
+                $terms = array_merge($terms, ['vais', 'vas', 'va', 'allons', 'allez', 'vont', 'aller']);
+            } elseif ($w === 'dire') {
+                $terms = array_merge($terms, ['dis', 'dit', 'disons', 'dites', 'disent', 'dire']);
+            } elseif ($w === 'lire') {
+                $terms = array_merge($terms, ['lis', 'lit', 'lisons', 'lisez', 'lisent', 'lire']);
+            } elseif ($w === 'écrire') {
+                $terms = array_merge($terms, ['écris', 'écrit', 'écrivons', 'écrivez', 'écrivent', 'écrire']);
+            } elseif ($w === 'mettre') {
+                $terms = array_merge($terms, ['mets', 'met', 'mettons', 'mettez', 'mettent', 'mettre']);
+            }
+        }
+
         // Elision variations (l'eau, d'eau)
         if (str_starts_with(mb_strtolower($word), "l’") || str_starts_with(mb_strtolower($word), "l'")) {
             $bare = preg_replace("/^l['’]/ui", "", $word);
@@ -438,7 +463,7 @@ class VocabularySentenceExtractionService
             '/\b(?:s’appeler\s+au\s+présent|s\'appeler\s+au\s+présent)\b/ui',
             '/^(?:Tu dois|Vous devez|L’enseignant|L\'enseignant|L’élève|L\'élève)\b/ui',
             '/^(?:Poser|Répondre à)\s+la\s+question\b/ui',
-            '/^Je dis comment je m’appelle comme\b/ui',
+            '/^Je dis (?:où|comment|qui|ce que)\b/ui',
             '/\b(?:Questions en rafale|Questions en rafales)\b/ui',
             '/\b(?:sur|sous|dans|de|du|des|le|la|les|un|une|et|à|en|pour|avec)$/ui', // dangling preposition
         ];
@@ -447,6 +472,11 @@ class VocabularySentenceExtractionService
             if (preg_match($pattern, $sentence)) {
                 return false;
             }
+        }
+
+        // Real pedagogical sentences must end with terminal punctuation (. or !)
+        if (! preg_match('/[.!] *$/u', $sentence)) {
+            return false;
         }
 
         // Filter out fill-in-the-blank blanks (Arabic Tatweel ـ, underscores, multiple dots, dashes, box symbols)

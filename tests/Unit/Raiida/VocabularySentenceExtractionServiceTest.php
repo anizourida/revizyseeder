@@ -55,6 +55,22 @@ class VocabularySentenceExtractionServiceTest extends TestCase
         $termsWater = $this->service->buildSearchTerms($vocabWater);
         $this->assertContains('eau', $termsWater);
         $this->assertContains("d'eau", $termsWater);
+
+        $vocabBoire = new VocabularyItem([
+            'word' => 'Boire',
+            'base_word' => 'boire',
+        ]);
+        $termsBoire = $this->service->buildSearchTerms($vocabBoire);
+        $this->assertContains('boit', $termsBoire);
+        $this->assertContains('bois', $termsBoire);
+
+        $vocabVoir = new VocabularyItem([
+            'word' => 'Voir',
+            'base_word' => 'voir',
+        ]);
+        $termsVoir = $this->service->buildSearchTerms($vocabVoir);
+        $this->assertContains('vois', $termsVoir);
+        $this->assertContains('voit', $termsVoir);
     }
 
     public function test_it_filters_teacher_instructions_and_questions(): void
@@ -74,7 +90,14 @@ class VocabularySentenceExtractionServiceTest extends TestCase
         $this->assertFalse($this->service->isValidSentenceForVocab('Qui veut répéter ? Un cadeau', $terms, 'Un cadeau', 'cadeau'));
         $this->assertFalse($this->service->isValidSentenceForVocab('S’appeler – Le nom – Le prénom – Un cadeau - Un ami – Jaune.', $terms, 'Un cadeau', 'cadeau'));
 
+        // Missing terminal punctuation rejected (e.g. titles / headers)
+        $this->assertFalse($this->service->isValidSentenceForVocab('Un cadeau pour son ami', $terms, 'Un cadeau', 'cadeau'));
+
+        // Activity prompts rejected
+        $this->assertFalse($this->service->isValidSentenceForVocab('Je dis où j’habite comme Sara et Akram.', $terms, 'Un cadeau', 'cadeau'));
+
         // Fill in blanks rejected
         $this->assertFalse($this->service->isValidSentenceForVocab('Karim a un …………………', $terms, 'Un cadeau', 'cadeau'));
     }
 }
+
