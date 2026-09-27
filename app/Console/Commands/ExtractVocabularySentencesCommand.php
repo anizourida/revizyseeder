@@ -14,7 +14,8 @@ class ExtractVocabularySentencesCommand extends Command
         {--week= : Filter by week (e.g. SEM1, SEM2, SEM3, SEM4)}
         {--lesson= : Filter by lesson ID (e.g. FR_N2_P1_SEM1_S1)}
         {--no-revision : Do not include revision weeks (SEM5 and SEM6)}
-        {--force : Overwrite existing sentence records}';
+        {--force : Overwrite existing sentence records}
+        {--translate : Translate extracted sentences to Arabic using DeepL}';
 
     protected $description = 'Extract French vocabulary sentences from presentation slides and OCR data.';
 
@@ -49,6 +50,48 @@ class ExtractVocabularySentencesCommand extends Command
                     ['Total Sentences Created', $stats['sentences_created']],
                 ]
             );
+
+            if ($this->option('translate')) {
+                $this->info('Translating sentences into Arabic via DeepL...');
+                $query = \App\Models\Raiida\VocabularySentence::query()
+                    ->whereNotNull('sentence')
+                    ->where('sentence', '!=', '')
+                    ->whereNull('sentence_ar');
+
+                if ($options['grade']) {
+                    $query->where('grade', strtoupper(trim($options['grade'])));
+                }
+                if ($options['period']) {
+                    $query->where('period', strtoupper(trim($options['period'])));
+                }
+                if ($options['week']) {
+                    $query->where('week', strtoupper(trim($options['week'])));
+                }
+
+                $toTranslate = $query->get();
+                if ($toTranslate->isNotEmpty()) {
+                    $translator = app(\App\Services\Raiida\DeepLTranslationService::class);
+                    $translatedCount = 0;
+                    $chunks = $toTranslate->chunk(30);
+
+                    foreach ($chunks as $chunk) {
+                        $texts = $chunk->pluck('sentence')->all();
+                        $translations = $translator->translateBatch($texts);
+
+                        foreach ($chunk->values() as $idx => $record) {
+                            $ar = $translations[$idx] ?? null;
+                            if ($ar) {
+                                $record->update(['sentence_ar' => trim($ar)]);
+                                $translatedCount++;
+                            }
+                        }
+                    }
+
+                    $this->info("Translated {$translatedCount} / {$toTranslate->count()} sentences to Arabic.");
+                } else {
+                    $this->info('No untranslated sentences found matching the criteria.');
+                }
+            }
 
             $this->info('Vocabulary sentence extraction completed successfully!');
 

@@ -414,9 +414,13 @@ class VocabularySentenceExtractionService
             return false;
         }
 
-        // Questions are not optimal vocabulary model sentences
+        // Questions are not optimal vocabulary model sentences, except canonical dialogue questions (e.g. Tu as quel âge ?)
         if (str_ends_with($sentence, '?')) {
-            return false;
+            if (in_array(mb_strtolower(trim($fullWord)), ['l’âge', "l'âge", 'âge']) && preg_match('/^Tu\s+as\s+quel\s+âge\s*\?$/ui', $sentence)) {
+                // Allowed model question
+            } else {
+                return false;
+            }
         }
 
         $lowerSentence = mb_strtolower($sentence);
@@ -434,13 +438,12 @@ class VocabularySentenceExtractionService
             '/^(?:Sur vos|Dans vos|Sur le|Sur votre|Prenez|Rangez|Ouvrez|Fermez|À la maison|A la maison)/ui',
             '/^(?:Écrivez|Ecrivez|Lisez|Regardez|Écoutez|Ecoutez|Observez|Trouvez|Complétez|Soulignez|Entourez|Cochez|Reliez|Mettez|Placez|Répétez|Montrez|Devinez|Dites|Faîtes|Faites|Posez|Répondez|Corrigez|Jouez)/ui',
             '/^(?:Chacun|Tout le monde|À tour de rôle|A tour de rôle)/ui',
-            '/^(?:La (?:bonne )?réponse est|Les (?:bonnes )?réponses sont|Les deux mots|Le mot qui|(?:Une|La) phrase correcte|(?:Une|La) réponse peut être)/ui',
+            '/^(?:(?:Une|La)\s+(?:bonne\s+)?réponse(?:\s+correcte)?\s+est|Les\s+(?:bonnes\s+)?réponses(?:\s+correctes)?\s+sont|Les\s+deux\s+mots|Le\s+mot\s+qui|(?:Une|La)\s+phrase\s+correcte|(?:Une|La)\s+réponse\s+peut\s+être)/ui',
             '/^(?:Il y a des noms|C’est le mot|C\'est le mot|Observez le mot|On dit (?:un|une|le|la))\b/ui',
             '/^(?:Situation|Dialogue|Consigne|Activité|Exercice|Conjugaison|Grammaire|Orthographe|Vocabulaire|Lecture|Acte de parole)\b/ui',
-            '/^(?:Les (?:deux )?images? qui|L[\'’]image qui)\b/ui',
+            '/^(?:Les (?:deux|trois|quatre|cinq|six )?images? qui|L[\'’]image qui)\b/ui',
             '/\b(?:passer au tableau|passez au tableau|entre les rangs|mot invisible|mots invisibles|nom masculin|nom féminin|mode diaporama)\b/ui',
             '/\//', // slashes like un / une
-            '/\?$/', // questions
             '/^(?:Que dit|Que fait|Que faisait|Pourquoi|Où sont|Qui est|Quel est|Quelle est|Quels sont|Quelles sont|Comment|Qu’est-ce qu’on dit|Qu\'est-ce qu\'on dit)\b/ui',
             '/\b(?:j’entends le son|j\'entends le son|je vois la lettre|entendez(?:-vous)? le son|fait le son|font le son)\b/ui',
             '/^Dans le mot\b/ui',
@@ -463,8 +466,10 @@ class VocabularySentenceExtractionService
             '/\b(?:s’appeler\s+au\s+présent|s\'appeler\s+au\s+présent)\b/ui',
             '/^(?:Tu dois|Vous devez|L’enseignant|L\'enseignant|L’élève|L\'élève)\b/ui',
             '/^(?:Poser|Répondre à)\s+la\s+question\b/ui',
-            '/^Je dis (?:où|comment|qui|ce que)\b/ui',
+            '/^Je dis (?:mon|ma|mes|où|comment|qui|ce que)\b/ui',
+            '/^Je cherche (?:un|une)\b/ui',
             '/\b(?:Questions en rafale|Questions en rafales)\b/ui',
+            '/\b(?!Tu\b)(?:[A-ZÀ-ÖØ-ß][a-zà-öø-ÿ]+|Il|Elle)\s+as\b/u', // 3rd person singular with 'as' (OCR typo, excluding valid 'Tu as')
             '/\b(?:sur|sous|dans|de|du|des|le|la|les|un|une|et|à|en|pour|avec)$/ui', // dangling preposition
         ];
 
@@ -474,8 +479,13 @@ class VocabularySentenceExtractionService
             }
         }
 
-        // Real pedagogical sentences must end with terminal punctuation (. or !)
-        if (! preg_match('/[.!] *$/u', $sentence)) {
+        // Real pedagogical sentences must end with terminal punctuation (. or ! or ?)
+        if (! preg_match('/[.!?] *$/u', $sentence)) {
+            return false;
+        }
+
+        // Filter out bullet points, arrows, or matching activity dots (e.g., "Tu • s’appelle Sami.")
+        if (str_contains($sentence, '•') || preg_match('/[\x{2022}\x{25E6}\x{2023}\x{2043}]/u', $sentence)) {
             return false;
         }
 
@@ -739,9 +749,11 @@ class VocabularySentenceExtractionService
                 foreach ($parts as $part) {
                     $cleaned = trim((string) $part);
                     // Strip meta prefixes
-                    $cleaned = (string) preg_replace('/^(?:Voici\s+une\s+phrase\s+correcte\s*:\s*|Une\s+phrase\s+correcte\s*:\s*|Exemple\s*:\s*|Par\s+exemple\s*:\s*|Retenez\s*!\s*)/ui', '', $cleaned);
+                    $cleaned = (string) preg_replace('/^(?:Voici\s+une\s+phrase\s+correcte\s*:\s*|Une\s+phrase\s+correcte\s*:\s*|(?:La|Une)\s+(?:bonne\s+|correcte\s+)?réponse\s+(?:est|peut\s+être)?\s*:\s*|Exemple\s*:\s*|Par\s+exemple\s*:\s*|Retenez\s*!\s*)/ui', '', $cleaned);
+                    $cleaned = (string) preg_replace('/[»"“]\s*([.!?])$/u', '$1', $cleaned);
                     $cleaned = trim((string) preg_replace('/\s+/u', ' ', $cleaned), " \t\n\r\0\x0B\"'«»-–");
-                    $cleaned = (string) preg_replace('/\s+([.!?])$/u', '$1', $cleaned);
+                    $cleaned = (string) preg_replace('/\s+([.])$/u', '$1', $cleaned);
+                    $cleaned = (string) preg_replace('/\s*\?$/u', ' ?', $cleaned);
                     if ($cleaned !== '') {
                         $sentences[] = $cleaned;
                     }
