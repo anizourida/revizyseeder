@@ -122,10 +122,12 @@ class VocabularySentenceExtractionService
             return $v->grade . '|' . $v->period . '|' . $v->week;
         });
 
+        $includeRevision = ! (bool) ($options['no_revision'] ?? false);
+
         foreach ($grouped as $groupKey => $groupVocabs) {
             [$grade, $period, $week] = explode('|', $groupKey);
-            $presentationTexts = $this->collectPresentationTextsForWeek($grade, $period, $week);
-            $ocrTexts = $this->collectOcrTextsForWeek($grade, $period, $week);
+            $presentationTexts = $this->collectPresentationTextsForWeek($grade, $period, $week, $includeRevision);
+            $ocrTexts = $this->collectOcrTextsForWeek($grade, $period, $week, $includeRevision);
 
             foreach ($groupVocabs as $vocab) {
                 $createdForVocab = $this->processVocabItem($vocab, $presentationTexts, $ocrTexts, (bool) ($options['force'] ?? false));
@@ -194,12 +196,27 @@ class VocabularySentenceExtractionService
         }
 
         $created = 0;
-        foreach ($candidates as $cand) {
+        // Keep up to 6 diverse, high-quality sentences per vocabulary item
+        $maxPerVocab = 6;
+        $savedCandidates = array_slice($candidates, 0, $maxPerVocab);
+
+        foreach ($savedCandidates as $cand) {
             $assetId = $cand['file_asset_id'] ?? null;
             if (! $assetId && ! empty($cand['session'])) {
-                $prefix = 'FR_' . $vocab->grade . '_' . $vocab->period . '_' . $vocab->week . '_' . $cand['session'];
+                if (preg_match('/^(SEM\d+)_(S\d+)$/i', $cand['session'], $sm)) {
+                    $prefix = 'FR_' . $vocab->grade . '_' . $vocab->period . '_' . $sm[1] . '_' . $sm[2];
+                } else {
+                    $prefix = 'FR_' . $vocab->grade . '_' . $vocab->period . '_' . $vocab->week . '_' . $cand['session'];
+                }
+
                 $assetId = \App\Models\Raiida\FileAsset::where('filename', 'like', $prefix . '%')
                     ->orWhere('presentation_json_path', 'like', '%' . $prefix . '%')
+                    ->value('id');
+            }
+
+            if (! $assetId) {
+                $assetId = \App\Models\Raiida\FileAsset::where('filename', 'like', $vocab->lesson_id . '%')
+                    ->orWhere('presentation_json_path', 'like', '%' . $vocab->lesson_id . '%')
                     ->value('id');
             }
 
@@ -228,9 +245,67 @@ class VocabularySentenceExtractionService
     }
 
     /**
+     * Build intelligent search terms for a vocabulary item including conjugations, plurals, and elisions.
+     *
+     * @return string[]
+     */
+    public function buildSearchTerms(VocabularyItem $vocab): array
+    {
+        $word = trim($vocab->word);
+        $baseWord = trim($vocab->base_word ?? '');
+        $terms = array_filter([$word, $baseWord]);
+
+        // Verbs & reflexive verbs (e.g. s'appeler)
+        if (stripos($word, 'appeler') !== false || stripos($baseWord, 'appeler') !== false) {
+            $terms = array_merge($terms, [
+                "s'appeler", "s’appeler",
+                "m'appelle", "m’appelle",
+                "t'appelles", "t’appelles",
+                "s'appelle", "s’appelle",
+                "nous appelons", "vous appelez",
+                "s'appellent", "s’appellent",
+                "appelle", "appelles", "appeler",
+            ]);
+        }
+
+        // Generic 1st group verbs if base ends in 'er'
+        $cleanWord = preg_replace('/^(?:s[’\']|se\s+)/ui', '', $word);
+        $cleanBase = preg_replace('/^(?:s[’\']|se\s+)/ui', '', $baseWord);
+        foreach ([$cleanWord, $cleanBase] as $w) {
+            if (str_ends_with(mb_strtolower($w), 'er') && mb_strlen($w) > 3) {
+                $stem = mb_substr($w, 0, -2);
+                $terms[] = $stem . 'e';
+                $terms[] = $stem . 'es';
+                $terms[] = $stem . 'ent';
+                $terms[] = $stem . 'ons';
+                $terms[] = $stem . 'ez';
+            }
+        }
+
+        // Irregular plurals (-eau -> -eaux)
+        foreach ([$word, $baseWord] as $w) {
+            if (str_ends_with(mb_strtolower($w), 'eau')) {
+                $terms[] = $w . 'x';
+            }
+        }
+
+        // Elision variations (l'eau, d'eau)
+        if (str_starts_with(mb_strtolower($word), "l’") || str_starts_with(mb_strtolower($word), "l'")) {
+            $bare = preg_replace("/^l['’]/ui", "", $word);
+            $terms[] = $bare;
+            $terms[] = "l'" . $bare;
+            $terms[] = "l’" . $bare;
+            $terms[] = "d'" . $bare;
+            $terms[] = "d’" . $bare;
+        }
+
+        return array_values(array_unique(array_filter($terms)));
+    }
+
+    /**
      * Search candidate texts for full sentences containing the vocabulary word or base word.
      *
-     * @return array<int, array{sentence: string, session?: string, slide?: int, type: string}>
+     * @return array<int, array{sentence: string, session?: string, slide?: int, file_asset_id?: int, type: string}>
      */
     public function findSentencesForWord(
         VocabularyItem $vocab,
@@ -239,7 +314,7 @@ class VocabularySentenceExtractionService
     ): array {
         $word = trim($vocab->word);
         $baseWord = trim($vocab->base_word ?? '');
-        $searchTerms = array_values(array_unique(array_filter([$word, $baseWord])));
+        $searchTerms = $this->buildSearchTerms($vocab);
 
         $found = [];
         $seenSentences = [];
@@ -300,13 +375,22 @@ class VocabularySentenceExtractionService
      * Check if a sentence is a valid sentence candidate for the vocabulary word.
      */
     public function isValidSentenceForVocab(
-        string $sentence,
+        ?string $sentence,
         array $searchTerms,
         string $fullWord,
         string $baseWord
     ): bool {
+        if (! is_string($sentence)) {
+            return false;
+        }
+
         $sentence = trim($sentence);
         if ($sentence === '') {
+            return false;
+        }
+
+        // Questions are not optimal vocabulary model sentences
+        if (str_ends_with($sentence, '?')) {
             return false;
         }
 
@@ -323,7 +407,7 @@ class VocabularySentenceExtractionService
         $instructionPatterns = [
             '/^(?:Nous allons|On va|Je vais|Vous allez|Il faut|Il convient|Maintenant,?\s*(?:nous|on|je|vous)|Aujourd[\'’\`´]hui)/ui',
             '/^(?:Sur vos|Dans vos|Sur le|Sur votre|Prenez|Rangez|Ouvrez|Fermez|À la maison|A la maison)/ui',
-            '/^(?:Écrivez|Ecrivez|Lisez|Regardez|Écoutez|Ecoutez|Observez|Trouvez|Complétez|Soulignez|Entourez|Cochez|Reliez|Mettez|Placez|Répétez|Montrez|Devinez|Dites|Faîtes comme|Faites comme|Posez|Répondez)/ui',
+            '/^(?:Écrivez|Ecrivez|Lisez|Regardez|Écoutez|Ecoutez|Observez|Trouvez|Complétez|Soulignez|Entourez|Cochez|Reliez|Mettez|Placez|Répétez|Montrez|Devinez|Dites|Faîtes|Faites|Posez|Répondez|Corrigez|Jouez)/ui',
             '/^(?:Chacun|Tout le monde|À tour de rôle|A tour de rôle)/ui',
             '/^(?:La (?:bonne )?réponse est|Les (?:bonnes )?réponses sont|Les deux mots|Le mot qui|(?:Une|La) phrase correcte|(?:Une|La) réponse peut être)/ui',
             '/^(?:Il y a des noms|C’est le mot|C\'est le mot|Observez le mot|On dit (?:un|une|le|la))\b/ui',
@@ -331,7 +415,7 @@ class VocabularySentenceExtractionService
             '/^(?:Les (?:deux )?images? qui|L[\'’]image qui)\b/ui',
             '/\b(?:passer au tableau|passez au tableau|entre les rangs|mot invisible|mots invisibles|nom masculin|nom féminin|mode diaporama)\b/ui',
             '/\//', // slashes like un / une
-            '/\?$/', // questions (e.g. "Où est le livre ?", "Est-ce que c’est un stylo ?")
+            '/\?$/', // questions
             '/^(?:Que dit|Que fait|Que faisait|Pourquoi|Où sont|Qui est|Quel est|Quelle est|Quels sont|Quelles sont|Comment|Qu’est-ce qu’on dit|Qu\'est-ce qu\'on dit)\b/ui',
             '/\b(?:j’entends le son|j\'entends le son|je vois la lettre|entendez(?:-vous)? le son|fait le son|font le son)\b/ui',
             '/^Dans le mot\b/ui',
@@ -348,6 +432,14 @@ class VocabularySentenceExtractionService
             '/\b(?:jouer\s+un\s+dialogue|joue\s+le\s+dialogue|jouez\s+le\s+dialogue)\b/ui',
             '/\b(?:étape|etape)\s+\d+\b/ui',
             '/\b(?:à\s+propos\s+du|a\s+propos\s+du)\s+modelage\b/ui',
+            '/\b(?:qui\s+veut\s+répéter|qui\s+veut\s+épeler|qui\s+veut\s+passer|qui\s+veut\s+lire|qui\s+veut\s+nommer|qui\s+veut\s+compléter)\b/ui',
+            '/\b(?:plan\s+de\s+la\s+séance|réservé\s+à\s+l’enseignant|réservé\s+à\s+l\'enseignant)\b/ui',
+            '/\b(?:la\s+leçon\s+de\s+français\s+commence)\b/ui',
+            '/\b(?:s’appeler\s+au\s+présent|s\'appeler\s+au\s+présent)\b/ui',
+            '/^(?:Tu dois|Vous devez|L’enseignant|L\'enseignant|L’élève|L\'élève)\b/ui',
+            '/^(?:Poser|Répondre à)\s+la\s+question\b/ui',
+            '/^Je dis comment je m’appelle comme\b/ui',
+            '/\b(?:Questions en rafale|Questions en rafales)\b/ui',
             '/\b(?:sur|sous|dans|de|du|des|le|la|les|un|une|et|à|en|pour|avec)$/ui', // dangling preposition
         ];
 
@@ -368,7 +460,7 @@ class VocabularySentenceExtractionService
         }
 
         // Filter out syllable breakdowns or arrows (e.g., "t eau > teau > bateau")
-        if (str_contains($sentence, '>') || str_contains($sentence, '->') || str_contains($sentence, '<')) {
+        if (str_contains($sentence, '>') || str_contains($sentence, '->') || str_contains($sentence, '→') || str_contains($sentence, '<')) {
             return false;
         }
 
@@ -382,19 +474,9 @@ class VocabularySentenceExtractionService
             return false;
         }
 
-        // Filter out spaced word lists (e.g., columns of words with 3+ spaces without sentence structure)
-        if (preg_match('/\s{3,}/', $sentence)) {
-            $frenchIndicators = ['a', 'est', 'sont', 'ont', 'va', 'vont', 'fait', 'font', 'aiment', 'aime', 'habite', 'joue', 'mange', 'boit', 'porte', 'regarde', 'voit', 'dit', 'parle', 'donne', 'prend', 'aide', 'se', 'me', 'te', 'nous', 'vous', 'le', 'la', 'les', 'un', 'une', 'des', 'du', 'de', 'au', 'aux', 'dans', 'sur', 'sous', 'avec', 'pour', 'qui', 'que', 'il', 'elle', 'ils', 'elles', 'je', 'tu', 'mon', 'ma', 'mes', 'son', 'sa', 'ses', 'notre', 'nos', 'votre', 'vos', 'leur', 'leurs', 'ce', 'cet', 'cette', 'ces'];
-            $normalizedTokens = explode(' ', mb_strtolower(preg_replace('/\s+/u', ' ', $sentence)));
-            $indicatorCount = 0;
-            foreach ($normalizedTokens as $tok) {
-                if (in_array($tok, $frenchIndicators, true)) {
-                    $indicatorCount++;
-                }
-            }
-            if ($indicatorCount < 2 && ! str_ends_with(trim($sentence), '.')) {
-                return false;
-            }
+        // Must start with uppercase letter
+        if (! preg_match('/^[A-ZÀ-ÖØ-ß]/u', $sentence)) {
+            return false;
         }
 
         // Must contain at least 3 words
@@ -408,16 +490,15 @@ class VocabularySentenceExtractionService
             return false;
         }
 
-        // Check if any search term matches as a standalone word/phrase (excluding hyphenated compound words like grands-parents matching parents)
+        // Check if any search term matches as a standalone word/phrase
         $matchesTerm = false;
         foreach ($searchTerms as $term) {
             if (mb_strlen($term) < 2) {
                 continue;
             }
 
-            // Word boundary regex that accounts for French letters, apostrophes, and avoids false compound matches
             $escaped = preg_quote($term, '/');
-            $pattern = '/(?<![\p{L}\p{N}\-_])(?:' . $escaped . '|' . $escaped . 's|' . $escaped . 'es)(?![\p{L}\p{N}\-_])/iu';
+            $pattern = '/(?<![\p{L}\p{N}\-_])(?:' . $escaped . '|' . $escaped . 's)(?![\p{L}\p{N}\-_])/iu';
             if (preg_match($pattern, $sentence)) {
                 $matchesTerm = true;
                 break;
@@ -428,28 +509,43 @@ class VocabularySentenceExtractionService
     }
 
     /**
-     * Collect all slide texts for a given grade, period, and week across all sessions.
+     * Collect all slide texts for a given grade, period, and week across all sessions, optionally including revision weeks.
      *
-     * @return array<int, array{session: string, slide_id: int, text: string}>
+     * @return array<int, array{session: string, slide_id: int, file_asset_id: ?int, text: string}>
      */
-    protected function collectPresentationTextsForWeek(string $grade, string $period, string $week): array
-    {
+    protected function collectPresentationTextsForWeek(
+        string $grade,
+        string $period,
+        string $week,
+        bool $includeRevisionWeeks = true
+    ): array {
         $gradeNorm = str_ireplace('N', '', $grade);
         $periodNorm = str_ireplace('P', '', $period);
         $weekNorm = str_ireplace('SEM', '', $week);
 
-        // Pattern matching directories like FR_N2_P1_SEM1_*
-        $dirPatterns = [
-            storage_path("app/presentation_data/FR_N{$gradeNorm}_P{$periodNorm}_SEM{$weekNorm}_*/data.json"),
-            storage_path("app/presentation_data/FR_N{$gradeNorm}_P{$periodNorm}_S{$weekNorm}_*/data.json"),
-            storage_path("app/presentation_data/FR_N{$gradeNorm}_P{$periodNorm}_semaine_{$weekNorm}_*/data.json"),
-        ];
+        $weeksToScan = [$weekNorm];
+        if ($includeRevisionWeeks) {
+            // Revision weeks in standard periods are SEM5 and SEM6
+            if (! in_array('5', $weeksToScan, true)) {
+                $weeksToScan[] = '5';
+            }
+            if (! in_array('6', $weeksToScan, true)) {
+                $weeksToScan[] = '6';
+            }
+        }
 
         $files = [];
-        foreach ($dirPatterns as $pattern) {
-            $matched = glob($pattern);
-            if ($matched) {
-                $files = array_merge($files, $matched);
+        foreach ($weeksToScan as $w) {
+            $dirPatterns = [
+                storage_path("app/presentation_data/FR_N{$gradeNorm}_P{$periodNorm}_SEM{$w}_*/data.json"),
+                storage_path("app/presentation_data/FR_N{$gradeNorm}_P{$periodNorm}_S{$w}_*/data.json"),
+                storage_path("app/presentation_data/FR_N{$gradeNorm}_P{$periodNorm}_semaine_{$w}_*/data.json"),
+            ];
+            foreach ($dirPatterns as $pattern) {
+                $matched = glob($pattern);
+                if ($matched) {
+                    $files = array_merge($files, $matched);
+                }
             }
         }
         $files = array_unique($files);
@@ -464,9 +560,9 @@ class VocabularySentenceExtractionService
                     $session = strtoupper($sMatches[1]);
                 }
 
-                // Avoid S6 (assessment / remediation / instruction sessions)
-                if (preg_match('/^S6/i', $session) || str_contains($dirName, '_S6')) {
-                    continue;
+                // If from revision week, prefix session so it is transparent (e.g., SEM5_S1)
+                if (preg_match('/_SEM([56])_/i', $dirName, $semMatches)) {
+                    $session = 'SEM' . $semMatches[1] . '_' . $session;
                 }
 
                 $fileAssetId = \App\Models\Raiida\FileAsset::where('presentation_json_path', 'like', "%{$dirName}%")
@@ -505,27 +601,45 @@ class VocabularySentenceExtractionService
     }
 
     /**
-     * Collect OCR texts from Page and BookPage for the week.
+     * Collect OCR texts from Page for the week, optionally including revision weeks.
      *
      * @return array<int, array{page_number: int, text: string}>
      */
-    protected function collectOcrTextsForWeek(string $grade, string $period, string $week): array
-    {
+    protected function collectOcrTextsForWeek(
+        string $grade,
+        string $period,
+        string $week,
+        bool $includeRevisionWeeks = true
+    ): array {
         $gradeNorm = str_ireplace('N', '', $grade);
         $periodNorm = str_ireplace('P', '', $period);
         $weekNorm = str_ireplace('SEM', '', $week);
-        $key = 'FR_N' . $gradeNorm . '_P' . $periodNorm . '_SEM' . $weekNorm;
+
+        $weeksToScan = [$weekNorm];
+        if ($includeRevisionWeeks) {
+            if (! in_array('5', $weeksToScan, true)) {
+                $weeksToScan[] = '5';
+            }
+            if (! in_array('6', $weeksToScan, true)) {
+                $weeksToScan[] = '6';
+            }
+        }
 
         $results = [];
 
         try {
-            $pages = Page::where('n_p_sem', 'like', $key . '%')
-                ->where(function ($q) {
-                    $q->whereNotNull('ocr_olmocr_path')
-                      ->orWhereNotNull('ocr_chandra_path')
-                      ->orWhereNotNull('ocr_full_text_path');
-                })
-                ->get(['page_number', 'ocr_olmocr_path', 'ocr_chandra_path', 'ocr_full_text_path']);
+            $pagesQuery = Page::query()->where(function ($query) use ($gradeNorm, $periodNorm, $weeksToScan) {
+                foreach ($weeksToScan as $w) {
+                    $key = 'FR_N' . $gradeNorm . '_P' . $periodNorm . '_SEM' . $w;
+                    $query->orWhere('n_p_sem', 'like', $key . '%');
+                }
+            })->where(function ($q) {
+                $q->whereNotNull('ocr_olmocr_path')
+                  ->orWhereNotNull('ocr_chandra_path')
+                  ->orWhereNotNull('ocr_full_text_path');
+            });
+
+            $pages = $pagesQuery->get(['n_p_sem', 'page_number', 'ocr_olmocr_path', 'ocr_chandra_path', 'ocr_full_text_path']);
 
             foreach ($pages as $p) {
                 $path = $p->ocr_olmocr_path ?: $p->ocr_chandra_path ?: $p->ocr_full_text_path;
@@ -546,20 +660,23 @@ class VocabularySentenceExtractionService
                 }
             }
         } catch (Throwable $e) {
-            Log::warning('Failed collecting OCR texts for week ' . $key . ': ' . $e->getMessage());
+            Log::warning('Failed collecting OCR texts for week FR_N' . $gradeNorm . '_P' . $periodNorm . '_SEM' . $weekNorm . ': ' . $e->getMessage());
         }
 
         return $results;
     }
 
     /**
-     * Split text block into individual sentences.
+     * Split text block into individual clean sentences.
      *
      * @return string[]
      */
-    protected function splitIntoSentences(string $text): array
+    public function splitIntoSentences(string $text): array
     {
-        // Split by lines
+        // 1. Insert space after punctuation when directly followed by capital letter (glued OCR)
+        $text = preg_replace('/([.!?])(?=[A-ZÀ-ÖØ-ß])/u', '$1 ', $text);
+
+        // 2. Split by lines
         $lines = preg_split('/\r\n|\r|\n/', $text, -1, PREG_SPLIT_NO_EMPTY);
         if (! is_array($lines)) {
             return [];
@@ -572,7 +689,7 @@ class VocabularySentenceExtractionService
                 continue;
             }
 
-            // If line contains multiple spaces or tabs (e.g. columns of isolated words), split into separate items
+            // Split columns / large spacing
             $columnItems = preg_split('/\s{2,}|\t/u', $line, -1, PREG_SPLIT_NO_EMPTY);
             if (! is_array($columnItems)) {
                 $columnItems = [$line];
@@ -584,13 +701,17 @@ class VocabularySentenceExtractionService
                     continue;
                 }
 
-                // If item contains multiple punctuation-terminated sentences
+                // Split sentence boundaries
                 $parts = preg_split('/(?<=[.!?])\s+(?=[A-ZÀ-ÖØ-ß])/u', $item, -1, PREG_SPLIT_NO_EMPTY);
                 if (! is_array($parts)) {
                     $parts = [$item];
                 }
                 foreach ($parts as $part) {
-                    $cleaned = trim(preg_replace('/\s+/u', ' ', $part), " \t\n\r\0\x0B\"'«»");
+                    $cleaned = trim((string) $part);
+                    // Strip meta prefixes
+                    $cleaned = (string) preg_replace('/^(?:Voici\s+une\s+phrase\s+correcte\s*:\s*|Une\s+phrase\s+correcte\s*:\s*|Exemple\s*:\s*|Par\s+exemple\s*:\s*|Retenez\s*!\s*)/ui', '', $cleaned);
+                    $cleaned = trim((string) preg_replace('/\s+/u', ' ', $cleaned), " \t\n\r\0\x0B\"'«»-–");
+                    $cleaned = (string) preg_replace('/\s+([.!?])$/u', '$1', $cleaned);
                     if ($cleaned !== '') {
                         $sentences[] = $cleaned;
                     }

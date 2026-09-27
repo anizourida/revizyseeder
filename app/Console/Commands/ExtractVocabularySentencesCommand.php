@@ -13,6 +13,7 @@ class ExtractVocabularySentencesCommand extends Command
         {--period= : Filter by period (e.g. P1, P2, P3, P4, P5)}
         {--week= : Filter by week (e.g. SEM1, SEM2, SEM3, SEM4)}
         {--lesson= : Filter by lesson ID (e.g. FR_N2_P1_SEM1_S1)}
+        {--no-revision : Do not include revision weeks (SEM5 and SEM6)}
         {--force : Overwrite existing sentence records}';
 
     protected $description = 'Extract French vocabulary sentences from presentation slides and OCR data.';
@@ -24,6 +25,7 @@ class ExtractVocabularySentencesCommand extends Command
             'period' => (string) $this->option('period'),
             'week' => (string) $this->option('week'),
             'lesson_id' => (string) $this->option('lesson'),
+            'no_revision' => (bool) $this->option('no-revision'),
             'force' => (bool) $this->option('force'),
         ];
 
