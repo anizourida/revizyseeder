@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\VocabularyResource\Pages;
+use App\Filament\Resources\VocabularyResource\RelationManagers;
 use App\Jobs\Raiida\ExtractVocabularyJob;
 use App\Jobs\Raiida\GenerateVocabularyAudiosJob;
 use App\Jobs\Raiida\GenerateVocabularyConceptsJob;
@@ -133,6 +134,7 @@ class VocabularyResource extends Resource
             ->modifyQueryUsing(static function (Builder $query): Builder {
                 return $query
                     ->with('baseWordAudio')
+                    ->withCount('sentences')
                     ->orderByRaw("CASE grade WHEN 'N1' THEN 1 WHEN 'N2' THEN 2 WHEN 'N3' THEN 3 WHEN 'N4' THEN 4 WHEN 'N5' THEN 5 WHEN 'N6' THEN 6 ELSE 7 END ASC")
                     ->orderByRaw("CAST(SUBSTR(period, 2) AS INTEGER) ASC")
                     ->orderByRaw("CAST(SUBSTR(week, 4) AS INTEGER) ASC")
@@ -172,6 +174,12 @@ class VocabularyResource extends Resource
                     })
                     ->badge()
                     ->color('primary'),
+                Tables\Columns\TextColumn::make('sentences_count')
+                    ->label('Phrases')
+                    ->badge()
+                    ->sortable()
+                    ->color(fn ($state): string => ((int) $state) > 0 ? 'success' : 'gray')
+                    ->formatStateUsing(fn ($state): string => ((int) $state) . ' phrase' . (((int) $state) > 1 ? 's' : '')),
                 Tables\Columns\TextColumn::make('grade')
                     ->label('Grade')
                     ->badge()
@@ -394,6 +402,15 @@ class VocabularyResource extends Resource
                     ->queries(
                         true: fn (Builder $query) => $query->whereNotNull('concept_id')->where('concept_id', '!=', ''),
                         false: fn (Builder $query) => $query->where(fn (Builder $q) => $q->whereNull('concept_id')->orWhere('concept_id', '')),
+                    ),
+                Tables\Filters\TernaryFilter::make('has_sentences')
+                    ->label('Phrases Disponibles')
+                    ->placeholder('Tous les mots')
+                    ->trueLabel('Avec Phrases')
+                    ->falseLabel('Sans Phrases')
+                    ->queries(
+                        true: fn (Builder $query) => $query->has('sentences'),
+                        false: fn (Builder $query) => $query->doesntHave('sentences'),
                     ),
             ], layout: \Filament\Tables\Enums\FiltersLayout::AboveContent)
             ->filtersFormColumns(4)
@@ -1003,6 +1020,12 @@ class VocabularyResource extends Resource
                     ->color('gray'),
             ])
             ->actions([
+                Tables\Actions\Action::make('sentences')
+                    ->label(fn (VocabularyItem $record): string => 'Phrases (' . ($record->sentences_count ?? $record->sentences()->count()) . ')')
+                    ->icon('heroicon-o-chat-bubble-bottom-center-text')
+                    ->color(fn (VocabularyItem $record): string => ($record->sentences_count ?? $record->sentences()->count()) > 0 ? 'success' : 'gray')
+                    ->url(fn (VocabularyItem $record): string => Pages\EditVocabulary::getUrl(['record' => $record->id]))
+                    ->tooltip('Voir et gérer les phrases associées à ce mot'),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\Action::make('sync_image_revizy')
@@ -1196,6 +1219,13 @@ class VocabularyResource extends Resource
                         }),
                 ]),
             ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            RelationManagers\SentencesRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

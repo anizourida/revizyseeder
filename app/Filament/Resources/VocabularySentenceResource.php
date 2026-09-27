@@ -144,13 +144,25 @@ class VocabularySentenceResource extends Resource
         return $table
             ->modifyQueryUsing(static function (Builder $query): Builder {
                 return $query
-                    ->with('fileAsset')
+                    ->with(['fileAsset', 'vocabularyItem'])
                     ->orderByRaw("CASE grade WHEN 'N1' THEN 1 WHEN 'N2' THEN 2 WHEN 'N3' THEN 3 WHEN 'N4' THEN 4 WHEN 'N5' THEN 5 WHEN 'N6' THEN 6 ELSE 7 END ASC")
                     ->orderByRaw("CAST(SUBSTR(period, 2) AS INTEGER) ASC")
                     ->orderByRaw("CAST(SUBSTR(week, 4) AS INTEGER) ASC")
                     ->orderBy('word', 'asc')
                     ->orderBy('source_slide', 'asc');
             })
+            ->defaultGroup('word')
+            ->groups([
+                Tables\Grouping\Group::make('word')
+                    ->label('Mot de Vocabulaire')
+                    ->collapsible(),
+                Tables\Grouping\Group::make('grade')
+                    ->label('Niveau'),
+                Tables\Grouping\Group::make('period')
+                    ->label('Période'),
+                Tables\Grouping\Group::make('week')
+                    ->label('Semaine'),
+            ])
             ->poll('10s')
             ->paginationPageOptions([25, 50, 100])
             ->columns([
@@ -168,6 +180,7 @@ class VocabularySentenceResource extends Resource
                     ->label('Contextual Sentence')
                     ->searchable()
                     ->wrap()
+                    ->copyable()
                     ->placeholder('— Aucun phrase trouvée —')
                     ->formatStateUsing(function ($state, $record) {
                         if (empty($state)) {
@@ -176,6 +189,13 @@ class VocabularySentenceResource extends Resource
                         return $state;
                     })
                     ->color(fn ($record) => empty($record->sentence) ? 'warning' : 'primary'),
+                Tables\Columns\TextColumn::make('sentence_ar')
+                    ->label('Traduction (Arabe)')
+                    ->searchable()
+                    ->wrap()
+                    ->extraAttributes(['dir' => 'rtl'])
+                    ->placeholder('— Non traduit —')
+                    ->color(fn ($state) => empty($state) ? 'gray' : 'success'),
                 Tables\Columns\BadgeColumn::make('grade')
                     ->label('Grade')
                     ->colors([
@@ -264,11 +284,55 @@ class VocabularySentenceResource extends Resource
                     ->url(fn ($record) => $record->preview_url)
                     ->openUrlInNewTab()
                     ->visible(fn ($record) => $record->preview_url !== null),
+                Tables\Actions\Action::make('translate')
+                    ->label('Traduire')
+                    ->icon('heroicon-o-language')
+                    ->color('gray')
+                    ->action(function (VocabularySentence $record, \App\Services\Raiida\DeepLTranslationService $translator) {
+                        if (empty($record->sentence)) {
+                            return;
+                        }
+                        $translations = $translator->translateBatch([$record->sentence]);
+                        $ar = $translations[0] ?? null;
+                        if ($ar) {
+                            $record->update(['sentence_ar' => trim($ar)]);
+                            Notification::make()
+                                ->title('Traduction réussie')
+                                ->body($ar)
+                                ->success()
+                                ->send();
+                        }
+                    }),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\BulkAction::make('translate_selected')
+                        ->label('Traduire la sélection en arabe (DeepL)')
+                        ->icon('heroicon-o-language')
+                        ->requiresConfirmation()
+                        ->action(function (\Illuminate\Database\Eloquent\Collection $records, \App\Services\Raiida\DeepLTranslationService $translator) {
+                            $valid = $records->filter(fn ($r) => ! empty($r->sentence));
+                            if ($valid->isEmpty()) {
+                                return;
+                            }
+                            $texts = $valid->pluck('sentence')->all();
+                            $translations = $translator->translateBatch($texts);
+                            $count = 0;
+                            foreach ($valid->values() as $index => $rec) {
+                                $ar = $translations[$index] ?? null;
+                                if ($ar) {
+                                    $rec->update(['sentence_ar' => trim($ar)]);
+                                    $count++;
+                                }
+                            }
+                            Notification::make()
+                                ->title('Traductions terminées')
+                                ->body("{$count} phrases traduites avec succès.")
+                                ->success()
+                                ->send();
+                        }),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
