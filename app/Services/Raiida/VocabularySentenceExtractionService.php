@@ -166,6 +166,27 @@ class VocabularySentenceExtractionService
 
         $candidates = $this->findSentencesForWord($vocab, $presentationTexts, $ocrTexts);
 
+        // Supplement with appropriate generated model sentences if available
+        $generated = $this->generateAppropriateSentencesForVocab($vocab);
+        foreach ($generated as $genSentence) {
+            $norm = mb_strtolower(preg_replace('/[^\p{L}\p{N}]/u', '', $genSentence));
+            $alreadyExists = false;
+            foreach ($candidates as $existingCand) {
+                if (mb_strtolower(preg_replace('/[^\p{L}\p{N}]/u', '', $existingCand['sentence'])) === $norm) {
+                    $alreadyExists = true;
+                    break;
+                }
+            }
+            if (! $alreadyExists) {
+                $candidates[] = [
+                    'sentence' => $genSentence,
+                    'session' => 'GEN',
+                    'slide' => null,
+                    'type' => 'generated',
+                ];
+            }
+        }
+
         if (empty($candidates)) {
             // Find default file asset for this lesson
             $defaultAssetId = \App\Models\Raiida\FileAsset::where('filename', 'like', $vocab->lesson_id . '%')
@@ -194,6 +215,14 @@ class VocabularySentenceExtractionService
 
             return 0;
         }
+
+        // Rank candidates by pedagogical score so the best choice is first
+        usort($candidates, function ($a, $b) use ($vocab) {
+            $scoreA = $this->scoreSentence($a['sentence'], $vocab->word, $a['session'] ?? null, $a['type'] ?? 'slide')['score'];
+            $scoreB = $this->scoreSentence($b['sentence'], $vocab->word, $b['session'] ?? null, $b['type'] ?? 'slide')['score'];
+
+            return $scoreB <=> $scoreA;
+        });
 
         $created = 0;
         // Keep up to 6 diverse, high-quality sentences per vocabulary item
@@ -311,6 +340,8 @@ class VocabularySentenceExtractionService
                 $terms = array_merge($terms, ['écris', 'écrit', 'écrivons', 'écrivez', 'écrivent', 'écrire']);
             } elseif ($w === 'mettre') {
                 $terms = array_merge($terms, ['mets', 'met', 'mettons', 'mettez', 'mettent', 'mettre']);
+            } elseif ($w === 'résoudre') {
+                $terms = array_merge($terms, ['résous', 'résout', 'résolvons', 'résolvez', 'résolvent', 'résolu', 'résoudre']);
             }
         }
 
@@ -434,7 +465,7 @@ class VocabularySentenceExtractionService
 
         // Strict regex filters for classroom directions, meta-instructions, exercise templates, phonics, and questions
         $instructionPatterns = [
-            '/^(?:Nous allons|On va|Je vais|Vous allez|Il faut|Il convient|Maintenant,?\s*(?:nous|on|je|vous)|Aujourd[\'’\`´]hui)/ui',
+            '/^(?:Nous allons|On va|Je vais|Vous allez|Il faut|Il convient|Maintenant,?\s*(?:nous|on|je|vous|écrivez|observez|lisez|regardez)|Aujourd[\'’\`´]hui)/ui',
             '/^(?:Sur vos|Dans vos|Sur le|Sur votre|Prenez|Rangez|Ouvrez|Fermez|À la maison|A la maison)/ui',
             '/^(?:Écrivez|Ecrivez|Lisez|Regardez|Écoutez|Ecoutez|Observez|Trouvez|Complétez|Soulignez|Entourez|Cochez|Reliez|Mettez|Placez|Répétez|Montrez|Devinez|Dites|Faîtes|Faites|Posez|Répondez|Corrigez|Jouez)/ui',
             '/^(?:Chacun|Tout le monde|À tour de rôle|A tour de rôle)/ui',
@@ -448,6 +479,8 @@ class VocabularySentenceExtractionService
             '/\b(?:j’entends le son|j\'entends le son|je vois la lettre|entendez(?:-vous)? le son|fait le son|font le son)\b/ui',
             '/^Dans le mot\b/ui',
             '/^(?:Lire|Écrire|Ecrire|Dire|Parler|Écouter|Ecouter)\s+(?:des|les|un|une|le|la)\s+[a-zà-öø-ÿ]+(?:\.)?$/ui',
+            '/^(?:Lire|Écrire|Ecrire)\s+(?:et\s+comprendre|correctement|des\s+(?:mots|textes|phrases).*(?:correctement|avec\s+fluidité))\b/ui',
+            '/^Répondre\s+(?:correctement\s+)?aux\s+exercices/ui',
             '/^[a-zà-öø-ÿ]\b/u', // starts with lowercase letter (fragment)
             '/[.]{3,}|[…]{1,}|_{2,}/u', // dotted or underscore blanks
             '/\b(?:lui\s+dit|leur\s+dit|me\s+dit|te\s+dit|nous\s+dit|vous\s+dit)\b/ui',
@@ -471,6 +504,15 @@ class VocabularySentenceExtractionService
             '/\b(?:Questions en rafale|Questions en rafales)\b/ui',
             '/\b(?!Tu\b)(?:[A-ZÀ-ÖØ-ß][a-zà-öø-ÿ]+|Il|Elle)\s+as\b/u', // 3rd person singular with 'as' (OCR typo, excluding valid 'Tu as')
             '/\b(?:sur|sous|dans|de|du|des|le|la|les|un|une|et|à|en|pour|avec)$/ui', // dangling preposition
+            '/^[A-Z]{2,}\d*\s+/u', // curriculum objective code prefixes (e.g. OL1, PE2, LF1)
+            '/^Les\s+(?:deux|trois|quatre|cinq|six)?\s*images?\s+qui\s+ont\s+bougé/ui', // animation/game prompt
+            '/^(?:Points?\s+de\s+langue|Mots?\s+avec\s+difficultés)/ui',
+            '/^(?:Lire\s+et\s+comprendre|Écrire\s+correctement|Écris\s+des\s+phrases|Produire,\s*à\s+l[\'’]écrit|Utiliser\s+les\s+outils)\b/ui',
+            '/^(?:Avec\s+votre\s+voisin|Après,\s*vous\s+allez|En\s+cas\s+d[\'’]indisponibilité|Cherchez\s+les\s+réponses|Lis\s+les\s+mots|Voici\s+le\s+paragraphe|Parle\s+de\s+ton\s+école)\b/ui',
+            '/^Je\s+lis\s+(?:en\s+silence|la\s+question)\b/ui',
+            '/^(?:Amine|Lina|Yasmine)\s+écrit\s*:\s*j[\'’]apprends/ui',
+            '/\b(?:le|la|les|l’|l\')\s+(?:lit|écrit|prend|met|voit)\s*[.!?]?$/ui', // pronoun replacement exercise fragments
+            '/^C[\'’]est\s+une\s+opération\s*[.!?]?$/ui', // ambiguous standalone phrase
         ];
 
         foreach ($instructionPatterns as $pattern) {
@@ -762,5 +804,174 @@ class VocabularySentenceExtractionService
         }
 
         return array_values(array_unique($sentences));
+    }
+
+    /**
+     * Score a vocabulary sentence candidate based on pedagogical quality and curriculum hierarchy.
+     *
+     * @return array{score: int, reasons: string[]}
+     */
+    public function scoreSentence(
+        string $sentence,
+        string $word,
+        ?string $sourceSession,
+        string $sourceType,
+        ?string $translation = null
+    ): array {
+        $score = 0;
+        $reasons = [];
+
+        // 1. Source Weight (Max 35)
+        if ($sourceSession && preg_match('/^SEM[56]/i', $sourceSession)) {
+            $score += 35;
+            $reasons[] = 'Revision Week (SEM5/SEM6) [+35]';
+        } elseif ($sourceType === 'slide') {
+            $score += 25;
+            $reasons[] = 'Presentation Slide [+25]';
+        } elseif ($sourceType === 'generated') {
+            $score += 22;
+            $reasons[] = 'Curated Model Sentence [+22]';
+        } else {
+            $score += 15;
+            $reasons[] = 'Textbook OCR [+15]';
+        }
+
+        // 2. Length (Max 15)
+        $words = preg_split('/\s+/u', trim($sentence), -1, PREG_SPLIT_NO_EMPTY);
+        $wordCount = is_array($words) ? count($words) : 0;
+        if ($wordCount >= 4 && $wordCount <= 8) {
+            $score += 15;
+            $reasons[] = 'Optimal primary length (' . $wordCount . ' words) [+15]';
+        } elseif ($wordCount >= 3 && $wordCount <= 11) {
+            $score += 10;
+            $reasons[] = 'Acceptable length (' . $wordCount . ' words) [+10]';
+        } else {
+            $score += 5;
+            $reasons[] = 'Long/complex length (' . $wordCount . ' words) [+5]';
+        }
+
+        // 3. Communicative & Persona Directness (Max 25)
+        if (preg_match('/^(?:Je\s+m’appelle|Je\s+m\'appelle|J’ai|J\'ai|Mon\s+prénom|Mon\s+nom|Je\s+suis|Je\s+fais|Je\s+calcule|Je\s+résous|J’écris|J\'écris|Je\s+lis|J’apprends|J\'apprends)\b/ui', $sentence)) {
+            $score += 25;
+            $reasons[] = 'Direct 1st-person self-expression [+25]';
+        } elseif (preg_match('/^(?:Tu\s+as\s+quel\s+âge|Tu\s+t’appelles|Tu\s+t\'appelles|Tu\s+as|Tu\s+fais|Tu\s+peux)\b/ui', $sentence)) {
+            $score += 22;
+            $reasons[] = 'Direct 2nd-person communicative address [+22]';
+        } elseif (preg_match('/^[A-ZÀ-ÖØ-ß][a-zà-öø-ÿ]+\s+(?:a|est|s’appelle|s\'appelle|lit|écrit|fait|cherche|calcule|résout|mesure)\b/u', $sentence)) {
+            $score += 20;
+            $reasons[] = 'Named concrete subject [+20]';
+        } elseif (preg_match('/^(?:L[\'’]élève|Le\s+maître|La\s+maîtresse|Le\s+professeur|L[\'’]enfant)\b/ui', $sentence)) {
+            $score += 20;
+            $reasons[] = 'School persona subject [+20]';
+        } elseif (preg_match('/^(?:Il|Elle|Nous|On)\s+/ui', $sentence)) {
+            $score += 15;
+            $reasons[] = 'Pronoun subject [+15]';
+        } else {
+            $score += 10;
+            $reasons[] = 'Declarative sentence [+10]';
+        }
+
+        // 4. Focus & Simplicity (Max 15)
+        if (str_contains($sentence, ' et ') || str_contains($sentence, ' ; ') || str_contains($sentence, ' parce que ')) {
+            $score += 8;
+            $reasons[] = 'Compound sentence [+8]';
+        } else {
+            $score += 15;
+            $reasons[] = 'Single focused clause [+15]';
+        }
+
+        // 5. Translation quality if available (Max 10)
+        if (! empty($translation) && mb_strlen($translation) >= 3) {
+            $score += 10;
+            $reasons[] = 'Arabic translation verified [+10]';
+        }
+
+        return [
+            'score' => min(100, $score),
+            'reasons' => $reasons,
+        ];
+    }
+
+    /**
+     * Generate appropriate model sentences for vocabulary words when authentic sources lack enough candidates.
+     *
+     * @return string[]
+     */
+    public function generateAppropriateSentencesForVocab(VocabularyItem $vocab): array
+    {
+        $word = mb_strtolower(trim($vocab->word));
+        $base = mb_strtolower(trim($vocab->base_word ?? ''));
+
+        $curated = [
+            'calculer' => [
+                'Je calcule rapidement la somme des nombres de tête.',
+                'L’élève calcule le résultat de l’opération sur son ardoise.',
+            ],
+            'mesurer' => [
+                'L’élève mesure la longueur de la table avec une règle.',
+                'En géométrie, je mesure les côtés du rectangle.',
+            ],
+            'une langue' => [
+                'L’arabe et le français sont deux belles langues enseignées à l’école.',
+                'J’apprends une nouvelle langue étrangère en classe.',
+            ],
+            'langue' => [
+                'L’arabe et le français sont deux belles langues enseignées à l’école.',
+                'J’apprends une nouvelle langue étrangère en classe.',
+            ],
+            'lire' => [
+                'Chaque soir, je lis une histoire passionnante avant de dormir.',
+                'Sami lit un livre de contes à haute voix.',
+            ],
+            'la solution' => [
+                'L’élève a trouvé la bonne solution du problème.',
+                'Le maître explique la solution de l’exercice au tableau.',
+            ],
+            'solution' => [
+                'L’élève a trouvé la bonne solution du problème.',
+                'Le maître explique la solution de l’exercice au tableau.',
+            ],
+            'une opération' => [
+                'Je pose une opération d’addition sur mon cahier.',
+                'Cette opération de calcul est très facile à résoudre.',
+            ],
+            'opération' => [
+                'Je pose une opération d’addition sur mon cahier.',
+                'Cette opération de calcul est très facile à résoudre.',
+            ],
+            'un problème' => [
+                'Le maître pose un problème de mathématiques sur le tableau.',
+                'Nous réfléchissons ensemble pour résoudre ce problème.',
+            ],
+            'problème' => [
+                'Le maître pose un problème de mathématiques sur le tableau.',
+                'Nous réfléchissons ensemble pour résoudre ce problème.',
+            ],
+            'résoudre' => [
+                'L’élève résout l’exercice de calcul mental très rapidement.',
+                'Nous apprenons à résoudre des problèmes difficiles en classe.',
+            ],
+            'difficile' => [
+                'Cet exercice de géométrie n’est pas difficile.',
+                'Le problème paraît difficile mais la solution est simple.',
+            ],
+            'facile' => [
+                'Cette leçon de français est facile et amusante.',
+                'L’exercice de lecture est très facile à faire.',
+            ],
+            'écrire' => [
+                'L’élève écrit soigneusement la date et la leçon sur son cahier.',
+                'J’écris un texte avec soin pour mon professeur.',
+            ],
+        ];
+
+        if (isset($curated[$word])) {
+            return $curated[$word];
+        }
+        if (isset($curated[$base])) {
+            return $curated[$base];
+        }
+
+        return [];
     }
 }
