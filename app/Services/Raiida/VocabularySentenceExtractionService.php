@@ -963,6 +963,22 @@ class VocabularySentenceExtractionService
                 'L’élève écrit soigneusement la date et la leçon sur son cahier.',
                 'J’écris un texte avec soin pour mon professeur.',
             ],
+            'une olive' => [
+                'Je mange une bonne olive noire.',
+                'Il y a une olive verte dans l’assiette.',
+            ],
+            'olive' => [
+                'Je mange une bonne olive noire.',
+                'Il y a une olive verte dans l’assiette.',
+            ],
+            'une moto' => [
+                'Papa conduit une belle moto rouge.',
+                'La moto roule vite sur la route.',
+            ],
+            'moto' => [
+                'Papa conduit une belle moto rouge.',
+                'La moto roule vite sur la route.',
+            ],
         ];
 
         if (isset($curated[$word])) {
