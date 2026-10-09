@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             ConjugaisonReferenceSeeder::class,
+            ArabicN3VocabularySeeder::class,
         ]);
     }
 }
