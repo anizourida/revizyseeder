@@ -27,25 +27,43 @@ class ArabicN1VocabularySeeder extends Seeder
                     'word' => 'دَفْتَرٌ',
                     'clean' => 'دفتر',
                     'meaning' => 'كُرَّاسَةُ الْكِتَابَةِ وَالرَّسْمِ',
+                    'image' => '/assets/lesson-images/N1/P1/SEM1/vocab/image65.png'
+                ],
+                [
+                    'word' => 'مِقْلَمَةٌ',
+                    'clean' => 'مقلمة',
+                    'meaning' => 'عُلْبَةُ حِفْظِ الْأَقْلَامِ وَالْأَدَوَاتِ',
+                    'image' => '/assets/lesson-images/N1/P1/SEM1/vocab/image67.png'
+                ],
+                [
+                    'word' => 'مِقَصٌّ',
+                    'clean' => 'مقص',
+                    'meaning' => 'أَدَاةُ قَصِّ الْأَوْرَاقِ',
+                    'image' => '/assets/lesson-images/N1/P1/SEM1/vocab/image66.jpeg'
+                ],
+                [
+                    'word' => 'قَلَمُ الرَّصَاصِ',
+                    'clean' => 'قلم الرصاص',
+                    'meaning' => 'أَدَاةُ الْكِتَابَةِ وَالتَّخْطِيطِ',
+                    'image' => '/assets/lesson-images/N1/P1/SEM1/vocab/image64.png'
+                ],
+                [
+                    'word' => 'مِسْطَرَةٌ',
+                    'clean' => 'مسطرة',
+                    'meaning' => 'أَدَاةُ تَسْطِيرِ الدَّفْتَرِ',
+                    'image' => '/assets/lesson-images/N1/P1/SEM1/vocab/image63.jpeg'
+                ],
+                [
+                    'word' => 'أَقْلَامٌ مُلَوَّنَةٌ',
+                    'clean' => 'أقلام ملونة',
+                    'meaning' => 'أَقْلَامُ التَّلْوِينِ الْجَمِيلَةِ',
+                    'image' => '/assets/lesson-images/N1/P1/SEM1/vocab/image62.png'
+                ],
+                [
+                    'word' => 'دُودُو',
+                    'clean' => 'دودو',
+                    'meaning' => 'الْقِرْدُ الصَّغِيرُ بَطَلُ الْحِكَايَةِ',
                     'image' => '/assets/lesson-images/N1/P1/SEM1/vocab/image100.png'
-                ],
-                [
-                    'word' => 'دَارٌ',
-                    'clean' => 'دار',
-                    'meaning' => 'مَنْزِلُ الْأُسْرَةِ',
-                    'image' => '/assets/lesson-images/N1/P1/SEM1/vocab/image106.png'
-                ],
-                [
-                    'word' => 'دُبٌّ',
-                    'clean' => 'دب',
-                    'meaning' => 'لُعْبَةُ الدُّبِّ الصَّغِيرِ',
-                    'image' => '/assets/lesson-images/N1/P1/SEM1/vocab/image107.png'
-                ],
-                [
-                    'word' => 'دَرَاجَةٌ',
-                    'clean' => 'دراجة',
-                    'meaning' => 'مَرْكَبَةٌ ذَاتُ عَجَلَتَيْنِ',
-                    'image' => '/assets/lesson-images/N1/P1/SEM1/vocab/image30.png'
                 ]
                 ]
             ],
@@ -56,28 +74,28 @@ class ArabicN1VocabularySeeder extends Seeder
                 'lesson_sentence' => 'رَسَمَ رَامِي رُمَّانَةً حَمْرَاءَ.',
                 'vocabulary' => [
                 [
-                    'word' => 'رَسْمٌ',
-                    'clean' => 'رسم',
-                    'meaning' => 'صُورَةٌ مُلَوَّنَةٌ بِالْفُرْشَاةِ',
-                    'image' => '/assets/lesson-images/N1/P1/SEM2/vocab/image61.png'
+                    'word' => 'مِحْفَظَةٌ',
+                    'clean' => 'محفظة',
+                    'meaning' => 'حَقِيبَةُ حَمْلِ الْكُتُبِ وَالدَّفَاتِرِ',
+                    'image' => '/assets/lesson-images/N1/P1/SEM2/vocab/image75.png'
                 ],
                 [
-                    'word' => 'رُمَّانٌ',
-                    'clean' => 'رمان',
-                    'meaning' => 'فَاكِهَةٌ خَرِيفِيَّةٌ لَذِيذَةٌ',
-                    'image' => '/assets/lesson-images/N1/P1/SEM2/vocab/image66.jpg'
+                    'word' => 'مَكْتَبٌ',
+                    'clean' => 'مكتب',
+                    'meaning' => 'طَاوِلَةُ الدِّرَاسَةِ وَالْحَاسُوبِ',
+                    'image' => '/assets/lesson-images/N1/P1/SEM2/vocab/image74.jpg'
                 ],
                 [
-                    'word' => 'رِيشَةٌ',
-                    'clean' => 'ريشة',
-                    'meaning' => 'أَدَاةُ الرَّسْمِ وَالتَّلْوِينِ',
+                    'word' => 'خِزَانَةٌ',
+                    'clean' => 'خزانة',
+                    'meaning' => 'خِزَانَةُ الْكُتُبِ فِي الْقِسْمِ',
                     'image' => '/assets/lesson-images/N1/P1/SEM2/vocab/image73.jpg'
                 ],
                 [
-                    'word' => 'رَمْلٌ',
-                    'clean' => 'رمل',
-                    'meaning' => 'حَبَّاتُ الرَّمْلِ فِي الشَّاطِئِ',
-                    'image' => '/assets/lesson-images/N1/P1/SEM2/vocab/image74.jpg'
+                    'word' => 'رِيمُ',
+                    'clean' => 'ريم',
+                    'meaning' => 'التِّلْمِيذَةُ رِيمُ',
+                    'image' => '/assets/lesson-images/N1/P1/SEM2/vocab/image61.png'
                 ]
                 ]
             ],
@@ -88,28 +106,28 @@ class ArabicN1VocabularySeeder extends Seeder
                 'lesson_sentence' => 'مِحْفَظَةُ مَرْيَمَ مُرَتَّبَةٌ وَجَمِيلَةٌ.',
                 'vocabulary' => [
                 [
-                    'word' => 'مِحْفَظَةٌ',
-                    'clean' => 'محفظة',
-                    'meaning' => 'حَقِيبَةُ حَمْلِ الْكُتُبِ',
-                    'image' => '/assets/lesson-images/N1/P1/SEM3/vocab/image57.png'
+                    'word' => 'مَدْرَسَةٌ',
+                    'clean' => 'مدرسة',
+                    'meaning' => 'سَاحَةُ الْمَدْرَسَةِ وَالْعَلَمُ الْوَطَنِيُّ',
+                    'image' => '/assets/lesson-images/N1/P1/SEM3/vocab/image68.jpg'
+                ],
+                [
+                    'word' => 'حَدِيقَةٌ',
+                    'clean' => 'حديقة',
+                    'meaning' => 'حَدِيقَةُ الْمَدْرَسَةِ الْمُزْهِرَةُ',
+                    'image' => '/assets/lesson-images/N1/P1/SEM3/vocab/image69.jpg'
+                ],
+                [
+                    'word' => 'إِدَارَةٌ',
+                    'clean' => 'إدارة',
+                    'meaning' => 'مَكْتَبُ الْمُدِيرِ',
+                    'image' => '/assets/lesson-images/N1/P1/SEM3/vocab/image67.jpg'
                 ],
                 [
                     'word' => 'مَقْلَمَةٌ',
                     'clean' => 'مقلمة',
                     'meaning' => 'عُلْبَةُ حِفْظِ الْأَقْلَامِ',
-                    'image' => '/assets/lesson-images/N1/P1/SEM3/vocab/image58.png'
-                ],
-                [
-                    'word' => 'مِقَصٌّ',
-                    'clean' => 'مقص',
-                    'meaning' => 'أَدَاةُ قَصِّ الْأَوْرَاقِ',
-                    'image' => '/assets/lesson-images/N1/P1/SEM3/vocab/image59.png'
-                ],
-                [
-                    'word' => 'مَكْتَبٌ',
-                    'clean' => 'مكتب',
-                    'meaning' => 'طَاوِلَةُ الدِّرَاسَةِ',
-                    'image' => '/assets/lesson-images/N1/P1/SEM3/vocab/image67.jpg'
+                    'image' => '/assets/lesson-images/N1/P1/SEM1/vocab/image67.png'
                 ]
                 ]
             ],
