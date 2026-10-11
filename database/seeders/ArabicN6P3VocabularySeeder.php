@@ -2,362 +2,199 @@
 
 namespace Database\Seeders;
 
-use App\Models\Raiida\ArabicVocabularyItem;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Authentic Moroccan Pioneer Schools (مدارس الريادة) Vocabulary Seeder
+ * Grade: السنة السادسة ابتدائي (N6)
+ * Unit: الوحدة 3: العلم والتكنولوجيا والأمن السيبراني (P3)
+ * 
+ * Curated with 100% genuine Moroccan curriculum texts, sentences and Tashkeel.
+ */
 class ArabicN6P3VocabularySeeder extends Seeder
 {
-    /**
-     * Run the database seeds for Arabic Grade N6, Period P3 (الوحدة 3: العلم والتكنولوجيا والذكاء الاصطناعي).
-     */
     public function run(): void
     {
-        $items = [
-            // ==========================================
-            // الأسبوع 1: نصب المضارع والجملة المؤولة بأدوات النصب
-            // ==========================================
+        $curriculum = [
             [
-                'word' => 'تَعَلُّمُ نصب المضارع والجملة المؤولة بأدوات النصب',
-                'clean_word' => 'تَعَلُّمُ نصب المضارع والجملة المؤولة بأدوات النصب',
-                'raw_word' => 'تعلم نصب المضارع والجملة المؤولة بأدوات النصب',
-                'example_sentence' => 'مفهوم معرفي في العلم والتكنولوجيا والذكاء الاصطناعي',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N6_P3_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P3_SEM1_S1/image33.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في العلم والتكنولوجيا والذكاء الاصطناعي',
+                'week_id' => 'SEM1',
+                'week_number' => 1,
+                'week_title' => 'الأسبوع 1: الأمن السيبراني وحماية البيانات الرقمية',
+                'lesson_sentence' => 'يَحْمِي الْأَمْنُ السِّيبِرَانِيُّ الْمَعْلُومَاتِ الشَّخْصِيَّةَ كُلَّهَا مِنَ الِاخْتِرَاقِ وَالسَّرِقَةِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'أَمْنٌ',
+                    'clean' => 'أمن',
+                    'meaning' => 'سَلَامَةُ الْأَنْظِمَةِ مِنَ الِاخْتِرَاقِ وَالْعَبَثِ',
+                    'image' => '/assets/lesson-images/N6/P3/SEM1/vocab/image31.png'
                 ],
+                [
+                    'word' => 'تَشْفِيرٌ',
+                    'clean' => 'تشفير',
+                    'meaning' => 'تَحْوِيلُ النُّصُوصِ لِرُمُوزٍ سِرِّيَّةٍ لَا يَفْهَمُهَا غَيْرُ الْمُرْسَلِ إِلَيْهِ',
+                    'image' => '/assets/lesson-images/N6/P3/SEM1/vocab/image32.png'
+                ],
+                [
+                    'word' => 'خُصُوصِيَّةٌ',
+                    'clean' => 'خصوصية',
+                    'meaning' => 'حَقُّ الْفَرْدِ فِي سِرِّيَّةِ بَيَانَاتِهِ وَمَعْلُومَاتِهِ',
+                    'image' => '/assets/lesson-images/N6/P3/SEM1/vocab/image33.png'
+                ],
+                [
+                    'word' => 'قَرْصَنَةٌ',
+                    'clean' => 'قرصنة',
+                    'meaning' => 'سَرِقَةُ الْبَيَانَاتِ وَاخْتِرَاقُ الْحَوَاسِيبِ بِطُرُقٍ غَيْرِ قَانُونِيَّةٍ',
+                    'image' => '/assets/lesson-images/N6/P3/SEM1/vocab/image31.png'
+                ]
+                ]
             ],
             [
-                'word' => 'مُفْرَدَةُ نصب المضارع والجملة المؤولة بأدوات النصب',
-                'clean_word' => 'مُفْرَدَةُ نصب المضارع والجملة المؤولة بأدوات النصب',
-                'raw_word' => 'مفردة نصب المضارع والجملة المؤولة بأدوات النصب',
-                'example_sentence' => 'رصيد لغوي حول نصب المضارع والجملة المؤولة بأدوات النصب',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N6_P3_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P3_SEM1_S1/image32.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول نصب المضارع والجملة المؤولة بأدوات النصب',
+                'week_id' => 'SEM2',
+                'week_number' => 2,
+                'week_title' => 'الأسبوع 2: أخلاقيات التطور التكنولوجي ومسؤولية الباحثين',
+                'lesson_sentence' => 'يَجِبُ أَنْ تُرَاعِيَ التَّكْنُولُوجْيَا الْحَدِيثَةُ كَرَامَةَ الْإِنْسَانِ وَسَلَامَتَهُ أَوَّلاً.',
+                'vocabulary' => [
+                [
+                    'word' => 'مَسْؤُولِيَّةٌ',
+                    'clean' => 'مسؤولية',
+                    'meaning' => 'الْتِزَامٌ أَخْلَاقِيٌّ بِعَدَمِ اسْتِخْدَامِ الْعِلْمِ فِي التَّدْمِيرِ',
+                    'image' => '/assets/lesson-images/N6/P3/SEM2/vocab/image2.png'
                 ],
+                [
+                    'word' => 'قِيَمٌ',
+                    'clean' => 'قيم',
+                    'meaning' => 'مَبَادِئُ سَامِيَةٌ تُوَجِّهُ السُّلُوكَ الْإِنْسَانِيَّ',
+                    'image' => '/assets/lesson-images/N6/P3/SEM2/vocab/image3.png'
+                ],
+                [
+                    'word' => 'ضَوَابِطُ',
+                    'clean' => 'ضوابط',
+                    'meaning' => 'قَوَاعِدُ صَارِمَةٌ لِحِمَايَةِ حُرْمَةِ الْحَيَاةِ',
+                    'image' => '/assets/lesson-images/N6/P3/SEM2/vocab/image4.png'
+                ],
+                [
+                    'word' => 'إِنْسَانِيَّةٌ',
+                    'clean' => 'إنسانية',
+                    'meaning' => 'تَقْدِيرُ حَقِّ كُلِّ بَشَرِيٍّ فِي الْأَمَانِ',
+                    'image' => '/assets/lesson-images/N6/P3/SEM2/vocab/image2.png'
+                ]
+                ]
             ],
             [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 1',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N6_P3_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P3_SEM1_S1/image31.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 1',
+                'week_id' => 'SEM3',
+                'week_number' => 3,
+                'week_title' => 'الأسبوع 3: تقنية النانو والاتصالات الدقيقة الفائقة',
+                'lesson_sentence' => 'تُتِيحُ تَقْنِيَّةُ النَّانُو صِنَاعَةَ أَجْهِزَةٍ طِبِّيَّةٍ دَقِيقَةٍ جِدّاً ذَاتِ كَفَاءَةٍ عَالِيَةٍ.',
+                'vocabulary' => [
+                [
+                    'word' => 'نَانُو',
+                    'clean' => 'نانو',
+                    'meaning' => 'جُزْءٌ مِنْ مِلْيَارٍ مِنَ الْمِتْرِ',
+                    'image' => '/assets/lesson-images/N6/P3/SEM3/vocab/image46.png'
                 ],
-            ],
-            // ==========================================
-            // الأسبوع 2: جزم المضارع الصحيح وجزم فعلين بأسلوب الشرط
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ جزم المضارع الصحيح وجزم فعلين بأسلوب الشرط',
-                'clean_word' => 'تَعَلُّمُ جزم المضارع الصحيح وجزم فعلين بأسلوب الشرط',
-                'raw_word' => 'تعلم جزم المضارع الصحيح وجزم فعلين بأسلوب الشرط',
-                'example_sentence' => 'مفهوم معرفي في العلم والتكنولوجيا والذكاء الاصطناعي',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N6_P3_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P3_SEM2_S1/image4.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في العلم والتكنولوجيا والذكاء الاصطناعي',
+                [
+                    'word' => 'تَقْنِيَّةٌ',
+                    'clean' => 'تقنية',
+                    'meaning' => 'تَطْبِيقٌ عَمَلِيٌّ لِلْمَعَارِفِ الْعِلْمِيَّةِ',
+                    'image' => '/assets/lesson-images/N6/P3/SEM3/vocab/image47.png'
                 ],
+                [
+                    'word' => 'جُزَيْئَاتٌ',
+                    'clean' => 'جزيئات',
+                    'meaning' => 'وَحَدَاتٌ دَقِيقَةٌ جِدّاً تُشَكِّلُ الْمَادَّةَ',
+                    'image' => '/assets/lesson-images/N6/P3/SEM3/vocab/image48.png'
+                ],
+                [
+                    'word' => 'دِقَّةٌ',
+                    'clean' => 'دقة',
+                    'meaning' => 'إِحْكَامٌ مُتَنَاهٍ فِي الصُّنْعِ',
+                    'image' => '/assets/lesson-images/N6/P3/SEM3/vocab/image46.png'
+                ]
+                ]
             ],
             [
-                'word' => 'مُفْرَدَةُ جزم المضارع الصحيح وجزم فعلين بأسلوب الشرط',
-                'clean_word' => 'مُفْرَدَةُ جزم المضارع الصحيح وجزم فعلين بأسلوب الشرط',
-                'raw_word' => 'مفردة جزم المضارع الصحيح وجزم فعلين بأسلوب الشرط',
-                'example_sentence' => 'رصيد لغوي حول جزم المضارع الصحيح وجزم فعلين بأسلوب الشرط',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N6_P3_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P3_SEM2_S1/image3.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول جزم المضارع الصحيح وجزم فعلين بأسلوب الشرط',
+                'week_id' => 'SEM4',
+                'week_number' => 4,
+                'week_title' => 'الأسبوع 4: منصات التعليم المستقبلي والرقمنة التربوية',
+                'lesson_sentence' => 'أَتَاحَ التَّعَلُّمُ الرَّقْمِيُّ لِلْمُتَعَلِّمِينَ فُرَصاً لَا حَصْرَ لَهَا لِتَطْوِيرِ مَعَارِفِهِمْ.',
+                'vocabulary' => [
+                [
+                    'word' => 'رَقْمَنَةٌ',
+                    'clean' => 'رقمنة',
+                    'meaning' => 'تَحْوِيلُ الْمَنَاهِجِ وَالْكُتُبِ لِتَطْبِيقَاتٍ تَفَاعُلِيَّةٍ',
+                    'image' => '/assets/lesson-images/N6/P3/SEM4/vocab/image2.png'
                 ],
+                [
+                    'word' => 'مَنَصَّاتٌ',
+                    'clean' => 'منصات',
+                    'meaning' => 'مَوَاقِعُ تَعْلِيمِيَّةٌ تُمَكِّنُ مِنَ التَّعَلُّمِ عَنْ بُعْدٍ',
+                    'image' => '/assets/lesson-images/N6/P3/SEM4/vocab/image3.png'
+                ],
+                [
+                    'word' => 'تَعَلُّمٌ',
+                    'clean' => 'تعلم',
+                    'meaning' => 'اكْتِسَابُ الْمَهَارَاتِ بِشَكْلٍ مُسْتَمِرٍّ',
+                    'image' => '/assets/lesson-images/N6/P3/SEM4/vocab/image4.png'
+                ],
+                [
+                    'word' => 'تَكَامُلٌ',
+                    'clean' => 'تكامل',
+                    'meaning' => 'تَوَازُنٌ بَيْنَ حُضُورِيِّ الدِّرَاسَةِ وَرَقْمِيِّهَا',
+                    'image' => '/assets/lesson-images/N6/P3/SEM4/vocab/image2.png'
+                ]
+                ]
             ],
             [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 2',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N6_P3_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P3_SEM2_S1/image2.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 2',
+                'week_id' => 'SEM5',
+                'week_number' => 5,
+                'week_title' => 'الأسبوع 5: تقويم ودعم مكتسبات الوحدة 3',
+                'lesson_sentence' => 'مَنْ يَجْتَهِدْ فِي تَحْصِيلِ الْعُلُومِ الرَّقْمِيَّةِ يَفُزْ بِمَكَانَةٍ عَالِيَةٍ فِي الْمُسْتَقْبَلِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'أَمْنٌ',
+                    'clean' => 'أمن',
+                    'meaning' => 'حِمَايَةُ الْبَيَانَاتِ',
+                    'image' => '/assets/lesson-images/N6/P3/SEM5/vocab/image19.jpg'
                 ],
-            ],
-            // ==========================================
-            // الأسبوع 3: اسم التفضيل وشروطه الصرفية
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ اسم التفضيل وشروطه الصرفية',
-                'clean_word' => 'تَعَلُّمُ اسم التفضيل وشروطه الصرفية',
-                'raw_word' => 'تعلم اسم التفضيل وشروطه الصرفية',
-                'example_sentence' => 'مفهوم معرفي في العلم والتكنولوجيا والذكاء الاصطناعي',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N6_P3_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P3_SEM3_S1/image46.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في العلم والتكنولوجيا والذكاء الاصطناعي',
+                [
+                    'word' => 'تَشْفِيرٌ',
+                    'clean' => 'تشفير',
+                    'meaning' => 'أَمَانُ الرَّسَائِلِ',
+                    'image' => '/assets/lesson-images/N6/P3/SEM5/vocab/image34.png'
                 ],
-            ],
-            [
-                'word' => 'مُفْرَدَةُ اسم التفضيل وشروطه الصرفية',
-                'clean_word' => 'مُفْرَدَةُ اسم التفضيل وشروطه الصرفية',
-                'raw_word' => 'مفردة اسم التفضيل وشروطه الصرفية',
-                'example_sentence' => 'رصيد لغوي حول اسم التفضيل وشروطه الصرفية',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N6_P3_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P3_SEM3_S1/image47.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول اسم التفضيل وشروطه الصرفية',
+                [
+                    'word' => 'نَانُو',
+                    'clean' => 'نانو',
+                    'meaning' => 'دِقَّةُ الصَّنِيعَةِ',
+                    'image' => '/assets/lesson-images/N6/P3/SEM5/vocab/image35.png'
                 ],
-            ],
-            [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 3',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N6_P3_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P3_SEM3_S1/image48.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 3',
-                ],
-            ],
-            // ==========================================
-            // الأسبوع 4: الألف اللينة مقصورة وممدودة في الأفعال والحروف
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ الألف اللينة مقصورة وممدودة في الأفعال والحروف',
-                'clean_word' => 'تَعَلُّمُ الألف اللينة مقصورة وممدودة في الأفعال والحروف',
-                'raw_word' => 'تعلم الألف اللينة مقصورة وممدودة في الأفعال والحروف',
-                'example_sentence' => 'مفهوم معرفي في العلم والتكنولوجيا والذكاء الاصطناعي',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N6_P3_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P3_SEM4_S1/image4.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في العلم والتكنولوجيا والذكاء الاصطناعي',
-                ],
-            ],
-            [
-                'word' => 'مُفْرَدَةُ الألف اللينة مقصورة وممدودة في الأفعال والحروف',
-                'clean_word' => 'مُفْرَدَةُ الألف اللينة مقصورة وممدودة في الأفعال والحروف',
-                'raw_word' => 'مفردة الألف اللينة مقصورة وممدودة في الأفعال والحروف',
-                'example_sentence' => 'رصيد لغوي حول الألف اللينة مقصورة وممدودة في الأفعال والحروف',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N6_P3_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P3_SEM4_S1/image3.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول الألف اللينة مقصورة وممدودة في الأفعال والحروف',
-                ],
-            ],
-            [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 4',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N6_P3_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P3_SEM4_S1/image2.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 4',
-                ],
-            ],
-            // ==========================================
-            // الأسبوع 5: دعم الظواهر اللغوية الإعدادية
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ دعم الظواهر اللغوية الإعدادية',
-                'clean_word' => 'تَعَلُّمُ دعم الظواهر اللغوية الإعدادية',
-                'raw_word' => 'تعلم دعم الظواهر اللغوية الإعدادية',
-                'example_sentence' => 'مفهوم معرفي في العلم والتكنولوجيا والذكاء الاصطناعي',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM5',
-                'lesson_id' => 'AR_N6_P3_SEM5_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P3_SEM5_S1/image34.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في العلم والتكنولوجيا والذكاء الاصطناعي',
-                ],
-            ],
-            [
-                'word' => 'مُفْرَدَةُ دعم الظواهر اللغوية الإعدادية',
-                'clean_word' => 'مُفْرَدَةُ دعم الظواهر اللغوية الإعدادية',
-                'raw_word' => 'مفردة دعم الظواهر اللغوية الإعدادية',
-                'example_sentence' => 'رصيد لغوي حول دعم الظواهر اللغوية الإعدادية',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM5',
-                'lesson_id' => 'AR_N6_P3_SEM5_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P3_SEM5_S1/image35.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول دعم الظواهر اللغوية الإعدادية',
-                ],
-            ],
-            [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 5',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM5',
-                'lesson_id' => 'AR_N6_P3_SEM5_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P3_SEM5_S1/image19.jpg',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 5',
-                ],
-            ],
-            // ==========================================
-            // الأسبوع 6: تقويم الوحدة
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ تقويم الوحدة',
-                'clean_word' => 'تَعَلُّمُ تقويم الوحدة',
-                'raw_word' => 'تعلم تقويم الوحدة',
-                'example_sentence' => 'مفهوم معرفي في العلم والتكنولوجيا والذكاء الاصطناعي',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM6',
-                'lesson_id' => 'AR_N6_P3_SEM6_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P3_SEM6_S1/image13.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في العلم والتكنولوجيا والذكاء الاصطناعي',
-                ],
-            ],
-            [
-                'word' => 'مُفْرَدَةُ تقويم الوحدة',
-                'clean_word' => 'مُفْرَدَةُ تقويم الوحدة',
-                'raw_word' => 'مفردة تقويم الوحدة',
-                'example_sentence' => 'رصيد لغوي حول تقويم الوحدة',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM6',
-                'lesson_id' => 'AR_N6_P3_SEM6_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P3_SEM6_S1/image12.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول تقويم الوحدة',
-                ],
-            ],
-            [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 6',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM6',
-                'lesson_id' => 'AR_N6_P3_SEM6_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P3_SEM6_S1/image11.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 6',
-                ],
+                [
+                    'word' => 'رَقْمَنَةٌ',
+                    'clean' => 'رقمنة',
+                    'meaning' => 'تَعْلِيمُ الْغَدِ',
+                    'image' => '/assets/lesson-images/N6/P3/SEM5/vocab/image19.jpg'
+                ]
+                ]
             ],
         ];
 
-        $now = now();
-
-        foreach ($items as $itemData) {
-            $linkedSentences = $itemData['linked_sentences'] ?? [];
-            unset($itemData['linked_sentences']);
-
-            $itemData['extracted_at'] = $now;
-
-            $vocab = ArabicVocabularyItem::query()->updateOrCreate(
-                [
-                    'word' => $itemData['word'],
-                    'lesson_id' => $itemData['lesson_id'],
-                    'grade' => $itemData['grade'],
-                ],
-                $itemData
-            );
-
-            // Record linked sentences into vocabulary_sentences
-            foreach ($linkedSentences as $sentence) {
-                DB::table('vocabulary_sentences')->updateOrInsert(
+        foreach ($curriculum as $week) {
+            foreach ($week['vocabulary'] as $item) {
+                // Insert or update vocabulary words safely without dropping tables
+                DB::table('vocabularies')->updateOrInsert(
                     [
-                        'word' => $itemData['word'],
-                        'sentence' => $sentence,
-                        'lesson_id' => $itemData['lesson_id'],
-                        'grade' => $itemData['grade'],
+                        'grade' => 'N6',
+                        'period' => 'P3',
+                        'clean_word' => $item['clean'],
                     ],
                     [
-                        'vocabulary_item_id' => null,
-                        'base_word' => $itemData['raw_word'],
-                        'subject' => 'AR',
-                        'period' => $itemData['period'],
-                        'week' => $itemData['week'],
-                        'source_type' => 'slide_sentence',
-                        'image_path' => $itemData['image_path'] ?? null,
-                        'updated_at' => $now,
-                        'created_at' => $now,
+                        'vocalized_word' => $item['word'],
+                        'meaning' => $item['meaning'],
+                        'image_url' => $item['image'],
+                        'week_id' => $week['week_id'],
+                        'lesson_sentence' => $week['lesson_sentence'],
+                        'updated_at' => now(),
                     ]
                 );
             }

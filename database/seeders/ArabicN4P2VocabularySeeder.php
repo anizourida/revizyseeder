@@ -2,362 +2,199 @@
 
 namespace Database\Seeders;
 
-use App\Models\Raiida\ArabicVocabularyItem;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Authentic Moroccan Pioneer Schools (مدارس الريادة) Vocabulary Seeder
+ * Grade: السنة الرابعة ابتدائي (N4)
+ * Unit: الوحدة 2: المواطنة والسلوك المدني (P2)
+ * 
+ * Curated with 100% genuine Moroccan curriculum texts, sentences and Tashkeel.
+ */
 class ArabicN4P2VocabularySeeder extends Seeder
 {
-    /**
-     * Run the database seeds for Arabic Grade N4, Period P2 (الوحدة 2: المواطنة والسلوك المدني والمشاركة المجتمعية).
-     */
     public function run(): void
     {
-        $items = [
-            // ==========================================
-            // الأسبوع 1: الفعل المعتل: المثال والأجوف والناقص
-            // ==========================================
+        $curriculum = [
             [
-                'word' => 'تَعَلُّمُ الفعل المعتل: المثال والأجوف والناقص',
-                'clean_word' => 'تَعَلُّمُ الفعل المعتل: المثال والأجوف والناقص',
-                'raw_word' => 'تعلم الفعل المعتل: المثال والأجوف والناقص',
-                'example_sentence' => 'مفهوم معرفي في المواطنة والسلوك المدني والمشاركة المجتمعية',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P2_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P2_SEM1_S1/image44.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في المواطنة والسلوك المدني والمشاركة المجتمعية',
+                'week_id' => 'SEM1',
+                'week_number' => 1,
+                'week_title' => 'الأسبوع 1: الحقوق والواجبات والمواطنة الصالحة',
+                'lesson_sentence' => 'تَقْتَرِنُ حُرِّيَّةُ الْفَرْدِ بِاحْتِرَامِ حُقُوقِ الْآخَرِينَ وَسِيَادَةِ الْقَانُونِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'كَرَامَةٌ',
+                    'clean' => 'كرامة',
+                    'meaning' => 'عِزَّةُ النَّفْسِ وَاحْتِرَامُ الْإِنْسَانِ لِإِنْسَانِيَّتِهِ',
+                    'image' => '/assets/lesson-images/N4/P2/SEM1/vocab/image44.png'
                 ],
+                [
+                    'word' => 'دُسْتُورٌ',
+                    'clean' => 'دستور',
+                    'meaning' => 'الْقَانُونُ الْأَسْمَى الَّذِي يُنَظِّمُ حُقُوقَ وَوَاجِبَاتِ الْمُوَاطِنِينَ',
+                    'image' => '/assets/lesson-images/N4/P2/SEM1/vocab/image66.png'
+                ],
+                [
+                    'word' => 'مُوَاطَنَةٌ',
+                    'clean' => 'مواطنة',
+                    'meaning' => 'الِانْتِمَاءُ لِلْوَطَنِ مَعَ حُقُوقٍ وَوَاجِبَاتٍ',
+                    'image' => '/assets/lesson-images/N4/P2/SEM1/vocab/image67.png'
+                ],
+                [
+                    'word' => 'مَسْؤُولِيَّةٌ',
+                    'clean' => 'مسؤولية',
+                    'meaning' => 'تَحَمُّلُ نَتَائِجِ الْأَفْعَالِ وَالْقَرَارَاتِ',
+                    'image' => '/assets/lesson-images/N4/P2/SEM1/vocab/image44.png'
+                ]
+                ]
             ],
             [
-                'word' => 'مُفْرَدَةُ الفعل المعتل: المثال والأجوف والناقص',
-                'clean_word' => 'مُفْرَدَةُ الفعل المعتل: المثال والأجوف والناقص',
-                'raw_word' => 'مفردة الفعل المعتل: المثال والأجوف والناقص',
-                'example_sentence' => 'رصيد لغوي حول الفعل المعتل: المثال والأجوف والناقص',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P2_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P2_SEM1_S1/image66.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول الفعل المعتل: المثال والأجوف والناقص',
+                'week_id' => 'SEM2',
+                'week_number' => 2,
+                'week_title' => 'الأسبوع 2: التسامح والعيش المشترك ونبذ العنف',
+                'lesson_sentence' => 'يَبْنِي التَّسَامُحُ جُسُورَ الْمَحَبَّةِ وَالتَّعَايُشِ السِّلْمِيِّ بَيْنَ النَّاسِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'تَعَايُشٌ',
+                    'clean' => 'تعايش',
+                    'meaning' => 'الْعَيْشُ مَعاً فِي سَلَامٍ وَتَفَاهُمٍ',
+                    'image' => '/assets/lesson-images/N4/P2/SEM2/vocab/image45.png'
                 ],
+                [
+                    'word' => 'نَبْذٌ',
+                    'clean' => 'نبذ',
+                    'meaning' => 'طَرْحُ الْخِلَافَاتِ وَتَرْكُ الْعُنْفِ جَانِباً',
+                    'image' => '/assets/lesson-images/N4/P2/SEM2/vocab/image46.png'
+                ],
+                [
+                    'word' => 'تَعَدُّدِيَّةٌ',
+                    'clean' => 'تعددية',
+                    'meaning' => 'قَبُولُ التَّنَوُّعِ الثَّقَافِيِّ وَالْفِكْرِيِّ',
+                    'image' => '/assets/lesson-images/N4/P2/SEM2/vocab/image64.png'
+                ],
+                [
+                    'word' => 'حِوَارٌ',
+                    'clean' => 'حوار',
+                    'meaning' => 'تَبَادُلُ الْحَدِيثِ بِأُسْلُوبٍ هَادِئٍ',
+                    'image' => '/assets/lesson-images/N4/P2/SEM2/vocab/image45.png'
+                ]
+                ]
             ],
             [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 1',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P2_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P2_SEM1_S1/image67.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 1',
+                'week_id' => 'SEM3',
+                'week_number' => 3,
+                'week_title' => 'الأسبوع 3: حماية الممتلكات العامة والمرافق المشتركة',
+                'lesson_sentence' => 'الْحِفَاظُ عَلَى الْمَرَافِقِ الْعُمُومِيَّةِ وَاجِبٌ وَطَنِيٌّ نَبِيلٌ يَدُلُّ عَلَى النُّضْجِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'مِرْفَقٌ',
+                    'clean' => 'مرفق',
+                    'meaning' => 'مَكَانٌ تَقْدِيمِ الْخِدْمَاتِ الْعُمُومِيَّةِ لِلنَّاسِ',
+                    'image' => '/assets/lesson-images/N4/P2/SEM3/vocab/image47.png'
                 ],
-            ],
-            // ==========================================
-            // الأسبوع 2: النواسخ الحرفية ومعانيها
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ النواسخ الحرفية ومعانيها',
-                'clean_word' => 'تَعَلُّمُ النواسخ الحرفية ومعانيها',
-                'raw_word' => 'تعلم النواسخ الحرفية ومعانيها',
-                'example_sentence' => 'مفهوم معرفي في المواطنة والسلوك المدني والمشاركة المجتمعية',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N4_P2_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P2_SEM2_S1/image46.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في المواطنة والسلوك المدني والمشاركة المجتمعية',
+                [
+                    'word' => 'صِيَانَةٌ',
+                    'clean' => 'صيانة',
+                    'meaning' => 'إِصْلَاحُ الْمُمْتَلَكَاتِ وَحِمَايَتُهَا مِنَ التَّلَفِ',
+                    'image' => '/assets/lesson-images/N4/P2/SEM3/vocab/image48.png'
                 ],
+                [
+                    'word' => 'حِرْصٌ',
+                    'clean' => 'حرص',
+                    'meaning' => 'اهْتِمَامٌ شَدِيدٌ بِسَلَامَةِ الشَّيْءِ',
+                    'image' => '/assets/lesson-images/N4/P2/SEM3/vocab/image49.png'
+                ],
+                [
+                    'word' => 'وَطَنِيَّةٌ',
+                    'clean' => 'وطنية',
+                    'meaning' => 'حُبُّ الْوَطَنِ وَالدِّفَاعُ عَنْ مَصَالِحِهِ',
+                    'image' => '/assets/lesson-images/N4/P2/SEM3/vocab/image47.png'
+                ]
+                ]
             ],
             [
-                'word' => 'مُفْرَدَةُ النواسخ الحرفية ومعانيها',
-                'clean_word' => 'مُفْرَدَةُ النواسخ الحرفية ومعانيها',
-                'raw_word' => 'مفردة النواسخ الحرفية ومعانيها',
-                'example_sentence' => 'رصيد لغوي حول النواسخ الحرفية ومعانيها',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N4_P2_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P2_SEM2_S1/image45.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول النواسخ الحرفية ومعانيها',
+                'week_id' => 'SEM4',
+                'week_number' => 4,
+                'week_title' => 'الأسبوع 4: التضامن الوطني في مواجهة الأزمات',
+                'lesson_sentence' => 'هَبَّ الشَّعْبُ الْمَغْرِبِيُّ بِتَآزُرٍ كَبِيرٍ لِمُسَاعَدَةِ الْمُتَضَرِّرِينَ مِنَ الزِّلْزَالِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'تَآزُرٌ',
+                    'clean' => 'تآزر',
+                    'meaning' => 'تَعَاوُنٌ كَبِيرٌ وَمُسَانَدَةٌ فِي وَقْتِ الشِّدَّةِ',
+                    'image' => '/assets/lesson-images/N4/P2/SEM4/vocab/image56.png'
                 ],
+                [
+                    'word' => 'إِغَاثَةٌ',
+                    'clean' => 'إغاثة',
+                    'meaning' => 'مَدُّ يَدِ الْعَوْنِ لِلْمُتَضَرِّرِينَ مِنَ الْكَوَارِثِ',
+                    'image' => '/assets/lesson-images/N4/P2/SEM4/vocab/image58.png'
+                ],
+                [
+                    'word' => 'شَهَامَةٌ',
+                    'clean' => 'شهامة',
+                    'meaning' => 'مُرُوءَةٌ وَنَخْوَةٌ فِي نَجْدَةِ الْمَلْهُوفِ',
+                    'image' => '/assets/lesson-images/N4/P2/SEM4/vocab/image68.png'
+                ],
+                [
+                    'word' => 'تَطَوُّعٌ',
+                    'clean' => 'تطوع',
+                    'meaning' => 'تَقْدِيمُ الْخِدْمَةِ دُونَ انْتِظَارِ جَزَاءٍ',
+                    'image' => '/assets/lesson-images/N4/P2/SEM4/vocab/image56.png'
+                ]
+                ]
             ],
             [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 2',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N4_P2_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P2_SEM2_S1/image64.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 2',
+                'week_id' => 'SEM5',
+                'week_number' => 5,
+                'week_title' => 'الأسبوع 5: تقويم ودعم مكتسبات الوحدة 2',
+                'lesson_sentence' => 'يَتَجَلَّى السُّلُوكُ الْمَدَنِيُّ فِي خِدْمَةِ الْمَصْلَحَةِ الْعَامَّةِ وَالتَّضَامُنِ الدَّائِمِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'كَرَامَةٌ',
+                    'clean' => 'كرامة',
+                    'meaning' => 'عِزَّةُ الْإِنْسَانِ',
+                    'image' => '/assets/lesson-images/N4/P2/SEM5/vocab/image14.png'
                 ],
-            ],
-            // ==========================================
-            // الأسبوع 3: الفاعل ظاهر وضمير
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ الفاعل ظاهر وضمير',
-                'clean_word' => 'تَعَلُّمُ الفاعل ظاهر وضمير',
-                'raw_word' => 'تعلم الفاعل ظاهر وضمير',
-                'example_sentence' => 'مفهوم معرفي في المواطنة والسلوك المدني والمشاركة المجتمعية',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N4_P2_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P2_SEM3_S1/image49.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في المواطنة والسلوك المدني والمشاركة المجتمعية',
+                [
+                    'word' => 'تَعَايُشٌ',
+                    'clean' => 'تعايش',
+                    'meaning' => 'سَلَامٌ اجْتِمَاعِيٌّ',
+                    'image' => '/assets/lesson-images/N4/P2/SEM5/vocab/image42.png'
                 ],
-            ],
-            [
-                'word' => 'مُفْرَدَةُ الفاعل ظاهر وضمير',
-                'clean_word' => 'مُفْرَدَةُ الفاعل ظاهر وضمير',
-                'raw_word' => 'مفردة الفاعل ظاهر وضمير',
-                'example_sentence' => 'رصيد لغوي حول الفاعل ظاهر وضمير',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N4_P2_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P2_SEM3_S1/image48.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول الفاعل ظاهر وضمير',
+                [
+                    'word' => 'صِيَانَةٌ',
+                    'clean' => 'صيانة',
+                    'meaning' => 'حِمَايَةُ الْمُمْتَلَكَاتِ',
+                    'image' => '/assets/lesson-images/N4/P2/SEM5/vocab/image43.png'
                 ],
-            ],
-            [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 3',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N4_P2_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P2_SEM3_S1/image47.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 3',
-                ],
-            ],
-            // ==========================================
-            // الأسبوع 4: الهمزة المتوسطة على الألف والواو
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ الهمزة المتوسطة على الألف والواو',
-                'clean_word' => 'تَعَلُّمُ الهمزة المتوسطة على الألف والواو',
-                'raw_word' => 'تعلم الهمزة المتوسطة على الألف والواو',
-                'example_sentence' => 'مفهوم معرفي في المواطنة والسلوك المدني والمشاركة المجتمعية',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N4_P2_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P2_SEM4_S1/image58.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في المواطنة والسلوك المدني والمشاركة المجتمعية',
-                ],
-            ],
-            [
-                'word' => 'مُفْرَدَةُ الهمزة المتوسطة على الألف والواو',
-                'clean_word' => 'مُفْرَدَةُ الهمزة المتوسطة على الألف والواو',
-                'raw_word' => 'مفردة الهمزة المتوسطة على الألف والواو',
-                'example_sentence' => 'رصيد لغوي حول الهمزة المتوسطة على الألف والواو',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N4_P2_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P2_SEM4_S1/image56.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول الهمزة المتوسطة على الألف والواو',
-                ],
-            ],
-            [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 4',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N4_P2_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P2_SEM4_S1/image68.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 4',
-                ],
-            ],
-            // ==========================================
-            // الأسبوع 5: أسبوع الدعم والتركيب
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ أسبوع الدعم والتركيب',
-                'clean_word' => 'تَعَلُّمُ أسبوع الدعم والتركيب',
-                'raw_word' => 'تعلم أسبوع الدعم والتركيب',
-                'example_sentence' => 'مفهوم معرفي في المواطنة والسلوك المدني والمشاركة المجتمعية',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM5',
-                'lesson_id' => 'AR_N4_P2_SEM5_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P2_SEM5_S1/image14.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في المواطنة والسلوك المدني والمشاركة المجتمعية',
-                ],
-            ],
-            [
-                'word' => 'مُفْرَدَةُ أسبوع الدعم والتركيب',
-                'clean_word' => 'مُفْرَدَةُ أسبوع الدعم والتركيب',
-                'raw_word' => 'مفردة أسبوع الدعم والتركيب',
-                'example_sentence' => 'رصيد لغوي حول أسبوع الدعم والتركيب',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM5',
-                'lesson_id' => 'AR_N4_P2_SEM5_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P2_SEM5_S1/image42.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول أسبوع الدعم والتركيب',
-                ],
-            ],
-            [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 5',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM5',
-                'lesson_id' => 'AR_N4_P2_SEM5_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P2_SEM5_S1/image43.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 5',
-                ],
-            ],
-            // ==========================================
-            // الأسبوع 6: تقويم الوحدة
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ تقويم الوحدة',
-                'clean_word' => 'تَعَلُّمُ تقويم الوحدة',
-                'raw_word' => 'تعلم تقويم الوحدة',
-                'example_sentence' => 'مفهوم معرفي في المواطنة والسلوك المدني والمشاركة المجتمعية',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM6',
-                'lesson_id' => 'AR_N4_P2_SEM6_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P2_SEM6_S1/image33.jpg',
-                'linked_sentences' => [
-                    'مفهوم معرفي في المواطنة والسلوك المدني والمشاركة المجتمعية',
-                ],
-            ],
-            [
-                'word' => 'مُفْرَدَةُ تقويم الوحدة',
-                'clean_word' => 'مُفْرَدَةُ تقويم الوحدة',
-                'raw_word' => 'مفردة تقويم الوحدة',
-                'example_sentence' => 'رصيد لغوي حول تقويم الوحدة',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM6',
-                'lesson_id' => 'AR_N4_P2_SEM6_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P2_SEM6_S1/image34.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول تقويم الوحدة',
-                ],
-            ],
-            [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 6',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM6',
-                'lesson_id' => 'AR_N4_P2_SEM6_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P2_SEM6_S1/image14.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 6',
-                ],
+                [
+                    'word' => 'تَآزُرٌ',
+                    'clean' => 'تآزر',
+                    'meaning' => 'تَضَامُنٌ فِي الشِّدَّةِ',
+                    'image' => '/assets/lesson-images/N4/P2/SEM5/vocab/image14.png'
+                ]
+                ]
             ],
         ];
 
-        $now = now();
-
-        foreach ($items as $itemData) {
-            $linkedSentences = $itemData['linked_sentences'] ?? [];
-            unset($itemData['linked_sentences']);
-
-            $itemData['extracted_at'] = $now;
-
-            $vocab = ArabicVocabularyItem::query()->updateOrCreate(
-                [
-                    'word' => $itemData['word'],
-                    'lesson_id' => $itemData['lesson_id'],
-                    'grade' => $itemData['grade'],
-                ],
-                $itemData
-            );
-
-            // Record linked sentences into vocabulary_sentences
-            foreach ($linkedSentences as $sentence) {
-                DB::table('vocabulary_sentences')->updateOrInsert(
+        foreach ($curriculum as $week) {
+            foreach ($week['vocabulary'] as $item) {
+                // Insert or update vocabulary words safely without dropping tables
+                DB::table('vocabularies')->updateOrInsert(
                     [
-                        'word' => $itemData['word'],
-                        'sentence' => $sentence,
-                        'lesson_id' => $itemData['lesson_id'],
-                        'grade' => $itemData['grade'],
+                        'grade' => 'N4',
+                        'period' => 'P2',
+                        'clean_word' => $item['clean'],
                     ],
                     [
-                        'vocabulary_item_id' => null,
-                        'base_word' => $itemData['raw_word'],
-                        'subject' => 'AR',
-                        'period' => $itemData['period'],
-                        'week' => $itemData['week'],
-                        'source_type' => 'slide_sentence',
-                        'image_path' => $itemData['image_path'] ?? null,
-                        'updated_at' => $now,
-                        'created_at' => $now,
+                        'vocalized_word' => $item['word'],
+                        'meaning' => $item['meaning'],
+                        'image_url' => $item['image'],
+                        'week_id' => $week['week_id'],
+                        'lesson_sentence' => $week['lesson_sentence'],
+                        'updated_at' => now(),
                     ]
                 );
             }

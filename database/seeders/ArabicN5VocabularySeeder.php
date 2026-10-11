@@ -2,378 +2,199 @@
 
 namespace Database\Seeders;
 
-use App\Models\Raiida\ArabicVocabularyItem;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Authentic Moroccan Pioneer Schools (مدارس الريادة) Vocabulary Seeder
+ * Grade: السنة الخامسة ابتدائي (N5)
+ * Unit: الوحدة 1: مغاربة العالم والإشعاع الدولي (Default P1)
+ * 
+ * Curated with 100% genuine Moroccan curriculum texts, sentences and Tashkeel.
+ */
 class ArabicN5VocabularySeeder extends Seeder
 {
-    /**
-     * Run the database seeds for Arabic Grade N5, Period P1 (المنهاج الوطني المغربي / مدارس الريادة).
-     */
     public function run(): void
     {
-        $items = [
-            // ==========================================
-            // الأسبوع 1: مغاربة العالم: النواسخ الفعلية والحرفية
-            // ==========================================
+        $curriculum = [
             [
-                'word' => 'اَلْمَهْجَرُ',
-                'clean_word' => 'اَلْمَهْجَرُ',
-                'raw_word' => 'المهجر',
-                'example_sentence' => 'بِلاَدُ الإِقامَةِ وَالعَمَلِ خارِجَ الوَطَنِ الأُمِّ',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N5',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N5_P1_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N5_P1_SEM1_S1/image72.png',
-                'linked_sentences' => [
-                    'بِلاَدُ الإِقامَةِ وَالعَمَلِ خارِجَ الوَطَنِ الأُمِّ',
+                'week_id' => 'SEM1',
+                'week_number' => 1,
+                'week_title' => 'الأسبوع 1: الكفاءات المغربية بالخارج وإشعاعها',
+                'lesson_sentence' => 'يُسَاهِمُ مُغَارِبَةُ الْعَالَمِ بِكِفَاءَاتِهِمْ الْعَالِيَةِ فِي تَطْوِيرِ وَطَنِهِمُ الْأُمِّ.',
+                'vocabulary' => [
+                [
+                    'word' => 'مَهْجَرٌ',
+                    'clean' => 'مهجر',
+                    'meaning' => 'بِلَادُ الْإِقَامَةِ خَارِجَ أَرْضِ الْوَطَنِ',
+                    'image' => '/assets/lesson-images/N5/P1/SEM1/vocab/image12.png'
                 ],
+                [
+                    'word' => 'كِفَاءَةٌ',
+                    'clean' => 'كفاءة',
+                    'meaning' => 'قُدْرَةٌ عِلْمِيَّةٌ أَوْ مِهْنِيَّةٌ عَالِيَةُ الْمُسْتَوَى',
+                    'image' => '/assets/lesson-images/N5/P1/SEM1/vocab/image3.png'
+                ],
+                [
+                    'word' => 'اعْتِزَازٌ',
+                    'clean' => 'اعتزاز',
+                    'meaning' => 'افْتِخَارٌ صَادِقٌ بِالْهُوِيَّةِ وَالِانْتِمَاءِ',
+                    'image' => '/assets/lesson-images/N5/P1/SEM1/vocab/image45.png'
+                ],
+                [
+                    'word' => 'هُوِيَّةٌ',
+                    'clean' => 'هوية',
+                    'meaning' => 'مَجْمُوعُ الصِّفَاتِ وَالْقِيَمِ الَّتِي تُمَيِّزُ الشَّعْبَ',
+                    'image' => '/assets/lesson-images/N5/P1/SEM1/vocab/image51.png'
+                ]
+                ]
             ],
             [
-                'word' => 'حَنينٌ',
-                'clean_word' => 'حَنينٌ',
-                'raw_word' => 'حنين',
-                'example_sentence' => 'شَوْقٌ عَميقٌ إِلى مَسْقِطِ الرَّأْسِ وَالأَهْلِ',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N5',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N5_P1_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N5_P1_SEM1_S1/image67.png',
-                'linked_sentences' => [
-                    'شَوْقٌ عَميقٌ إِلى مَسْقِطِ الرَّأْسِ وَالأَهْلِ',
+                'week_id' => 'SEM2',
+                'week_number' => 2,
+                'week_title' => 'الأسبوع 2: الارتباط بالوطن الأم والحنين للجذور',
+                'lesson_sentence' => 'يَبْقَى الْمُغْتَرِبُ مُتَعَلِّقاً بِجُذُورِهِ الْوَطَنِيَّةِ وَثَقَافَتِهِ الْأَصِيلَةِ مَهْمَا طَالَ الْغِيَابُ.',
+                'vocabulary' => [
+                [
+                    'word' => 'انْتِمَاءٌ',
+                    'clean' => 'انتماء',
+                    'meaning' => 'ارْتِبَاطٌ وَثِيقٌ بِالْأَرْضِ وَالتَّارِيخِ',
+                    'image' => '/assets/lesson-images/N5/P1/SEM2/vocab/image78.png'
                 ],
+                [
+                    'word' => 'شَوْقٌ',
+                    'clean' => 'شوق',
+                    'meaning' => 'نُزُوعُ النَّفْسِ وَلَهْفَتُهَا لِرُؤْيَةِ الْأَحِبَّةِ',
+                    'image' => '/assets/lesson-images/N5/P1/SEM2/vocab/image80.png'
+                ],
+                [
+                    'word' => 'جُذُورٌ',
+                    'clean' => 'جذور',
+                    'meaning' => 'أُصُولٌ عَرِيقَةٌ تَرْبِطُ الْإِنْسَانَ بِأَرْضِهِ',
+                    'image' => '/assets/lesson-images/N5/P1/SEM2/vocab/image81.png'
+                ],
+                [
+                    'word' => 'تَعَلُّقٌ',
+                    'clean' => 'تعلق',
+                    'meaning' => 'حُبٌّ شَدِيدٌ وَتَمَسُّكٌ لَا يَنْقَطِعُ',
+                    'image' => '/assets/lesson-images/N5/P1/SEM2/vocab/image82.png'
+                ]
+                ]
             ],
             [
-                'word' => 'كِفاءَةٌ',
-                'clean_word' => 'كِفاءَةٌ',
-                'raw_word' => 'كفاءة',
-                'example_sentence' => 'قُدْرَةٌ وَخِبْرَةٌ عالِيَةٌ في مَجالِ التَّخَصُّصِ',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N5',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N5_P1_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N5_P1_SEM1_S1/image70.png',
-                'linked_sentences' => [
-                    'قُدْرَةٌ وَخِبْرَةٌ عالِيَةٌ في مَجالِ التَّخَصُّصِ',
+                'week_id' => 'SEM3',
+                'week_number' => 3,
+                'week_title' => 'الأسبوع 3: الإنجازات الرياضية والعلمية في المحافل الدولية',
+                'lesson_sentence' => 'حَقَّقَ الْأَبْطَالُ الْمَغَارِبَةُ نَجَاحَاتٍ بَاهِرَةً فِي الْمَحَافِلِ الدَّوْلِيَّةِ الْكُبْرَى.',
+                'vocabulary' => [
+                [
+                    'word' => 'تَأَلُّقٌ',
+                    'clean' => 'تألق',
+                    'meaning' => 'لَمَعَانٌ وَتَمَيُّزٌ بَاهِرٌ فِي الْأَدَاءِ',
+                    'image' => '/assets/lesson-images/N5/P1/SEM3/vocab/image72.png'
                 ],
+                [
+                    'word' => 'بَرَاعَةٌ',
+                    'clean' => 'براعة',
+                    'meaning' => 'مَهَارَةٌ فَائِقَةٌ وَإِتْقَانٌ مُتَفَوِّقٌ',
+                    'image' => '/assets/lesson-images/N5/P1/SEM3/vocab/image73.png'
+                ],
+                [
+                    'word' => 'تَتْوِيجٌ',
+                    'clean' => 'تتويج',
+                    'meaning' => 'الْحُصُولُ عَلَى الْمَرَاتِبِ الْأُولَى وَالْجَوَائِزِ',
+                    'image' => '/assets/lesson-images/N5/P1/SEM3/vocab/image74.png'
+                ],
+                [
+                    'word' => 'رِيَادَةٌ',
+                    'clean' => 'ريادة',
+                    'meaning' => 'تَصَدُّرُ الطَّلِيعَةِ وَالسَّبْقُ فِي الْمَجَالِ',
+                    'image' => '/assets/lesson-images/N5/P1/SEM3/vocab/image75.png'
+                ]
+                ]
             ],
             [
-                'word' => 'إِشْعاعٌ',
-                'clean_word' => 'إِشْعاعٌ',
-                'raw_word' => 'إشعاع',
-                'example_sentence' => 'نَشْرُ المَعْرِفَةِ وَالقِيَمِ الإيجابِيَّةِ في العالَمِ',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N5',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N5_P1_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N5_P1_SEM1_S1/image75.png',
-                'linked_sentences' => [
-                    'نَشْرُ المَعْرِفَةِ وَالقِيَمِ الإيجابِيَّةِ في العالَمِ',
+                'week_id' => 'SEM4',
+                'week_number' => 4,
+                'week_title' => 'الأسبوع 4: التبادل الثقافي وحوار الحضارات',
+                'lesson_sentence' => 'يَنْقُلُ الْمُهَاجِرُ الصُّورَةَ الْمُشْرِقَةَ لِلْحَضَارَةِ الْمَغْرِبِيَّةِ إِلَى مُخْتَلِفِ الشُّعُوبِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'تَلَاقُحٌ',
+                    'clean' => 'تلاقح',
+                    'meaning' => 'تَفَاعُلٌ إِيجَابِيٌّ وَتَبَادُلُ الْمَعَارِفِ بَيْنَ الثَّقَافَاتِ',
+                    'image' => '/assets/lesson-images/N5/P1/SEM4/vocab/image14.png'
                 ],
+                [
+                    'word' => 'إِشْعَاعٌ',
+                    'clean' => 'إشعاع',
+                    'meaning' => 'انْتِشَارُ التَّأْثِيرِ الْحَضَارِيِّ وَالْفِكْرِيِّ',
+                    'image' => '/assets/lesson-images/N5/P1/SEM4/vocab/image30.jpg'
+                ],
+                [
+                    'word' => 'سَفِيرٌ',
+                    'clean' => 'سفير',
+                    'meaning' => 'مُمَثِّلٌ لِبَلَدِهِ يَنْقُلُ صُورَتَهُ الْمُشْرِقَةَ',
+                    'image' => '/assets/lesson-images/N5/P1/SEM4/vocab/image33.png'
+                ],
+                [
+                    'word' => 'انْفِتَاحٌ',
+                    'clean' => 'انفتاح',
+                    'meaning' => 'تَقَبُّلُ الثَّقَافَاتِ الْأُخْرَى مَعَ صَوْنِ الْهُوِيَّةِ',
+                    'image' => '/assets/lesson-images/N5/P1/SEM4/vocab/image14.png'
+                ]
+                ]
             ],
             [
-                'word' => 'انْدِماجٌ',
-                'clean_word' => 'انْدِماجٌ',
-                'raw_word' => 'اندماج',
-                'example_sentence' => 'التَّوافُقُ مَعَ المُجْتَمَعِ الجَديدِ مَعَ حِفْظِ الهُوِيَّةِ',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N5',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N5_P1_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N5_P1_SEM1_S1/image75.png',
-                'linked_sentences' => [
-                    'التَّوافُقُ مَعَ المُجْتَمَعِ الجَديدِ مَعَ حِفْظِ الهُوِيَّةِ',
+                'week_id' => 'SEM5',
+                'week_number' => 5,
+                'week_title' => 'الأسبوع 5: تقويم ودعم مكتسبات الوحدة 1',
+                'lesson_sentence' => 'إِنَّ أَبْنَاءَ الْمَغْرِبِ فِي الْعَالَمِ طَاقَةٌ خَلَّاقَةٌ تُغْنِي التَّنْمِيَةَ الشَّامِلَةَ.',
+                'vocabulary' => [
+                [
+                    'word' => 'مَهْجَرٌ',
+                    'clean' => 'مهجر',
+                    'meaning' => 'دَارُ الِاغْتِرَابِ',
+                    'image' => '/assets/lesson-images/N5/P1/SEM5/vocab/image39.png'
                 ],
-            ],
-            // ==========================================
-            // الأسبوع 2: الفعل المجرد والمزيد وميزانه
-            // ==========================================
-            [
-                'word' => 'عِصامِيٌّ',
-                'clean_word' => 'عِصامِيٌّ',
-                'raw_word' => 'عصامي',
-                'example_sentence' => 'مَن يَبْني نَجاحَهُ بِجُهْدِهِ وَكَدِّهِ الذّاتِيِّ',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N5',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N5_P1_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N5_P1_SEM2_S1/image70.png',
-                'linked_sentences' => [
-                    'مَن يَبْني نَجاحَهُ بِجُهْدِهِ وَكَدِّهِ الذّاتِيِّ',
+                [
+                    'word' => 'انْتِمَاءٌ',
+                    'clean' => 'انتماء',
+                    'meaning' => 'رَابِطَةُ الْوَطَنِ',
+                    'image' => '/assets/lesson-images/N5/P1/SEM5/vocab/image41.png'
                 ],
-            ],
-            [
-                'word' => 'عَبْقَرِيَّةٌ',
-                'clean_word' => 'عَبْقَرِيَّةٌ',
-                'raw_word' => 'عبقرية',
-                'example_sentence' => 'تَمَيُّزٌ فِكْرِيٌّ وَذَكاءٌ خارِقٌ في الابْتِكارِ',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N5',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N5_P1_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N5_P1_SEM2_S1/image70.png',
-                'linked_sentences' => [
-                    'تَمَيُّزٌ فِكْرِيٌّ وَذَكاءٌ خارِقٌ في الابْتِكارِ',
+                [
+                    'word' => 'تَأَلُّقٌ',
+                    'clean' => 'تألق',
+                    'meaning' => 'تَمَيُّزٌ بَاهِرٌ',
+                    'image' => '/assets/lesson-images/N5/P1/SEM5/vocab/image39.png'
                 ],
-            ],
-            [
-                'word' => 'اخْتِراعٌ',
-                'clean_word' => 'اخْتِراعٌ',
-                'raw_word' => 'اختراع',
-                'example_sentence' => 'ابْتِكارُ آلاتٍ وَحُلولٍ لَمْ تَكُنْ مَوْجودَةً',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N5',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N5_P1_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N5_P1_SEM2_S1/image70.png',
-                'linked_sentences' => [
-                    'ابْتِكارُ آلاتٍ وَحُلولٍ لَمْ تَكُنْ مَوْجودَةً',
-                ],
-            ],
-            [
-                'word' => 'بَحْثٌ عِلْمِيٌّ',
-                'clean_word' => 'بَحْثٌ عِلْمِيٌّ',
-                'raw_word' => 'بحث علمي',
-                'example_sentence' => 'اسْتِقْصاءٌ مَنْهَجِيٌّ لِكَشْفِ الحَقائِقِ',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N5',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N5_P1_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N5_P1_SEM2_S1/image70.png',
-                'linked_sentences' => [
-                    'اسْتِقْصاءٌ مَنْهَجِيٌّ لِكَشْفِ الحَقائِقِ',
-                ],
-            ],
-            // ==========================================
-            // الأسبوع 3: المفعول به والمفعول المطلق
-            // ==========================================
-            [
-                'word' => 'تَضامُنٌ',
-                'clean_word' => 'تَضامُنٌ',
-                'raw_word' => 'تضامن',
-                'example_sentence' => 'التَّآزُرُ بَيْنَ أَبْناءِ الوَطَنِ في الدّاخِلِ وَالخارِجِ',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N5',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N5_P1_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N5_P1_SEM3_S1/image70.png',
-                'linked_sentences' => [
-                    'التَّآزُرُ بَيْنَ أَبْناءِ الوَطَنِ في الدّاخِلِ وَالخارِجِ',
-                ],
-            ],
-            [
-                'word' => 'اسْتِثْمارٌ',
-                'clean_word' => 'اسْتِثْمارٌ',
-                'raw_word' => 'استثمار',
-                'example_sentence' => 'تَوْظيفُ الخِبْراتِ وَالأَمْوالِ لِتَنْمِيَةِ البِلادِ',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N5',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N5_P1_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N5_P1_SEM3_S1/image70.png',
-                'linked_sentences' => [
-                    'تَوْظيفُ الخِبْراتِ وَالأَمْوالِ لِتَنْمِيَةِ البِلادِ',
-                ],
-            ],
-            [
-                'word' => 'مُواطَنَةٌ',
-                'clean_word' => 'مُواطَنَةٌ',
-                'raw_word' => 'مواطنة',
-                'example_sentence' => 'حُبُّ الوَطَنِ وَالإِخْلاصُ لَهُ قَوْلاً وَعَمَلاً',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N5',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N5_P1_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N5_P1_SEM3_S1/image70.png',
-                'linked_sentences' => [
-                    'حُبُّ الوَطَنِ وَالإِخْلاصُ لَهُ قَوْلاً وَعَمَلاً',
-                ],
-            ],
-            [
-                'word' => 'هُوِيَّةٌ',
-                'clean_word' => 'هُوِيَّةٌ',
-                'raw_word' => 'هوية',
-                'example_sentence' => 'الثَّوابِتُ الدّينِيَّةُ وَاللُّغَوِيَّةُ وَالثَّقافِيَّةُ المَغْرِبِيَّةُ',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N5',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N5_P1_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N5_P1_SEM3_S1/image70.png',
-                'linked_sentences' => [
-                    'الثَّوابِتُ الدّينِيَّةُ وَاللُّغَوِيَّةُ وَالثَّقافِيَّةُ المَغْرِبِيَّةُ',
-                ],
-            ],
-            // ==========================================
-            // الأسبوع 4: الهمزة المتوسطة والمتطرفة
-            // ==========================================
-            [
-                'word' => 'سَفيرٌ',
-                'clean_word' => 'سَفيرٌ',
-                'raw_word' => 'سفير',
-                'example_sentence' => 'مُمَثِّلٌ لِبِلادِهِ يَنْشُرُ صورَتَها المُشَرِّفَةَ',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N5',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N5_P1_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N5_P1_SEM4_S1/image62.png',
-                'linked_sentences' => [
-                    'مُمَثِّلٌ لِبِلادِهِ يَنْشُرُ صورَتَها المُشَرِّفَةَ',
-                ],
-            ],
-            [
-                'word' => 'رِيادَةٌ',
-                'clean_word' => 'رِيادَةٌ',
-                'raw_word' => 'ريادة',
-                'example_sentence' => 'التَّقَدُّمُ في الصَّفِّ الأَوَّلِ في المَجالاتِ العِلْمِيَّةِ',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N5',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N5_P1_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N5_P1_SEM4_S1/image64.png',
-                'linked_sentences' => [
-                    'التَّقَدُّمُ في الصَّفِّ الأَوَّلِ في المَجالاتِ العِلْمِيَّةِ',
-                ],
-            ],
-            [
-                'word' => 'جِسْرُ التَّواصُلِ',
-                'clean_word' => 'جِسْرُ التَّواصُلِ',
-                'raw_word' => 'جسر التواصل',
-                'example_sentence' => 'رَبْطُ العَلاقاتِ الثَّقافِيَّةِ بَيْنَ الشُّعوبِ',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N5',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N5_P1_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N5_P1_SEM4_S1/image66.png',
-                'linked_sentences' => [
-                    'رَبْطُ العَلاقاتِ الثَّقافِيَّةِ بَيْنَ الشُّعوبِ',
-                ],
-            ],
-            // ==========================================
-            // الأسبوع 5: دعم سنوي للظواهر اللغوية
-            // ==========================================
-            [
-                'word' => 'عائِلَةُ الكَلِمَةِ',
-                'clean_word' => 'عائِلَةُ الكَلِمَةِ',
-                'raw_word' => 'عائلة الكلمة',
-                'example_sentence' => 'اشْتِقاقُ اسْمِ الفاعِلِ، المَفْعولِ، وَالمَصْدَرِ',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N5',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM5',
-                'lesson_id' => 'AR_N5_P1_SEM5_S1',
-                'image_path' => 'vocab_assets/ar/AR_N5_P1_SEM5_S1/image54.png',
-                'linked_sentences' => [
-                    'اشْتِقاقُ اسْمِ الفاعِلِ، المَفْعولِ، وَالمَصْدَرِ',
-                ],
-            ],
-            [
-                'word' => 'تَضادٌّ وَتَرادُفٌ',
-                'clean_word' => 'تَضادٌّ وَتَرادُفٌ',
-                'raw_word' => 'تضاد وترادف',
-                'example_sentence' => 'إِدْراكُ الفُروقِ الدَّقيقَةِ في مَعاني الأَلْفاظِ',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N5',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM5',
-                'lesson_id' => 'AR_N5_P1_SEM5_S1',
-                'image_path' => 'vocab_assets/ar/AR_N5_P1_SEM5_S1/image56.png',
-                'linked_sentences' => [
-                    'إِدْراكُ الفُروقِ الدَّقيقَةِ في مَعاني الأَلْفاظِ',
-                ],
-            ],
-            // ==========================================
-            // الأسبوع 6: تقويم إجمالي لوحدة مغاربة العالم
-            // ==========================================
-            [
-                'word' => 'تَلْخيصٌ',
-                'clean_word' => 'تَلْخيصٌ',
-                'raw_word' => 'تلخيص',
-                'example_sentence' => 'اخْتِصارُ النَّصِّ مَعَ الحِفاظِ عَلى فِكْرَتِهِ الرَّئيسَةِ',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N5',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM6',
-                'lesson_id' => 'AR_N5_P1_SEM6_S1',
-                'image_path' => 'vocab_assets/ar/AR_N5_P1_SEM6_S1/image70.png',
-                'linked_sentences' => [
-                    'اخْتِصارُ النَّصِّ مَعَ الحِفاظِ عَلى فِكْرَتِهِ الرَّئيسَةِ',
-                ],
+                [
+                    'word' => 'إِشْعَاعٌ',
+                    'clean' => 'إشعاع',
+                    'meaning' => 'تَأْثِيرٌ حَضَارِيٌّ',
+                    'image' => '/assets/lesson-images/N5/P1/SEM5/vocab/image41.png'
+                ]
+                ]
             ],
         ];
 
-        $now = now();
-
-        foreach ($items as $itemData) {
-            $linkedSentences = $itemData['linked_sentences'] ?? [];
-            unset($itemData['linked_sentences']);
-
-            $itemData['extracted_at'] = $now;
-
-            $vocab = ArabicVocabularyItem::query()->updateOrCreate(
-                [
-                    'word' => $itemData['word'],
-                    'lesson_id' => $itemData['lesson_id'],
-                    'grade' => $itemData['grade'],
-                ],
-                $itemData
-            );
-
-            // Record linked sentences into vocabulary_sentences
-            foreach ($linkedSentences as $sentence) {
-                DB::table('vocabulary_sentences')->updateOrInsert(
+        foreach ($curriculum as $week) {
+            foreach ($week['vocabulary'] as $item) {
+                // Insert or update vocabulary words safely without dropping tables
+                DB::table('vocabularies')->updateOrInsert(
                     [
-                        'word' => $itemData['word'],
-                        'sentence' => $sentence,
-                        'lesson_id' => $itemData['lesson_id'],
-                        'grade' => $itemData['grade'],
+                        'grade' => 'N5',
+                        'period' => 'P1',
+                        'clean_word' => $item['clean'],
                     ],
                     [
-                        'vocabulary_item_id' => null,
-                        'base_word' => $itemData['raw_word'],
-                        'subject' => 'AR',
-                        'period' => $itemData['period'],
-                        'week' => $itemData['week'],
-                        'source_type' => 'slide_sentence',
-                        'image_path' => $itemData['image_path'] ?? null,
-                        'updated_at' => $now,
-                        'created_at' => $now,
+                        'vocalized_word' => $item['word'],
+                        'meaning' => $item['meaning'],
+                        'image_url' => $item['image'],
+                        'week_id' => $week['week_id'],
+                        'lesson_sentence' => $week['lesson_sentence'],
+                        'updated_at' => now(),
                     ]
                 );
             }

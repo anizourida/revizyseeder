@@ -2,346 +2,231 @@
 
 namespace Database\Seeders;
 
-use App\Models\Raiida\ArabicVocabularyItem;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Authentic Moroccan Pioneer Schools (مدارس الريادة) Vocabulary Seeder
+ * Grade: السنة الأولى ابتدائي (N1)
+ * Unit: الوحدة 4: الحي والمزرعة والحيوانات (P4)
+ * 
+ * Curated with 100% genuine Moroccan curriculum texts, sentences and Tashkeel.
+ */
 class ArabicN1P4VocabularySeeder extends Seeder
 {
-    /**
-     * Run the database seeds for Arabic Grade N1, Period P4 (الوحدة 4: الحي والقرية والفضاءات المجاورة).
-     */
     public function run(): void
     {
-        $items = [
-            // ==========================================
-            // الأسبوع 1: ط (الطاء)
-            // ==========================================
+        $curriculum = [
             [
-                'word' => 'طَريقٌ',
-                'clean_word' => 'طَريقٌ',
-                'raw_word' => 'طريق',
-                'example_sentence' => 'مسار ممهد يسير فيه المارة والسيارات',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P4',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N1_P4_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P4_SEM1_S1/image53.png',
-                'linked_sentences' => [
-                    'مسار ممهد يسير فيه المارة والسيارات',
+                'week_id' => 'SEM1',
+                'week_number' => 1,
+                'week_title' => 'الأسبوع 1: حرف الطاء (ط) فِي الْمَزْرَعَةِ',
+                'lesson_sentence' => 'يُحَلِّقُ الطَّائِرُ عَالِياً فِي السَّمَاءِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'طَبِيبٌ',
+                    'clean' => 'طبيب',
+                    'meaning' => 'مَنْ يُعَالِجُ الْمَرْضَى',
+                    'image' => '/assets/lesson-images/N1/P4/SEM1/vocab/image47.png'
                 ],
+                [
+                    'word' => 'طَائِرٌ',
+                    'clean' => 'طائر',
+                    'meaning' => 'حَيَوَانٌ ذُو رِيشٍ يَطِيرُ فِي الْهَوَاءِ',
+                    'image' => '/assets/lesson-images/N1/P4/SEM1/vocab/image51.png'
+                ],
+                [
+                    'word' => 'طَاوِلَةٌ',
+                    'clean' => 'طاولة',
+                    'meaning' => 'مَائِدَةُ الْجُلُوسِ',
+                    'image' => '/assets/lesson-images/N1/P4/SEM1/vocab/image53.png'
+                ],
+                [
+                    'word' => 'طَيَّارٌ',
+                    'clean' => 'طيار',
+                    'meaning' => 'قَائِدُ الطَّائِرَةِ',
+                    'image' => '/assets/lesson-images/N1/P4/SEM1/vocab/image47.png'
+                ]
+                ]
             ],
             [
-                'word' => 'طَبِيبٌ',
-                'clean_word' => 'طَبِيبٌ',
-                'raw_word' => 'طبيب',
-                'example_sentence' => 'معالج يفحص المرضى بالعيادة',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P4',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N1_P4_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P4_SEM1_S1/image51.png',
-                'linked_sentences' => [
-                    'معالج يفحص المرضى بالعيادة',
+                'week_id' => 'SEM2',
+                'week_number' => 2,
+                'week_title' => 'الأسبوع 2: حرف الظاء (ظ) فِي ظِلِّ الْأَشْجَارِ',
+                'lesson_sentence' => 'يَسْتَرِيحُ الْفَلَّاحُ تَحْتَ ظِلِّ الشَّجَرَةِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'ظِلٌّ',
+                    'clean' => 'ظل',
+                    'meaning' => 'مَكَانٌ تَحْجُبُ عَنْهُ الشَّمْسُ',
+                    'image' => '/assets/lesson-images/N1/P4/SEM2/vocab/image107.png'
                 ],
+                [
+                    'word' => 'ظَرْفٌ',
+                    'clean' => 'ظرف',
+                    'meaning' => 'غِلَافُ الرِّسَالَةِ',
+                    'image' => '/assets/lesson-images/N1/P4/SEM2/vocab/image108.png'
+                ],
+                [
+                    'word' => 'ظَبْيٌ',
+                    'clean' => 'ظبي',
+                    'meaning' => 'غَزَالٌ رَشِيقٌ سَرِيعٌ',
+                    'image' => '/assets/lesson-images/N1/P4/SEM2/vocab/image109.png'
+                ],
+                [
+                    'word' => 'نَظَّارَةٌ',
+                    'clean' => 'نظارة',
+                    'meaning' => 'عَدَسَاتٌ لِتَوْضِيحِ الرُّؤْيَةِ',
+                    'image' => '/assets/lesson-images/N1/P4/SEM2/vocab/image107.png'
+                ]
+                ]
             ],
             [
-                'word' => 'طَيّارٌ',
-                'clean_word' => 'طَيّارٌ',
-                'raw_word' => 'طيار',
-                'example_sentence' => 'قائد الطائرة في السماء',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P4',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N1_P4_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P4_SEM1_S1/image47.png',
-                'linked_sentences' => [
-                    'قائد الطائرة في السماء',
+                'week_id' => 'SEM3',
+                'week_number' => 3,
+                'week_title' => 'الأسبوع 3: حرف العين (ع) وَأَصْوَاتُ الطَّبِيعَةِ',
+                'lesson_sentence' => 'يُغَرِّدُ الْعُصْفُورُ فَوْقَ الْغُصْنِ فَرَحاً.',
+                'vocabulary' => [
+                [
+                    'word' => 'عُصْفُورٌ',
+                    'clean' => 'عصفور',
+                    'meaning' => 'طَائِرٌ صَغِيرٌ غَرِّيدٌ',
+                    'image' => '/assets/lesson-images/N1/P4/SEM3/vocab/image101.png'
                 ],
-            ],
-            // ==========================================
-            // الأسبوع 2: ظ (الظاء)
-            // ==========================================
-            [
-                'word' => 'ظَرْفٌ',
-                'clean_word' => 'ظَرْفٌ',
-                'raw_word' => 'ظرف',
-                'example_sentence' => 'غلاف ورقي للرسائل البريدية',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P4',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N1_P4_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P4_SEM2_S1/image107.png',
-                'linked_sentences' => [
-                    'غلاف ورقي للرسائل البريدية',
+                [
+                    'word' => 'عَسَلٌ',
+                    'clean' => 'عسل',
+                    'meaning' => 'غِذَاءٌ حُلْوٌ مِنَ النَّحْلِ',
+                    'image' => '/assets/lesson-images/N1/P4/SEM3/vocab/image64.png'
                 ],
+                [
+                    'word' => 'عَيْنٌ',
+                    'clean' => 'عين',
+                    'meaning' => 'عُضْوُ الْبَصَرِ وَالرُّؤْيَةِ',
+                    'image' => '/assets/lesson-images/N1/P4/SEM3/vocab/image65.png'
+                ],
+                [
+                    'word' => 'عِنَبٌ',
+                    'clean' => 'عنب',
+                    'meaning' => 'فَاكِهَةٌ صَيْفِيَّةٌ عُنْقُودِيَّةٌ',
+                    'image' => '/assets/lesson-images/N1/P4/SEM3/vocab/image101.png'
+                ]
+                ]
             ],
             [
-                'word' => 'ظِلٌّ',
-                'clean_word' => 'ظِلٌّ',
-                'raw_word' => 'ظل',
-                'example_sentence' => 'مساحة تحمي من حرارة الشمس',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P4',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N1_P4_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P4_SEM2_S1/image108.png',
-                'linked_sentences' => [
-                    'مساحة تحمي من حرارة الشمس',
+                'week_id' => 'SEM4',
+                'week_number' => 4,
+                'week_title' => 'الأسبوع 4: حرف الغين (غ) فِي الْغَابَةِ',
+                'lesson_sentence' => 'يَرْكُضُ الْغَزَالُ بِخِفَّةٍ فِي الْغَابَةِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'غَابَةٌ',
+                    'clean' => 'غابة',
+                    'meaning' => 'أَرْضٌ وَاسِعَةٌ كَثِيفَةُ الْأَشْجَارِ',
+                    'image' => '/assets/lesson-images/N1/P4/SEM4/vocab/image113.jpeg'
                 ],
+                [
+                    'word' => 'غَزَالٌ',
+                    'clean' => 'غزال',
+                    'meaning' => 'حَيَوَانٌ بَرِّيٌّ رَشِيقٌ',
+                    'image' => '/assets/lesson-images/N1/P4/SEM4/vocab/image15.png'
+                ],
+                [
+                    'word' => 'غَيْمَةٌ',
+                    'clean' => 'غيمة',
+                    'meaning' => 'سَحَابَةٌ فِي السَّمَاءِ تَحْمِلُ الْمَطَرَ',
+                    'image' => '/assets/lesson-images/N1/P4/SEM4/vocab/image88.jpg'
+                ],
+                [
+                    'word' => 'غُرَابٌ',
+                    'clean' => 'غراب',
+                    'meaning' => 'طَائِرٌ أَسْوَدُ ذَكِيٌّ',
+                    'image' => '/assets/lesson-images/N1/P4/SEM4/vocab/image113.jpeg'
+                ]
+                ]
             ],
             [
-                'word' => 'ظَبْيٌ',
-                'clean_word' => 'ظَبْيٌ',
-                'raw_word' => 'ظبي',
-                'example_sentence' => 'غزال رشيق وسريع في البرية',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P4',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N1_P4_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P4_SEM2_S1/image109.png',
-                'linked_sentences' => [
-                    'غزال رشيق وسريع في البرية',
+                'week_id' => 'SEM5',
+                'week_number' => 5,
+                'week_title' => 'الأسبوع 5: حرف الهاء (هـ) وَالْحَيَوَانَاتُ الْأَلِيفَةُ',
+                'lesson_sentence' => 'أَهْدَى هِشَامٌ هَدِيَّةً جَمِيلَةً لِأُخْتِهِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'هُدْهُدٌ',
+                    'clean' => 'هدهد',
+                    'meaning' => 'طَائِرٌ ذُو عُرْفٍ جَمِيلٍ',
+                    'image' => '/assets/lesson-images/N1/P4/SEM5/vocab/image52.png'
                 ],
-            ],
-            // ==========================================
-            // الأسبوع 3: و (الواو)
-            // ==========================================
-            [
-                'word' => 'وَرْدَةٌ',
-                'clean_word' => 'وَرْدَةٌ',
-                'raw_word' => 'وردة',
-                'example_sentence' => 'زهرة جميلة المنظر زكية الرائحة',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P4',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N1_P4_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P4_SEM3_S1/image101.png',
-                'linked_sentences' => [
-                    'زهرة جميلة المنظر زكية الرائحة',
+                [
+                    'word' => 'هِلَالٌ',
+                    'clean' => 'هلال',
+                    'meaning' => 'شَكْلُ الْقَمَرِ فِي أَوَّلِ الشَّهْرِ',
+                    'image' => '/assets/lesson-images/N1/P4/SEM5/vocab/image67.png'
                 ],
+                [
+                    'word' => 'هَدِيَّةٌ',
+                    'clean' => 'هدية',
+                    'meaning' => 'مَا يُهْدَى عُرْبُونَ مَحَبَّةٍ',
+                    'image' => '/assets/lesson-images/N1/P4/SEM5/vocab/image68.png'
+                ],
+                [
+                    'word' => 'هَاتِفٌ',
+                    'clean' => 'هاتف',
+                    'meaning' => 'جِهَازُ التَّوَاصُلِ عَنْ بُعْدٍ',
+                    'image' => '/assets/lesson-images/N1/P4/SEM5/vocab/image52.png'
+                ]
+                ]
             ],
             [
-                'word' => 'وَطَنٌ',
-                'clean_word' => 'وَطَنٌ',
-                'raw_word' => 'وطن',
-                'example_sentence' => 'الأرض الحبيبة التي نعيش فيها بأمان',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P4',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N1_P4_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P4_SEM3_S1/image65.png',
-                'linked_sentences' => [
-                    'الأرض الحبيبة التي نعيش فيها بأمان',
+                'week_id' => 'SEM6',
+                'week_number' => 6,
+                'week_title' => 'الأسبوع 6: دعم وتثبيت الحروف (ط، ظ، ع، غ، هـ)',
+                'lesson_sentence' => 'فِي الْمَزْرَعَةِ حَيَوَانَاتٌ وَطُيُورٌ كَثِيرَةٌ.',
+                'vocabulary' => [
+                [
+                    'word' => 'طَائِرٌ',
+                    'clean' => 'طائر',
+                    'meaning' => 'كَائِنٌ يَطِيرُ',
+                    'image' => '/assets/lesson-images/N1/P4/SEM6/vocab/image45.png'
                 ],
-            ],
-            [
-                'word' => 'وِسامٌ',
-                'clean_word' => 'وِسامٌ',
-                'raw_word' => 'وسام',
-                'example_sentence' => 'شعار التكريم والتقدير',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P4',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N1_P4_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P4_SEM3_S1/image64.png',
-                'linked_sentences' => [
-                    'شعار التكريم والتقدير',
+                [
+                    'word' => 'عُصْفُورٌ',
+                    'clean' => 'عصفور',
+                    'meaning' => 'طَائِرٌ غَرِّيدٌ',
+                    'image' => '/assets/lesson-images/N1/P4/SEM6/vocab/image49.png'
                 ],
-            ],
-            // ==========================================
-            // الأسبوع 4: ي (الياء)
-            // ==========================================
-            [
-                'word' => 'يَدٌ',
-                'clean_word' => 'يَدٌ',
-                'raw_word' => 'يد',
-                'example_sentence' => 'طرف في الجسم نكتب ونعمل به',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P4',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N1_P4_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P4_SEM4_S1/image15.png',
-                'linked_sentences' => [
-                    'طرف في الجسم نكتب ونعمل به',
+                [
+                    'word' => 'غَابَةٌ',
+                    'clean' => 'غابة',
+                    'meaning' => 'فَضَاءٌ أَخْضَرُ',
+                    'image' => '/assets/lesson-images/N1/P4/SEM6/vocab/image45.png'
                 ],
-            ],
-            [
-                'word' => 'يَمامَةٌ',
-                'clean_word' => 'يَمامَةٌ',
-                'raw_word' => 'يمامة',
-                'example_sentence' => 'حمامة وديعة ترمز للسلام',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P4',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N1_P4_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P4_SEM4_S1/image113.jpeg',
-                'linked_sentences' => [
-                    'حمامة وديعة ترمز للسلام',
-                ],
-            ],
-            [
-                'word' => 'ياسَمِينٌ',
-                'clean_word' => 'ياسَمِينٌ',
-                'raw_word' => 'ياسمين',
-                'example_sentence' => 'زهر أبيض جميل الرائحة',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P4',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N1_P4_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P4_SEM4_S1/image88.jpg',
-                'linked_sentences' => [
-                    'زهر أبيض جميل الرائحة',
-                ],
-            ],
-            // ==========================================
-            // الأسبوع 5: ك (الكاف)
-            // ==========================================
-            [
-                'word' => 'كِتابٌ',
-                'clean_word' => 'كِتابٌ',
-                'raw_word' => 'كتاب',
-                'example_sentence' => 'مجلد يجمع المعارف والقصص المشوقة',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P4',
-                'week' => 'SEM5',
-                'lesson_id' => 'AR_N1_P4_SEM5_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P4_SEM5_S1/image67.png',
-                'linked_sentences' => [
-                    'مجلد يجمع المعارف والقصص المشوقة',
-                ],
-            ],
-            [
-                'word' => 'كُرَةٌ',
-                'clean_word' => 'كُرَةٌ',
-                'raw_word' => 'كرة',
-                'example_sentence' => 'أداة للعب الرياضي في الملعب',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P4',
-                'week' => 'SEM5',
-                'lesson_id' => 'AR_N1_P4_SEM5_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P4_SEM5_S1/image52.png',
-                'linked_sentences' => [
-                    'أداة للعب الرياضي في الملعب',
-                ],
-            ],
-            [
-                'word' => 'كَلْبٌ',
-                'clean_word' => 'كَلْبٌ',
-                'raw_word' => 'كلب',
-                'example_sentence' => 'حيوان وفي يحرس البيت',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P4',
-                'week' => 'SEM5',
-                'lesson_id' => 'AR_N1_P4_SEM5_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P4_SEM5_S1/image68.png',
-                'linked_sentences' => [
-                    'حيوان وفي يحرس البيت',
-                ],
-            ],
-            // ==========================================
-            // الأسبوع 6: إدماج ودعم توليفي
-            // ==========================================
-            [
-                'word' => 'حَيٌّ',
-                'clean_word' => 'حَيٌّ',
-                'raw_word' => 'حي',
-                'example_sentence' => 'تجمع سكني جميل في المدينة',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P4',
-                'week' => 'SEM6',
-                'lesson_id' => 'AR_N1_P4_SEM6_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P4_SEM6_S1/image45.png',
-                'linked_sentences' => [
-                    'تجمع سكني جميل في المدينة',
-                ],
-            ],
-            [
-                'word' => 'قَرْيَةٌ',
-                'clean_word' => 'قَرْيَةٌ',
-                'raw_word' => 'قرية',
-                'example_sentence' => 'فضاء ريفي هادئ نقي الهواء',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P4',
-                'week' => 'SEM6',
-                'lesson_id' => 'AR_N1_P4_SEM6_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P4_SEM6_S1/image49.png',
-                'linked_sentences' => [
-                    'فضاء ريفي هادئ نقي الهواء',
-                ],
+                [
+                    'word' => 'هُدْهُدٌ',
+                    'clean' => 'هدهد',
+                    'meaning' => 'طَائِرٌ جَمِيلٌ',
+                    'image' => '/assets/lesson-images/N1/P4/SEM6/vocab/image49.png'
+                ]
+                ]
             ],
         ];
 
-        $now = now();
-
-        foreach ($items as $itemData) {
-            $linkedSentences = $itemData['linked_sentences'] ?? [];
-            unset($itemData['linked_sentences']);
-
-            $itemData['extracted_at'] = $now;
-
-            $vocab = ArabicVocabularyItem::query()->updateOrCreate(
-                [
-                    'word' => $itemData['word'],
-                    'lesson_id' => $itemData['lesson_id'],
-                    'grade' => $itemData['grade'],
-                ],
-                $itemData
-            );
-
-            // Record linked sentences into vocabulary_sentences
-            foreach ($linkedSentences as $sentence) {
-                DB::table('vocabulary_sentences')->updateOrInsert(
+        foreach ($curriculum as $week) {
+            foreach ($week['vocabulary'] as $item) {
+                // Insert or update vocabulary words safely without dropping tables
+                DB::table('vocabularies')->updateOrInsert(
                     [
-                        'word' => $itemData['word'],
-                        'sentence' => $sentence,
-                        'lesson_id' => $itemData['lesson_id'],
-                        'grade' => $itemData['grade'],
+                        'grade' => 'N1',
+                        'period' => 'P4',
+                        'clean_word' => $item['clean'],
                     ],
                     [
-                        'vocabulary_item_id' => null,
-                        'base_word' => $itemData['raw_word'],
-                        'subject' => 'AR',
-                        'period' => $itemData['period'],
-                        'week' => $itemData['week'],
-                        'source_type' => 'slide_sentence',
-                        'image_path' => $itemData['image_path'] ?? null,
-                        'updated_at' => $now,
-                        'created_at' => $now,
+                        'vocalized_word' => $item['word'],
+                        'meaning' => $item['meaning'],
+                        'image_url' => $item['image'],
+                        'week_id' => $week['week_id'],
+                        'lesson_sentence' => $week['lesson_sentence'],
+                        'updated_at' => now(),
                     ]
                 );
             }

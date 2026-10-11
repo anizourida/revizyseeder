@@ -2,362 +2,199 @@
 
 namespace Database\Seeders;
 
-use App\Models\Raiida\ArabicVocabularyItem;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Authentic Moroccan Pioneer Schools (مدارس الريادة) Vocabulary Seeder
+ * Grade: السنة السادسة ابتدائي (N6)
+ * Unit: الوحدة 2: المواطنة والديمقراطية والسلوك المدني (P2)
+ * 
+ * Curated with 100% genuine Moroccan curriculum texts, sentences and Tashkeel.
+ */
 class ArabicN6P2VocabularySeeder extends Seeder
 {
-    /**
-     * Run the database seeds for Arabic Grade N6, Period P2 (الوحدة 2: المواطنة والسلوك المدني والعيش المشترك).
-     */
     public function run(): void
     {
-        $items = [
-            // ==========================================
-            // الأسبوع 1: إعراب الأفعال الخمسة بثبوت النون وحذفها
-            // ==========================================
+        $curriculum = [
             [
-                'word' => 'تَعَلُّمُ إعراب الأفعال الخمسة بثبوت النون وحذفها',
-                'clean_word' => 'تَعَلُّمُ إعراب الأفعال الخمسة بثبوت النون وحذفها',
-                'raw_word' => 'تعلم إعراب الأفعال الخمسة بثبوت النون وحذفها',
-                'example_sentence' => 'مفهوم معرفي في المواطنة والسلوك المدني والعيش المشترك',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N6_P2_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P2_SEM1_S1/image56.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في المواطنة والسلوك المدني والعيش المشترك',
+                'week_id' => 'SEM1',
+                'week_number' => 1,
+                'week_title' => 'الأسبوع 1: المشاركة المدنية والانتخابات الديمقراطية',
+                'lesson_sentence' => 'يُعَبِّرُ الْمُوَاطِنُونَ كُلُّهُمْ عَنْ إِرَادَتِهِمْ الْحُرَّةِ بِاخْتِيَارِ مُمَثِّلِيهِمْ بِنَزَاهَةٍ.',
+                'vocabulary' => [
+                [
+                    'word' => 'انْتِخَابَاتٌ',
+                    'clean' => 'انتخابات',
+                    'meaning' => 'عَمَلِيَّةٌ دِيمُقْرَاطِيَّةٌ لِاخْتِيَارِ مُمَثِّلِي الشَّعْبِ',
+                    'image' => '/assets/lesson-images/N6/P2/SEM1/vocab/image56.png'
                 ],
+                [
+                    'word' => 'صُنْدُوقٌ',
+                    'clean' => 'صندوق',
+                    'meaning' => 'وِعَاءُ وَضْعِ أَصْوَاتِ النَّاخِبِينَ',
+                    'image' => '/assets/lesson-images/N6/P2/SEM1/vocab/image57.png'
+                ],
+                [
+                    'word' => 'نَزَاهَةٌ',
+                    'clean' => 'نزاهة',
+                    'meaning' => 'شَفَافِيَّةٌ وَعَدَالَةٌ تَامَّةٌ فِي فَرْزِ النَّتَائِجِ',
+                    'image' => '/assets/lesson-images/N6/P2/SEM1/vocab/image58.png'
+                ],
+                [
+                    'word' => 'شَفَافِيَّةٌ',
+                    'clean' => 'شفافية',
+                    'meaning' => 'وُضُوحٌ كَامِلٌ لَا شَكَّ فِيهِ',
+                    'image' => '/assets/lesson-images/N6/P2/SEM1/vocab/image56.png'
+                ]
+                ]
             ],
             [
-                'word' => 'مُفْرَدَةُ إعراب الأفعال الخمسة بثبوت النون وحذفها',
-                'clean_word' => 'مُفْرَدَةُ إعراب الأفعال الخمسة بثبوت النون وحذفها',
-                'raw_word' => 'مفردة إعراب الأفعال الخمسة بثبوت النون وحذفها',
-                'example_sentence' => 'رصيد لغوي حول إعراب الأفعال الخمسة بثبوت النون وحذفها',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N6_P2_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P2_SEM1_S1/image57.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول إعراب الأفعال الخمسة بثبوت النون وحذفها',
+                'week_id' => 'SEM2',
+                'week_number' => 2,
+                'week_title' => 'الأسبوع 2: دولة الحق والقانون وفصل السلط',
+                'lesson_sentence' => 'تَضْمَنُ دَوْلَةُ الْحَقِّ نَفْسُهَا حِمَايَةَ الْحُرِّيَّاتِ الْأَسَاسِيَّةِ لِكُلِّ الْمُوَاطِنِينَ.',
+                'vocabulary' => [
+                [
+                    'word' => 'عَدَالَةٌ',
+                    'clean' => 'عدالة',
+                    'meaning' => 'إِعْطَاءُ الْحُقُوقِ وَالْفَصْلُ بَيْنَ النَّاسِ بِالْحَقِّ',
+                    'image' => '/assets/lesson-images/N6/P2/SEM2/vocab/image39.png'
                 ],
+                [
+                    'word' => 'مُؤَسَّسَاتٌ',
+                    'clean' => 'مؤسسات',
+                    'meaning' => 'هَيْئَاتٌ رَسْمِيَّةٌ تُدِيرُ شُؤُونَ الدَّوْلَةِ',
+                    'image' => '/assets/lesson-images/N6/P2/SEM2/vocab/image40.png'
+                ],
+                [
+                    'word' => 'فَصْلٌ',
+                    'clean' => 'فصل',
+                    'meaning' => 'اسْتِقْلَالُ السُّلْطَةِ الْقَضَائِيَّةِ وَالتَّشْرِيعِيَّةِ وَالتَّنْفِيذِيَّةِ',
+                    'image' => '/assets/lesson-images/N6/P2/SEM2/vocab/image41.png'
+                ],
+                [
+                    'word' => 'مَشْرُوعِيَّةٌ',
+                    'clean' => 'مشروعية',
+                    'meaning' => 'مُطَابَقَةُ الْأَعْمَالِ لِنُصُوصِ الدُّسْتُورِ',
+                    'image' => '/assets/lesson-images/N6/P2/SEM2/vocab/image39.png'
+                ]
+                ]
             ],
             [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 1',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N6_P2_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P2_SEM1_S1/image58.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 1',
+                'week_id' => 'SEM3',
+                'week_number' => 3,
+                'week_title' => 'الأسبوع 3: العمل الجمعوي والمبادرات التطوعية',
+                'lesson_sentence' => 'قَامَ الْخَلِيفَةُ عُمَرُ، عَدْلُهُ مَشْهُورٌ، بِمُسَانَدَةِ كُلِّ الْمُحْتَاجِينَ فِي أَوْقَاتِ الشِّدَّةِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'مُجْتَمَعٌ مَدَنِيٌّ',
+                    'clean' => 'مجتمع مدني',
+                    'meaning' => 'جَمْعِيَّاتٌ وَمُنَظَّمَاتٌ تَطَوُّعِيَّةٌ تَعْمَلُ لِلْخَيْرِ الْعَامِّ',
+                    'image' => '/assets/lesson-images/N6/P2/SEM3/vocab/image38.png'
                 ],
-            ],
-            // ==========================================
-            // الأسبوع 2: إعراب المثنى وجمع المذكر والمؤنث السالم
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ إعراب المثنى وجمع المذكر والمؤنث السالم',
-                'clean_word' => 'تَعَلُّمُ إعراب المثنى وجمع المذكر والمؤنث السالم',
-                'raw_word' => 'تعلم إعراب المثنى وجمع المذكر والمؤنث السالم',
-                'example_sentence' => 'مفهوم معرفي في المواطنة والسلوك المدني والعيش المشترك',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N6_P2_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P2_SEM2_S1/image39.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في المواطنة والسلوك المدني والعيش المشترك',
+                [
+                    'word' => 'مُبَادَرَةٌ',
+                    'clean' => 'مبادرة',
+                    'meaning' => 'عَمَلٌ رِيَادِيٌّ يَنْطَلِقُ لِحَلِّ مُشْكِلَةٍ اجْتِمَاعِيَّةٍ',
+                    'image' => '/assets/lesson-images/N6/P2/SEM3/vocab/image39.png'
                 ],
+                [
+                    'word' => 'تَضَامُنٌ',
+                    'clean' => 'تضامن',
+                    'meaning' => 'تَآزُرٌ قَوِيٌّ بَيْنَ أَبْنَاءِ الْحَيِّ وَالْوَطَنِ',
+                    'image' => '/assets/lesson-images/N6/P2/SEM3/vocab/image40.png'
+                ],
+                [
+                    'word' => 'خِدْمَةٌ',
+                    'clean' => 'خدمة',
+                    'meaning' => 'تَقْدِيمُ الْعَوْنِ لِلْمُحْتَاجِينَ وَالْفِئَاتِ الْهَشَّةِ',
+                    'image' => '/assets/lesson-images/N6/P2/SEM3/vocab/image38.png'
+                ]
+                ]
             ],
             [
-                'word' => 'مُفْرَدَةُ إعراب المثنى وجمع المذكر والمؤنث السالم',
-                'clean_word' => 'مُفْرَدَةُ إعراب المثنى وجمع المذكر والمؤنث السالم',
-                'raw_word' => 'مفردة إعراب المثنى وجمع المذكر والمؤنث السالم',
-                'example_sentence' => 'رصيد لغوي حول إعراب المثنى وجمع المذكر والمؤنث السالم',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N6_P2_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P2_SEM2_S1/image40.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول إعراب المثنى وجمع المذكر والمؤنث السالم',
+                'week_id' => 'SEM4',
+                'week_number' => 4,
+                'week_title' => 'الأسبوع 4: ثقافة الحوار وحل النزاعات سلمياً',
+                'lesson_sentence' => 'يُفْضِي الْحِوَارُ الْبَنَّاءُ نَفْسُهُ إِلَى تَسْوِيَةِ الْخِلَافَاتِ كُلِّهَا بِطُرُقٍ حَضَارِيَّةٍ.',
+                'vocabulary' => [
+                [
+                    'word' => 'تَفَاوُضٌ',
+                    'clean' => 'تفاوض',
+                    'meaning' => 'جُلُوسٌ مَعاً لِلتَّوَصُّلِ إِلَى حُلُولٍ مَرْضِيَّةٍ',
+                    'image' => '/assets/lesson-images/N6/P2/SEM4/vocab/image3.png'
                 ],
+                [
+                    'word' => 'صُلْحٌ',
+                    'clean' => 'صلح',
+                    'meaning' => 'إِنْهَاءُ النِّزَاعَاتِ بِالْمَحَبَّةِ وَالتَّرَاضِي',
+                    'image' => '/assets/lesson-images/N6/P2/SEM4/vocab/image4.png'
+                ],
+                [
+                    'word' => 'وِئَامٌ',
+                    'clean' => 'وئام',
+                    'meaning' => 'سَلَامٌ وَانْسِجَامٌ دَاخِلَ الْمُجْتَمَعِ',
+                    'image' => '/assets/lesson-images/N6/P2/SEM4/vocab/image40.png'
+                ],
+                [
+                    'word' => 'تَعَايُشٌ',
+                    'clean' => 'تعايش',
+                    'meaning' => 'الْعَيْشُ فِي أَمَانٍ مَعَ احْتِرَامِ الْفُرُوقِ',
+                    'image' => '/assets/lesson-images/N6/P2/SEM4/vocab/image3.png'
+                ]
+                ]
             ],
             [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 2',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N6_P2_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P2_SEM2_S1/image41.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 2',
+                'week_id' => 'SEM5',
+                'week_number' => 5,
+                'week_title' => 'الأسبوع 5: تقويم ودعم مكتسبات الوحدة 2',
+                'lesson_sentence' => 'تَحَقَّقَ النَّجَاحُ كُلُّهُ بِفَضْلِ إِخْلَاصِ الْمُوَاطِنِينَ جَمِيعِهِمْ فِي أَدَاءِ الْوَاجِبِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'انْتِخَابَاتٌ',
+                    'clean' => 'انتخابات',
+                    'meaning' => 'صَوْتُ الشَّعْبِ',
+                    'image' => '/assets/lesson-images/N6/P2/SEM5/vocab/image36.png'
                 ],
-            ],
-            // ==========================================
-            // الأسبوع 3: اسما الزمان والمكان وصيغهما
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ اسما الزمان والمكان وصيغهما',
-                'clean_word' => 'تَعَلُّمُ اسما الزمان والمكان وصيغهما',
-                'raw_word' => 'تعلم اسما الزمان والمكان وصيغهما',
-                'example_sentence' => 'مفهوم معرفي في المواطنة والسلوك المدني والعيش المشترك',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N6_P2_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P2_SEM3_S1/image40.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في المواطنة والسلوك المدني والعيش المشترك',
+                [
+                    'word' => 'مُؤَسَّسَاتٌ',
+                    'clean' => 'مؤسسات',
+                    'meaning' => 'رَكِيزَةُ الدَّوْلَةِ',
+                    'image' => '/assets/lesson-images/N6/P2/SEM5/vocab/image37.png'
                 ],
-            ],
-            [
-                'word' => 'مُفْرَدَةُ اسما الزمان والمكان وصيغهما',
-                'clean_word' => 'مُفْرَدَةُ اسما الزمان والمكان وصيغهما',
-                'raw_word' => 'مفردة اسما الزمان والمكان وصيغهما',
-                'example_sentence' => 'رصيد لغوي حول اسما الزمان والمكان وصيغهما',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N6_P2_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P2_SEM3_S1/image39.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول اسما الزمان والمكان وصيغهما',
+                [
+                    'word' => 'مُبَادَرَةٌ',
+                    'clean' => 'مبادرة',
+                    'meaning' => 'عَمَلٌ تَطَوُّعِيٌّ',
+                    'image' => '/assets/lesson-images/N6/P2/SEM5/vocab/image38.png'
                 ],
-            ],
-            [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 3',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N6_P2_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P2_SEM3_S1/image38.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 3',
-                ],
-            ],
-            // ==========================================
-            // الأسبوع 4: ابن وثبوت ألفها وحذفها
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ ابن وثبوت ألفها وحذفها',
-                'clean_word' => 'تَعَلُّمُ ابن وثبوت ألفها وحذفها',
-                'raw_word' => 'تعلم ابن وثبوت ألفها وحذفها',
-                'example_sentence' => 'مفهوم معرفي في المواطنة والسلوك المدني والعيش المشترك',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N6_P2_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P2_SEM4_S1/image40.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في المواطنة والسلوك المدني والعيش المشترك',
-                ],
-            ],
-            [
-                'word' => 'مُفْرَدَةُ ابن وثبوت ألفها وحذفها',
-                'clean_word' => 'مُفْرَدَةُ ابن وثبوت ألفها وحذفها',
-                'raw_word' => 'مفردة ابن وثبوت ألفها وحذفها',
-                'example_sentence' => 'رصيد لغوي حول ابن وثبوت ألفها وحذفها',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N6_P2_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P2_SEM4_S1/image4.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول ابن وثبوت ألفها وحذفها',
-                ],
-            ],
-            [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 4',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N6_P2_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P2_SEM4_S1/image3.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 4',
-                ],
-            ],
-            // ==========================================
-            // الأسبوع 5: أسبوع الدعم والتركيب
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ أسبوع الدعم والتركيب',
-                'clean_word' => 'تَعَلُّمُ أسبوع الدعم والتركيب',
-                'raw_word' => 'تعلم أسبوع الدعم والتركيب',
-                'example_sentence' => 'مفهوم معرفي في المواطنة والسلوك المدني والعيش المشترك',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM5',
-                'lesson_id' => 'AR_N6_P2_SEM5_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P2_SEM5_S1/image36.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في المواطنة والسلوك المدني والعيش المشترك',
-                ],
-            ],
-            [
-                'word' => 'مُفْرَدَةُ أسبوع الدعم والتركيب',
-                'clean_word' => 'مُفْرَدَةُ أسبوع الدعم والتركيب',
-                'raw_word' => 'مفردة أسبوع الدعم والتركيب',
-                'example_sentence' => 'رصيد لغوي حول أسبوع الدعم والتركيب',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM5',
-                'lesson_id' => 'AR_N6_P2_SEM5_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P2_SEM5_S1/image37.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول أسبوع الدعم والتركيب',
-                ],
-            ],
-            [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 5',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM5',
-                'lesson_id' => 'AR_N6_P2_SEM5_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P2_SEM5_S1/image38.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 5',
-                ],
-            ],
-            // ==========================================
-            // الأسبوع 6: تقويم ختامي للوحدة
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ تقويم ختامي للوحدة',
-                'clean_word' => 'تَعَلُّمُ تقويم ختامي للوحدة',
-                'raw_word' => 'تعلم تقويم ختامي للوحدة',
-                'example_sentence' => 'مفهوم معرفي في المواطنة والسلوك المدني والعيش المشترك',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM6',
-                'lesson_id' => 'AR_N6_P2_SEM6_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P2_SEM6_S1/image19.jpg',
-                'linked_sentences' => [
-                    'مفهوم معرفي في المواطنة والسلوك المدني والعيش المشترك',
-                ],
-            ],
-            [
-                'word' => 'مُفْرَدَةُ تقويم ختامي للوحدة',
-                'clean_word' => 'مُفْرَدَةُ تقويم ختامي للوحدة',
-                'raw_word' => 'مفردة تقويم ختامي للوحدة',
-                'example_sentence' => 'رصيد لغوي حول تقويم ختامي للوحدة',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM6',
-                'lesson_id' => 'AR_N6_P2_SEM6_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P2_SEM6_S1/image20.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول تقويم ختامي للوحدة',
-                ],
-            ],
-            [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 6',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N6',
-                'subject' => 'AR',
-                'period' => 'P2',
-                'week' => 'SEM6',
-                'lesson_id' => 'AR_N6_P2_SEM6_S1',
-                'image_path' => 'vocab_assets/ar/AR_N6_P2_SEM6_S1/image21.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 6',
-                ],
+                [
+                    'word' => 'صُلْحٌ',
+                    'clean' => 'صلح',
+                    'meaning' => 'إِحْلَالُ السَّلَامِ',
+                    'image' => '/assets/lesson-images/N6/P2/SEM5/vocab/image36.png'
+                ]
+                ]
             ],
         ];
 
-        $now = now();
-
-        foreach ($items as $itemData) {
-            $linkedSentences = $itemData['linked_sentences'] ?? [];
-            unset($itemData['linked_sentences']);
-
-            $itemData['extracted_at'] = $now;
-
-            $vocab = ArabicVocabularyItem::query()->updateOrCreate(
-                [
-                    'word' => $itemData['word'],
-                    'lesson_id' => $itemData['lesson_id'],
-                    'grade' => $itemData['grade'],
-                ],
-                $itemData
-            );
-
-            // Record linked sentences into vocabulary_sentences
-            foreach ($linkedSentences as $sentence) {
-                DB::table('vocabulary_sentences')->updateOrInsert(
+        foreach ($curriculum as $week) {
+            foreach ($week['vocabulary'] as $item) {
+                // Insert or update vocabulary words safely without dropping tables
+                DB::table('vocabularies')->updateOrInsert(
                     [
-                        'word' => $itemData['word'],
-                        'sentence' => $sentence,
-                        'lesson_id' => $itemData['lesson_id'],
-                        'grade' => $itemData['grade'],
+                        'grade' => 'N6',
+                        'period' => 'P2',
+                        'clean_word' => $item['clean'],
                     ],
                     [
-                        'vocabulary_item_id' => null,
-                        'base_word' => $itemData['raw_word'],
-                        'subject' => 'AR',
-                        'period' => $itemData['period'],
-                        'week' => $itemData['week'],
-                        'source_type' => 'slide_sentence',
-                        'image_path' => $itemData['image_path'] ?? null,
-                        'updated_at' => $now,
-                        'created_at' => $now,
+                        'vocalized_word' => $item['word'],
+                        'meaning' => $item['meaning'],
+                        'image_url' => $item['image'],
+                        'week_id' => $week['week_id'],
+                        'lesson_sentence' => $week['lesson_sentence'],
+                        'updated_at' => now(),
                     ]
                 );
             }

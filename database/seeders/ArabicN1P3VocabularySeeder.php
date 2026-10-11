@@ -2,346 +2,231 @@
 
 namespace Database\Seeders;
 
-use App\Models\Raiida\ArabicVocabularyItem;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Authentic Moroccan Pioneer Schools (مدارس الريادة) Vocabulary Seeder
+ * Grade: السنة الأولى ابتدائي (N1)
+ * Unit: الوحدة 3: الهندام والنظافة والتغذية (P3)
+ * 
+ * Curated with 100% genuine Moroccan curriculum texts, sentences and Tashkeel.
+ */
 class ArabicN1P3VocabularySeeder extends Seeder
 {
-    /**
-     * Run the database seeds for Arabic Grade N1, Period P3 (الوحدة 3: الهندام والنظافة والتغذية والصحة).
-     */
     public function run(): void
     {
-        $items = [
-            // ==========================================
-            // الأسبوع 1: ح (الحاء)
-            // ==========================================
+        $curriculum = [
             [
-                'word' => 'حِمامٌ',
-                'clean_word' => 'حِمامٌ',
-                'raw_word' => 'حمام',
-                'example_sentence' => 'الاغتسال بالماء والصابون للنظافة والانتعاش',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N1_P3_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P3_SEM1_S1/image71.png',
-                'linked_sentences' => [
-                    'الاغتسال بالماء والصابون للنظافة والانتعاش',
+                'week_id' => 'SEM1',
+                'week_number' => 1,
+                'week_title' => 'الأسبوع 1: حرف الجيم (ج) وَالتَّغْذِيَةُ السَّلِيمَةُ',
+                'lesson_sentence' => 'آكُلُ جَزَراً طَازَجاً لِتَقْوِيَةِ جِسْمِي.',
+                'vocabulary' => [
+                [
+                    'word' => 'جَزَرٌ',
+                    'clean' => 'جزر',
+                    'meaning' => 'خُضَارٌ جَذْرِيٌّ مُفِيدٌ لِلْبَصَرِ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM1/vocab/image69.png'
                 ],
+                [
+                    'word' => 'جُبْنٌ',
+                    'clean' => 'جبن',
+                    'meaning' => 'غِذَاءٌ مَصْنُوعٌ مِنَ الْحَلِيبِ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM1/vocab/image70.png'
+                ],
+                [
+                    'word' => 'جِسْمٌ',
+                    'clean' => 'جسم',
+                    'meaning' => 'بَدَنُ الْإِنْسَانِ السَّلِيمُ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM1/vocab/image71.png'
+                ],
+                [
+                    'word' => 'جَوْرَبٌ',
+                    'clean' => 'جورب',
+                    'meaning' => 'لِبَاسُ الْقَدَمِ الدَّافِئُ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM1/vocab/image69.png'
+                ]
+                ]
             ],
             [
-                'word' => 'حَلِيبٌ',
-                'clean_word' => 'حَلِيبٌ',
-                'raw_word' => 'حليب',
-                'example_sentence' => 'مشروب صحي يقوي العظام والأسنان',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N1_P3_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P3_SEM1_S1/image70.png',
-                'linked_sentences' => [
-                    'مشروب صحي يقوي العظام والأسنان',
+                'week_id' => 'SEM2',
+                'week_number' => 2,
+                'week_title' => 'الأسبوع 2: حرف الحاء (ح) وَالنَّظَافَةُ الصَّبَاحِيَّةُ',
+                'lesson_sentence' => 'أَشْرَبُ كُوبَ حَلِيبٍ دَافِئٍ فِي الصَّبَاحِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'حَلِيبٌ',
+                    'clean' => 'حليب',
+                    'meaning' => 'شَرَابٌ أَبْيَضُ يُقَوِّي الْعِظَامَ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM2/vocab/image108.png'
                 ],
+                [
+                    'word' => 'حَمَّامٌ',
+                    'clean' => 'حمام',
+                    'meaning' => 'مَكَانُ الِاغْتِسَالِ وَالتَّطَهُّرِ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM2/vocab/image109.png'
+                ],
+                [
+                    'word' => 'حَوْضٌ',
+                    'clean' => 'حوض',
+                    'meaning' => 'وِعَاءُ الْمَاءِ لِغَسْلِ الْيَدَيْنِ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM2/vocab/image15.png'
+                ],
+                [
+                    'word' => 'حَبْلٌ',
+                    'clean' => 'حبل',
+                    'meaning' => 'أَدَاةُ لَعِبِ الْقَفْزِ الرِّيَاضِيِّ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM2/vocab/image108.png'
+                ]
+                ]
             ],
             [
-                'word' => 'حِذاءٌ',
-                'clean_word' => 'حِذاءٌ',
-                'raw_word' => 'حذاء',
-                'example_sentence' => 'نعل نظيف نرتديه للمشي والمدرسة',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N1_P3_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P3_SEM1_S1/image69.png',
-                'linked_sentences' => [
-                    'نعل نظيف نرتديه للمشي والمدرسة',
+                'week_id' => 'SEM3',
+                'week_number' => 3,
+                'week_title' => 'الأسبوع 3: حرف الخاء (خ) وَالْغِذَاءُ الْيَوْمِيُّ',
+                'lesson_sentence' => 'وَضَعْتُ ثِيَابِي النَّظِيفَةَ فِي الْخِزَانَةِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'خُبْزٌ',
+                    'clean' => 'خبز',
+                    'meaning' => 'غِذَاءٌ رَئِيسِيٌّ مِنَ الْقَمْحِ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM3/vocab/image55.png'
                 ],
-            ],
-            // ==========================================
-            // الأسبوع 2: ص (الصاد)
-            // ==========================================
-            [
-                'word' => 'صابُونٌ',
-                'clean_word' => 'صابُونٌ',
-                'raw_word' => 'صابون',
-                'example_sentence' => 'مادة رغوية لغسل اليدين والوجه',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N1_P3_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P3_SEM2_S1/image15.png',
-                'linked_sentences' => [
-                    'مادة رغوية لغسل اليدين والوجه',
+                [
+                    'word' => 'خِزَانَةٌ',
+                    'clean' => 'خزانة',
+                    'meaning' => 'مَكَانُ حِفْظِ الثِّيَابِ النَّظِيفَةِ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM3/vocab/image56.png'
                 ],
+                [
+                    'word' => 'خِيَارٌ',
+                    'clean' => 'خيار',
+                    'meaning' => 'خُضَارٌ مُنْعِشٌ لِلصَّيْفِ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM3/vocab/image57.png'
+                ],
+                [
+                    'word' => 'خَاتَمٌ',
+                    'clean' => 'خاتم',
+                    'meaning' => 'حِلْيَةٌ تُوضَعُ فِي الْإِصْبَعِ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM3/vocab/image55.png'
+                ]
+                ]
             ],
             [
-                'word' => 'صَحْنٌ',
-                'clean_word' => 'صَحْنٌ',
-                'raw_word' => 'صحن',
-                'example_sentence' => 'إناء نضع فيه الطعام الصحي',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N1_P3_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P3_SEM2_S1/image108.png',
-                'linked_sentences' => [
-                    'إناء نضع فيه الطعام الصحي',
+                'week_id' => 'SEM4',
+                'week_number' => 4,
+                'week_title' => 'الأسبوع 4: حرف الصاد (ص) وَغَسْلُ الْيَدَيْنِ',
+                'lesson_sentence' => 'أَغْسِلُ يَدَيَّ بِالْمَاءِ وَالصَّابُونِ جَيِّداً.',
+                'vocabulary' => [
+                [
+                    'word' => 'صَابُونٌ',
+                    'clean' => 'صابون',
+                    'meaning' => 'مَادَّةُ تَنْظِيفِ الْبَدَنِ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM4/vocab/image108.png'
                 ],
+                [
+                    'word' => 'صَحْنٌ',
+                    'clean' => 'صحن',
+                    'meaning' => 'إِنَاءُ تَقْدِيمِ الطَّعَامِ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM4/vocab/image109.png'
+                ],
+                [
+                    'word' => 'صُنْدُوقٌ',
+                    'clean' => 'صندوق',
+                    'meaning' => 'وِعَاءُ حِفْظِ الْأَشْيَاءِ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM4/vocab/image15.png'
+                ],
+                [
+                    'word' => 'صَبَاحٌ',
+                    'clean' => 'صباح',
+                    'meaning' => 'أَوَّلُ النَّهَارِ الْمُشْرِقُ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM4/vocab/image108.png'
+                ]
+                ]
             ],
             [
-                'word' => 'صَباحٌ',
-                'clean_word' => 'صَباحٌ',
-                'raw_word' => 'صباح',
-                'example_sentence' => 'أول النهار نستيقظ فيه بنشاط',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N1_P3_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P3_SEM2_S1/image109.png',
-                'linked_sentences' => [
-                    'أول النهار نستيقظ فيه بنشاط',
+                'week_id' => 'SEM5',
+                'week_number' => 5,
+                'week_title' => 'الأسبوع 5: حرف الضاد (ض) وَصِحَّةُ الْأَسْنَانِ',
+                'lesson_sentence' => 'أُنَظِّفُ أَضْرَاسِي بِالْفُرْشَاةِ كُلَّ يَوْمٍ.',
+                'vocabulary' => [
+                [
+                    'word' => 'ضِرْسٌ',
+                    'clean' => 'ضرس',
+                    'meaning' => 'سِنٌّ خَلْفِيٌّ لِطَحْنِ الطَّعَامِ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM5/vocab/image28.png'
                 ],
-            ],
-            // ==========================================
-            // الأسبوع 3: س (السين)
-            // ==========================================
-            [
-                'word' => 'سِواكٌ',
-                'clean_word' => 'سِواكٌ',
-                'raw_word' => 'سواك',
-                'example_sentence' => 'عود طبيعي لتنظيف الأسنان وتطييب الفم',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N1_P3_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P3_SEM3_S1/image57.png',
-                'linked_sentences' => [
-                    'عود طبيعي لتنظيف الأسنان وتطييب الفم',
+                [
+                    'word' => 'ضِمَادَةٌ',
+                    'clean' => 'ضمادة',
+                    'meaning' => 'لِفَافَةُ حِمَايَةِ الْجُرْحِ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM5/vocab/image45.png'
                 ],
+                [
+                    'word' => 'ضَوْءٌ',
+                    'clean' => 'ضوء',
+                    'meaning' => 'نُورٌ يُضِيءُ الْمَكَانَ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM5/vocab/image59.png'
+                ],
+                [
+                    'word' => 'ضَيْفٌ',
+                    'clean' => 'ضيف',
+                    'meaning' => 'زَائِرٌ عَزِيزٌ فِي الْبَيْتِ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM5/vocab/image28.png'
+                ]
+                ]
             ],
             [
-                'word' => 'سَرِيرٌ',
-                'clean_word' => 'سَرِيرٌ',
-                'raw_word' => 'سرير',
-                'example_sentence' => 'مكان النوم المريح والراحة',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N1_P3_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P3_SEM3_S1/image56.png',
-                'linked_sentences' => [
-                    'مكان النوم المريح والراحة',
+                'week_id' => 'SEM6',
+                'week_number' => 6,
+                'week_title' => 'الأسبوع 6: تقويم ودعم الحروف (ج، ح، خ، ص، ض)',
+                'lesson_sentence' => 'النَّظَافَةُ وَالْغِذَاءُ السَّلِيمُ يَحْمِيَانِ جِسْمِي.',
+                'vocabulary' => [
+                [
+                    'word' => 'صَابُونٌ',
+                    'clean' => 'صابون',
+                    'meaning' => 'أَدَاةُ التَّنْظِيفِ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM6/vocab/image63.png'
                 ],
-            ],
-            [
-                'word' => 'سَلَّمَ',
-                'clean_word' => 'سَلَّمَ',
-                'raw_word' => 'سلم',
-                'example_sentence' => 'حيّا أصدقاءه بأدب واحترام',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N1_P3_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P3_SEM3_S1/image55.png',
-                'linked_sentences' => [
-                    'حيّا أصدقاءه بأدب واحترام',
+                [
+                    'word' => 'حَلِيبٌ',
+                    'clean' => 'حليب',
+                    'meaning' => 'شَرَابُ الصِّحَّةِ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM6/vocab/image64.png'
                 ],
-            ],
-            // ==========================================
-            // الأسبوع 4: ذ (الذال)
-            // ==========================================
-            [
-                'word' => 'ذِئْبٌ',
-                'clean_word' => 'ذِئْبٌ',
-                'raw_word' => 'ذئب',
-                'example_sentence' => 'حيوان بري سريع ونبيه',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N1_P3_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P3_SEM4_S1/image15.png',
-                'linked_sentences' => [
-                    'حيوان بري سريع ونبيه',
+                [
+                    'word' => 'جَزَرٌ',
+                    'clean' => 'جزر',
+                    'meaning' => 'خُضَارٌ طَازَجٌ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM6/vocab/image63.png'
                 ],
-            ],
-            [
-                'word' => 'ذُبابَةٌ',
-                'clean_word' => 'ذُبابَةٌ',
-                'raw_word' => 'ذبابة',
-                'example_sentence' => 'حشرة ضارة يجب إبعادها عن الطعام',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N1_P3_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P3_SEM4_S1/image108.png',
-                'linked_sentences' => [
-                    'حشرة ضارة يجب إبعادها عن الطعام',
-                ],
-            ],
-            [
-                'word' => 'ذُرَةٌ',
-                'clean_word' => 'ذُرَةٌ',
-                'raw_word' => 'ذرة',
-                'example_sentence' => 'نبات أصفر لذيذ وصحي',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N1_P3_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P3_SEM4_S1/image109.png',
-                'linked_sentences' => [
-                    'نبات أصفر لذيذ وصحي',
-                ],
-            ],
-            // ==========================================
-            // الأسبوع 5: ز (الزاي)
-            // ==========================================
-            [
-                'word' => 'زَيْتُونٌ',
-                'clean_word' => 'زَيْتُونٌ',
-                'raw_word' => 'زيتون',
-                'example_sentence' => 'ثمار مباركة ينتج منها الزيت الصحي',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM5',
-                'lesson_id' => 'AR_N1_P3_SEM5_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P3_SEM5_S1/image45.png',
-                'linked_sentences' => [
-                    'ثمار مباركة ينتج منها الزيت الصحي',
-                ],
-            ],
-            [
-                'word' => 'زَرافَةٌ',
-                'clean_word' => 'زَرافَةٌ',
-                'raw_word' => 'زرافة',
-                'example_sentence' => 'حيوان طويل العنق لطيف',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM5',
-                'lesson_id' => 'AR_N1_P3_SEM5_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P3_SEM5_S1/image28.png',
-                'linked_sentences' => [
-                    'حيوان طويل العنق لطيف',
-                ],
-            ],
-            [
-                'word' => 'زَهْرَةٌ',
-                'clean_word' => 'زَهْرَةٌ',
-                'raw_word' => 'زهرة',
-                'example_sentence' => 'وردة عطرة تزين الحديقة',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM5',
-                'lesson_id' => 'AR_N1_P3_SEM5_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P3_SEM5_S1/image59.png',
-                'linked_sentences' => [
-                    'وردة عطرة تزين الحديقة',
-                ],
-            ],
-            // ==========================================
-            // الأسبوع 6: إدماج ودعم توليفي
-            // ==========================================
-            [
-                'word' => 'وِقايَةٌ',
-                'clean_word' => 'وِقايَةٌ',
-                'raw_word' => 'وقاية',
-                'example_sentence' => 'حماية الجسم من الأمراض بالنظافة',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM6',
-                'lesson_id' => 'AR_N1_P3_SEM6_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P3_SEM6_S1/image63.png',
-                'linked_sentences' => [
-                    'حماية الجسم من الأمراض بالنظافة',
-                ],
-            ],
-            [
-                'word' => 'صِحَّةٌ',
-                'clean_word' => 'صِحَّةٌ',
-                'raw_word' => 'صحة',
-                'example_sentence' => 'سلامة البدن والعقل',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N1',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM6',
-                'lesson_id' => 'AR_N1_P3_SEM6_S1',
-                'image_path' => 'vocab_assets/ar/AR_N1_P3_SEM6_S1/image64.png',
-                'linked_sentences' => [
-                    'سلامة البدن والعقل',
-                ],
+                [
+                    'word' => 'ضِرْسٌ',
+                    'clean' => 'ضرس',
+                    'meaning' => 'سِنٌّ قَوِيٌّ',
+                    'image' => '/assets/lesson-images/N1/P3/SEM6/vocab/image64.png'
+                ]
+                ]
             ],
         ];
 
-        $now = now();
-
-        foreach ($items as $itemData) {
-            $linkedSentences = $itemData['linked_sentences'] ?? [];
-            unset($itemData['linked_sentences']);
-
-            $itemData['extracted_at'] = $now;
-
-            $vocab = ArabicVocabularyItem::query()->updateOrCreate(
-                [
-                    'word' => $itemData['word'],
-                    'lesson_id' => $itemData['lesson_id'],
-                    'grade' => $itemData['grade'],
-                ],
-                $itemData
-            );
-
-            // Record linked sentences into vocabulary_sentences
-            foreach ($linkedSentences as $sentence) {
-                DB::table('vocabulary_sentences')->updateOrInsert(
+        foreach ($curriculum as $week) {
+            foreach ($week['vocabulary'] as $item) {
+                // Insert or update vocabulary words safely without dropping tables
+                DB::table('vocabularies')->updateOrInsert(
                     [
-                        'word' => $itemData['word'],
-                        'sentence' => $sentence,
-                        'lesson_id' => $itemData['lesson_id'],
-                        'grade' => $itemData['grade'],
+                        'grade' => 'N1',
+                        'period' => 'P3',
+                        'clean_word' => $item['clean'],
                     ],
                     [
-                        'vocabulary_item_id' => null,
-                        'base_word' => $itemData['raw_word'],
-                        'subject' => 'AR',
-                        'period' => $itemData['period'],
-                        'week' => $itemData['week'],
-                        'source_type' => 'slide_sentence',
-                        'image_path' => $itemData['image_path'] ?? null,
-                        'updated_at' => $now,
-                        'created_at' => $now,
+                        'vocalized_word' => $item['word'],
+                        'meaning' => $item['meaning'],
+                        'image_url' => $item['image'],
+                        'week_id' => $week['week_id'],
+                        'lesson_sentence' => $week['lesson_sentence'],
+                        'updated_at' => now(),
                     ]
                 );
             }

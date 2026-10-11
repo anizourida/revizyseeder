@@ -2,260 +2,199 @@
 
 namespace Database\Seeders;
 
-use App\Models\Raiida\ArabicVocabularyItem;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Authentic Moroccan Pioneer Schools (مدارس الريادة) Vocabulary Seeder
+ * Grade: السنة الرابعة ابتدائي (N4)
+ * Unit: الوحدة 5: الغابة والبيئة والتنوع الطبيعي (P5)
+ * 
+ * Curated with 100% genuine Moroccan curriculum texts, sentences and Tashkeel.
+ */
 class ArabicN4P5VocabularySeeder extends Seeder
 {
-    /**
-     * Run the database seeds for Arabic Grade N4, Period P5 (الوحدة 5: الغابة والبيئة الطبيعية وحمايتها).
-     */
     public function run(): void
     {
-        $items = [
-            // ==========================================
-            // الأسبوع 1: جزم المضارع الصحيح بـ (لم، لا الناهية)
-            // ==========================================
+        $curriculum = [
             [
-                'word' => 'تَعَلُّمُ جزم المضارع الصحيح بـ',
-                'clean_word' => 'تَعَلُّمُ جزم المضارع الصحيح بـ',
-                'raw_word' => 'تعلم جزم المضارع الصحيح ب',
-                'example_sentence' => 'مفهوم معرفي في الغابة والبيئة الطبيعية وحمايتها',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P5_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P5_SEM1_S1/image76.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في الغابة والبيئة الطبيعية وحمايتها',
+                'week_id' => 'SEM1',
+                'week_number' => 1,
+                'week_title' => 'الأسبوع 1: الغابة رئة الأرض وحامية التوازن',
+                'lesson_sentence' => 'تُمَثِّلُ الْغَابَاتُ رِئَةَ الْأَرْضِ الَّتِي تَمُدُّ الْكَائِنَاتِ بِالْأُكْسِجِينِ النَّقِيِّ.',
+                'vocabulary' => [
+                [
+                    'word' => 'أُكْسِجِينٌ',
+                    'clean' => 'أكسجين',
+                    'meaning' => 'غَازٌ حَيَوِيٌّ لِتَنَفُّسِ الْكَائِنَاتِ الْحَيَّةِ',
+                    'image' => '/assets/lesson-images/N4/P5/SEM1/vocab/image76.png'
                 ],
+                [
+                    'word' => 'تَصَحُّرٌ',
+                    'clean' => 'تصحر',
+                    'meaning' => 'تَحَوُّلُ الْأَرَاضِي الْخَصْبَةِ إِلَى صَحْرَاءَ جَدْبَاءَ',
+                    'image' => '/assets/lesson-images/N4/P5/SEM1/vocab/image78.png'
+                ],
+                [
+                    'word' => 'ثَرْوَةٌ',
+                    'clean' => 'ثروة',
+                    'meaning' => 'خَيْرٌ طَبِيعِيٌّ كَبِيرٌ يَجِبُ صَوْنُهُ',
+                    'image' => '/assets/lesson-images/N4/P5/SEM1/vocab/image79.png'
+                ],
+                [
+                    'word' => 'تَنَوُّعٌ',
+                    'clean' => 'تنوع',
+                    'meaning' => 'كَثْرَةُ الْأَصْنَافِ النَّبَاتِيَّةِ وَالْحَيَوَانِيَّةِ',
+                    'image' => '/assets/lesson-images/N4/P5/SEM1/vocab/image76.png'
+                ]
+                ]
             ],
             [
-                'word' => 'مُفْرَدَةُ جزم المضارع الصحيح بـ',
-                'clean_word' => 'مُفْرَدَةُ جزم المضارع الصحيح بـ',
-                'raw_word' => 'مفردة جزم المضارع الصحيح ب',
-                'example_sentence' => 'رصيد لغوي حول جزم المضارع الصحيح بـ (لم، لا الناهية)',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P5_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P5_SEM1_S1/image78.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول جزم المضارع الصحيح بـ (لم، لا الناهية)',
+                'week_id' => 'SEM2',
+                'week_number' => 2,
+                'week_title' => 'الأسبوع 2: الحفاظ على الغطاء النباتي ومنع الحرائق',
+                'lesson_sentence' => 'نَظَّمَ النَّادِي الْبِيئِيُّ حَمْلَةَ تَشْجِيرٍ كُبْرَى حِمَايَةً لِلْغِطَاءِ النَّبَاتِيِّ.',
+                'vocabulary' => [
+                [
+                    'word' => 'تَشْجِيرٌ',
+                    'clean' => 'تشجير',
+                    'meaning' => 'غَرْسُ أَشْجَارٍ جَدِيدَةٍ لِتَعْوِيضِ مَا تَلِفَ',
+                    'image' => '/assets/lesson-images/N4/P5/SEM2/vocab/image23.png'
                 ],
+                [
+                    'word' => 'حَرَائِقُ',
+                    'clean' => 'حرائق',
+                    'meaning' => 'نِيرَانٌ تَلْتَهِمُ الْغِطَاءَ النَّبَاتِيَّ',
+                    'image' => '/assets/lesson-images/N4/P5/SEM2/vocab/image46.png'
+                ],
+                [
+                    'word' => 'حِمَايَةٌ',
+                    'clean' => 'حماية',
+                    'meaning' => 'حِرَاسَةُ الْغَابَةِ وَمَنْعُ قَطْعِ الْأَشْجَارِ',
+                    'image' => '/assets/lesson-images/N4/P5/SEM2/vocab/image65.png'
+                ],
+                [
+                    'word' => 'مَحْمِيَّةٌ',
+                    'clean' => 'محمية',
+                    'meaning' => 'مِنْطَقَةٌ طَبِيعِيَّةٌ مَصُونَةٌ بِمُوجِبِ الْقَانُونِ',
+                    'image' => '/assets/lesson-images/N4/P5/SEM2/vocab/image23.png'
+                ]
+                ]
             ],
             [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 1',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P5_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P5_SEM1_S1/image79.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 1',
+                'week_id' => 'SEM3',
+                'week_number' => 3,
+                'week_title' => 'الأسبوع 3: الكائنات المهددة بالانقراض وحمايتها',
+                'lesson_sentence' => 'تَحْمِي الْمَحْمِيَّاتُ الطَّبِيعِيَّةُ الْحَيَوَانَاتِ النَّادِرَةَ مِنَ الصَّيْدِ الْجَائِرِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'انْقِرَاضٌ',
+                    'clean' => 'انقراض',
+                    'meaning' => 'اخْتِفَاءُ نَوْعٍ مِنَ الْكَائِنَاتِ نِهَائِيّاً مِنَ الْوُجُودِ',
+                    'image' => '/assets/lesson-images/N4/P5/SEM3/vocab/image74.png'
                 ],
-            ],
-            // ==========================================
-            // الأسبوع 2: نصب المضارع بأن ولن
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ نصب المضارع بأن ولن',
-                'clean_word' => 'تَعَلُّمُ نصب المضارع بأن ولن',
-                'raw_word' => 'تعلم نصب المضارع بأن ولن',
-                'example_sentence' => 'مفهوم معرفي في الغابة والبيئة الطبيعية وحمايتها',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N4_P5_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P5_SEM2_S1/image23.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في الغابة والبيئة الطبيعية وحمايتها',
+                [
+                    'word' => 'مَوْطِنٌ',
+                    'clean' => 'موطن',
+                    'meaning' => 'الْمَكَانُ الطَّبِيعِيُّ الَّذِي يَعِيشُ فِيهِ الْحَيَوَانُ',
+                    'image' => '/assets/lesson-images/N4/P5/SEM3/vocab/image75.png'
                 ],
+                [
+                    'word' => 'مُهَدَّدٌ',
+                    'clean' => 'مهدد',
+                    'meaning' => 'مُعَرَّضٌ لِخَطَرِ الزَّوَالِ',
+                    'image' => '/assets/lesson-images/N4/P5/SEM3/vocab/image76.png'
+                ],
+                [
+                    'word' => 'سُلَالَةٌ',
+                    'clean' => 'سلالة',
+                    'meaning' => 'مَجْمُوعَةٌ حَيَوَانِيَّةٌ تَحْمِلُ صِفَاتٍ وَرَاثِيَّةً مُمَيَّزَةً',
+                    'image' => '/assets/lesson-images/N4/P5/SEM3/vocab/image74.png'
+                ]
+                ]
             ],
             [
-                'word' => 'مُفْرَدَةُ نصب المضارع بأن ولن',
-                'clean_word' => 'مُفْرَدَةُ نصب المضارع بأن ولن',
-                'raw_word' => 'مفردة نصب المضارع بأن ولن',
-                'example_sentence' => 'رصيد لغوي حول نصب المضارع بأن ولن',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N4_P5_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P5_SEM2_S1/image65.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول نصب المضارع بأن ولن',
+                'week_id' => 'SEM4',
+                'week_number' => 4,
+                'week_title' => 'الأسبوع 4: التوازن البيئي والتنمية المستدامة',
+                'lesson_sentence' => 'يُعَدُّ الْحِفَاظُ عَلَى التَّوَازُنِ الْبِيئِيِّ ضَمَانَةً حَقِيقِيَّةً لِحَيَاةِ الْبَشَرِيَّةِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'تَلَوُّثٌ',
+                    'clean' => 'تلوث',
+                    'meaning' => 'إِفْسَادُ الْهَوَاءِ وَالْمَاءِ وَالتُّرْبَةِ بِالْمُخَلَّفَاتِ',
+                    'image' => '/assets/lesson-images/N4/P5/SEM4/vocab/image13.png'
                 ],
+                [
+                    'word' => 'تَوَازُنٌ',
+                    'clean' => 'توازن',
+                    'meaning' => 'تَنَاسُقٌ دَقِيقٌ بَيْنَ كُلِّ عَنَاصِرِ الطَّبِيعَةِ',
+                    'image' => '/assets/lesson-images/N4/P5/SEM4/vocab/image21.png'
+                ],
+                [
+                    'word' => 'مُنَاخٌ',
+                    'clean' => 'مناخ',
+                    'meaning' => 'حَالَةُ الطَّقْسِ الْعَامَّةُ عَلَى مَدَى فَتَرَاتٍ طَوِيلَةٍ',
+                    'image' => '/assets/lesson-images/N4/P5/SEM4/vocab/image58.png'
+                ],
+                [
+                    'word' => 'اسْتِدَامَةٌ',
+                    'clean' => 'استدامة',
+                    'meaning' => 'اسْتِغْلَالُ الْمَوَارِدِ دُونَ إِضْرَارٍ بِمُسْتَقْبَلِ الْأَجْيَالِ',
+                    'image' => '/assets/lesson-images/N4/P5/SEM4/vocab/image13.png'
+                ]
+                ]
             ],
             [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 2',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N4_P5_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P5_SEM2_S1/image46.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 2',
+                'week_id' => 'SEM5',
+                'week_number' => 5,
+                'week_title' => 'الأسبوع 5: تقويم ودعم نهاية السنة الرابعة ابتدائي',
+                'lesson_sentence' => 'الْحِفَاظُ عَلَى الْغَابَةِ وَالتَّنَوُّعِ الْبَيُولُوجِيِّ أَمَانَةٌ تَقَعُ عَلَى عَاتِقِنَا.',
+                'vocabulary' => [
+                [
+                    'word' => 'أُكْسِجِينٌ',
+                    'clean' => 'أكسجين',
+                    'meaning' => 'نَفَسُ الْحَيَاةِ',
+                    'image' => '/assets/lesson-images/N4/SEM5/vocab/image54.png'
                 ],
-            ],
-            // ==========================================
-            // الأسبوع 3: الحال المفردة وتطابقها
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ الحال المفردة وتطابقها',
-                'clean_word' => 'تَعَلُّمُ الحال المفردة وتطابقها',
-                'raw_word' => 'تعلم الحال المفردة وتطابقها',
-                'example_sentence' => 'مفهوم معرفي في الغابة والبيئة الطبيعية وحمايتها',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N4_P5_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P5_SEM3_S1/image74.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في الغابة والبيئة الطبيعية وحمايتها',
+                [
+                    'word' => 'تَشْجِيرٌ',
+                    'clean' => 'تشجير',
+                    'meaning' => 'إِحْيَاءُ الْغَابَاتِ',
+                    'image' => '/assets/lesson-images/N4/SEM5/vocab/image56.png'
                 ],
-            ],
-            [
-                'word' => 'مُفْرَدَةُ الحال المفردة وتطابقها',
-                'clean_word' => 'مُفْرَدَةُ الحال المفردة وتطابقها',
-                'raw_word' => 'مفردة الحال المفردة وتطابقها',
-                'example_sentence' => 'رصيد لغوي حول الحال المفردة وتطابقها',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N4_P5_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P5_SEM3_S1/image75.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول الحال المفردة وتطابقها',
+                [
+                    'word' => 'انْقِرَاضٌ',
+                    'clean' => 'انقراض',
+                    'meaning' => 'خَطَرُ الزَّوَالِ',
+                    'image' => '/assets/lesson-images/N4/SEM5/vocab/image54.png'
                 ],
-            ],
-            [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 3',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N4_P5_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P5_SEM3_S1/image76.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 3',
-                ],
-            ],
-            // ==========================================
-            // الأسبوع 4: تقويم ختامي للحصيلة السنوية
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ تقويم ختامي للحصيلة السنوية',
-                'clean_word' => 'تَعَلُّمُ تقويم ختامي للحصيلة السنوية',
-                'raw_word' => 'تعلم تقويم ختامي للحصيلة السنوية',
-                'example_sentence' => 'مفهوم معرفي في الغابة والبيئة الطبيعية وحمايتها',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N4_P5_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P5_SEM4_S1/image21.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في الغابة والبيئة الطبيعية وحمايتها',
-                ],
-            ],
-            [
-                'word' => 'مُفْرَدَةُ تقويم ختامي للحصيلة السنوية',
-                'clean_word' => 'مُفْرَدَةُ تقويم ختامي للحصيلة السنوية',
-                'raw_word' => 'مفردة تقويم ختامي للحصيلة السنوية',
-                'example_sentence' => 'رصيد لغوي حول تقويم ختامي للحصيلة السنوية',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N4_P5_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P5_SEM4_S1/image58.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول تقويم ختامي للحصيلة السنوية',
-                ],
-            ],
-            [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 4',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N4_P5_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P5_SEM4_S1/image13.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 4',
-                ],
+                [
+                    'word' => 'اسْتِدَامَةٌ',
+                    'clean' => 'استدامة',
+                    'meaning' => 'حِفْظُ الْمُسْتَقْبَلِ',
+                    'image' => '/assets/lesson-images/N4/SEM5/vocab/image56.png'
+                ]
+                ]
             ],
         ];
 
-        $now = now();
-
-        foreach ($items as $itemData) {
-            $linkedSentences = $itemData['linked_sentences'] ?? [];
-            unset($itemData['linked_sentences']);
-
-            $itemData['extracted_at'] = $now;
-
-            $vocab = ArabicVocabularyItem::query()->updateOrCreate(
-                [
-                    'word' => $itemData['word'],
-                    'lesson_id' => $itemData['lesson_id'],
-                    'grade' => $itemData['grade'],
-                ],
-                $itemData
-            );
-
-            // Record linked sentences into vocabulary_sentences
-            foreach ($linkedSentences as $sentence) {
-                DB::table('vocabulary_sentences')->updateOrInsert(
+        foreach ($curriculum as $week) {
+            foreach ($week['vocabulary'] as $item) {
+                // Insert or update vocabulary words safely without dropping tables
+                DB::table('vocabularies')->updateOrInsert(
                     [
-                        'word' => $itemData['word'],
-                        'sentence' => $sentence,
-                        'lesson_id' => $itemData['lesson_id'],
-                        'grade' => $itemData['grade'],
+                        'grade' => 'N4',
+                        'period' => 'P5',
+                        'clean_word' => $item['clean'],
                     ],
                     [
-                        'vocabulary_item_id' => null,
-                        'base_word' => $itemData['raw_word'],
-                        'subject' => 'AR',
-                        'period' => $itemData['period'],
-                        'week' => $itemData['week'],
-                        'source_type' => 'slide_sentence',
-                        'image_path' => $itemData['image_path'] ?? null,
-                        'updated_at' => $now,
-                        'created_at' => $now,
+                        'vocalized_word' => $item['word'],
+                        'meaning' => $item['meaning'],
+                        'image_url' => $item['image'],
+                        'week_id' => $week['week_id'],
+                        'lesson_sentence' => $week['lesson_sentence'],
+                        'updated_at' => now(),
                     ]
                 );
             }

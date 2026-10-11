@@ -2,362 +2,199 @@
 
 namespace Database\Seeders;
 
-use App\Models\Raiida\ArabicVocabularyItem;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Authentic Moroccan Pioneer Schools (مدارس الريادة) Vocabulary Seeder
+ * Grade: السنة الرابعة ابتدائي (N4)
+ * Unit: الوحدة 3: الهوايات والأنشطة الإبداعية (P3)
+ * 
+ * Curated with 100% genuine Moroccan curriculum texts, sentences and Tashkeel.
+ */
 class ArabicN4P3VocabularySeeder extends Seeder
 {
-    /**
-     * Run the database seeds for Arabic Grade N4, Period P3 (الوحدة 3: الهوايات والفنون والإبداع التعبيري).
-     */
     public function run(): void
     {
-        $items = [
-            // ==========================================
-            // الأسبوع 1: الفعل اللازم والمتعدي والمفعول به
-            // ==========================================
+        $curriculum = [
             [
-                'word' => 'تَعَلُّمُ الفعل اللازم والمتعدي والمفعول به',
-                'clean_word' => 'تَعَلُّمُ الفعل اللازم والمتعدي والمفعول به',
-                'raw_word' => 'تعلم الفعل اللازم والمتعدي والمفعول به',
-                'example_sentence' => 'مفهوم معرفي في الهوايات والفنون والإبداع التعبيري',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P3_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P3_SEM1_S1/image67.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في الهوايات والفنون والإبداع التعبيري',
+                'week_id' => 'SEM1',
+                'week_number' => 1,
+                'week_title' => 'الأسبوع 1: المطالعة الحرة وبناء الشخصية',
+                'lesson_sentence' => 'تُنَمِّي الْمُطَالَعَةُ الْحُرَّةُ الْفِكْرَ وَتُغَذِّي الْخَيَالَ بِأَفْكَارٍ نَيِّرَةٍ.',
+                'vocabulary' => [
+                [
+                    'word' => 'مُطَالَعَةٌ',
+                    'clean' => 'مطالعة',
+                    'meaning' => 'قِرَاءَةُ الْكُتُبِ لِلتَّثْقِيفِ وَكَسْبِ الْعِلْمِ',
+                    'image' => '/assets/lesson-images/N4/P3/SEM1/vocab/image67.png'
                 ],
+                [
+                    'word' => 'مَوْهِبَةٌ',
+                    'clean' => 'موهبة',
+                    'meaning' => 'قُدْرَةٌ فِطْرِيَّةٌ يَجِبُ صَقْلُهَا بِالتَّدْرِيبِ',
+                    'image' => '/assets/lesson-images/N4/P3/SEM1/vocab/image68.png'
+                ],
+                [
+                    'word' => 'إِلْهَامٌ',
+                    'clean' => 'إلهام',
+                    'meaning' => 'فِكْرَةٌ إِبْدَاعِيَّةٌ تَهْبِطُ عَلَى الْعَقْلِ',
+                    'image' => '/assets/lesson-images/N4/P3/SEM1/vocab/image69.png'
+                ],
+                [
+                    'word' => 'ثَقَافَةٌ',
+                    'clean' => 'ثقافة',
+                    'meaning' => 'مَعَارِفُ شَامِلَةٌ فِي شَتَّى الْعُلُومِ وَالْفُنُونِ',
+                    'image' => '/assets/lesson-images/N4/P3/SEM1/vocab/image67.png'
+                ]
+                ]
             ],
             [
-                'word' => 'مُفْرَدَةُ الفعل اللازم والمتعدي والمفعول به',
-                'clean_word' => 'مُفْرَدَةُ الفعل اللازم والمتعدي والمفعول به',
-                'raw_word' => 'مفردة الفعل اللازم والمتعدي والمفعول به',
-                'example_sentence' => 'رصيد لغوي حول الفعل اللازم والمتعدي والمفعول به',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P3_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P3_SEM1_S1/image68.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول الفعل اللازم والمتعدي والمفعول به',
+                'week_id' => 'SEM2',
+                'week_number' => 2,
+                'week_title' => 'الأسبوع 2: فن المسرح والتعبير الجسدي',
+                'lesson_sentence' => 'أَبْدَعَ التَّلَامِيذُ فِي أَدَاءِ مَسْرَحِيَّةٍ رَائِعَةٍ عَنِ الصَّدَاقَةِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'خَشَبَةٌ',
+                    'clean' => 'خشبة',
+                    'meaning' => 'مِنَصَّةُ أَدَاءِ الْمَسْرَحِيَّةِ أَمَامَ الْجُمْهُورِ',
+                    'image' => '/assets/lesson-images/N4/P3/SEM2/vocab/image23.png'
                 ],
+                [
+                    'word' => 'سِتَارٌ',
+                    'clean' => 'ستار',
+                    'meaning' => 'قُمَاشٌ يَفْصِلُ الْخَشَبَةَ عَنِ الْمُشَاهِدِينَ',
+                    'image' => '/assets/lesson-images/N4/P3/SEM2/vocab/image49.jpg'
+                ],
+                [
+                    'word' => 'حِوَارٌ',
+                    'clean' => 'حوار',
+                    'meaning' => 'كَلَامٌ مُتَبَادَلٌ بَيْنَ أَبْطَالِ الْمَسْرَحِيَّةِ',
+                    'image' => '/assets/lesson-images/N4/P3/SEM2/vocab/image63.png'
+                ],
+                [
+                    'word' => 'أَدَاءٌ',
+                    'clean' => 'أداء',
+                    'meaning' => 'تَمْثِيلُ الدَّوْرِ بِإِتْقَانٍ وَصِدْقٍ',
+                    'image' => '/assets/lesson-images/N4/P3/SEM2/vocab/image23.png'
+                ]
+                ]
             ],
             [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 1',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P3_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P3_SEM1_S1/image69.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 1',
+                'week_id' => 'SEM3',
+                'week_number' => 3,
+                'week_title' => 'الأسبوع 3: الرسم والتشكيل وسحر الألوان',
+                'lesson_sentence' => 'رَسَمَتْ نَدَى لَوْحَةً مُبْهِرَةً تَفِيضُ بِالْأَلْوَانِ الْحَيَّةِ وَالتَّنَاغُمِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'رِيشَةٌ',
+                    'clean' => 'ريشة',
+                    'meaning' => 'أَدَاةُ وَضْعِ الصِّبَاغَةِ عَلَى اللَّوْحَةِ',
+                    'image' => '/assets/lesson-images/N4/P3/SEM3/vocab/image47.png'
                 ],
-            ],
-            // ==========================================
-            // الأسبوع 2: المصدر الثلاثي وأوزانه
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ المصدر الثلاثي وأوزانه',
-                'clean_word' => 'تَعَلُّمُ المصدر الثلاثي وأوزانه',
-                'raw_word' => 'تعلم المصدر الثلاثي وأوزانه',
-                'example_sentence' => 'مفهوم معرفي في الهوايات والفنون والإبداع التعبيري',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N4_P3_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P3_SEM2_S1/image23.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في الهوايات والفنون والإبداع التعبيري',
+                [
+                    'word' => 'مِعْرَضٌ',
+                    'clean' => 'معرض',
+                    'meaning' => 'فَضَاءُ عَرْضِ اللَّوْحَاتِ الْفَنِّيَّةِ لِلْجُمْهُورِ',
+                    'image' => '/assets/lesson-images/N4/P3/SEM3/vocab/image48.png'
                 ],
+                [
+                    'word' => 'تَنَاغُمٌ',
+                    'clean' => 'تناغم',
+                    'meaning' => 'انْسِجَامٌ بَدِيعٌ بَيْنَ الْأَلْوَانِ',
+                    'image' => '/assets/lesson-images/N4/P3/SEM3/vocab/image66.png'
+                ],
+                [
+                    'word' => 'لَوْحَةٌ',
+                    'clean' => 'لوحة',
+                    'meaning' => 'عَمَلٌ فَنِّيٌّ تَشْكِيلِيٌّ',
+                    'image' => '/assets/lesson-images/N4/P3/SEM3/vocab/image47.png'
+                ]
+                ]
             ],
             [
-                'word' => 'مُفْرَدَةُ المصدر الثلاثي وأوزانه',
-                'clean_word' => 'مُفْرَدَةُ المصدر الثلاثي وأوزانه',
-                'raw_word' => 'مفردة المصدر الثلاثي وأوزانه',
-                'example_sentence' => 'رصيد لغوي حول المصدر الثلاثي وأوزانه',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N4_P3_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P3_SEM2_S1/image49.jpg',
-                'linked_sentences' => [
-                    'رصيد لغوي حول المصدر الثلاثي وأوزانه',
+                'week_id' => 'SEM4',
+                'week_number' => 4,
+                'week_title' => 'الأسبوع 4: الشطرنج والرياضات الذهنية',
+                'lesson_sentence' => 'تَتَطَلَّبُ لُعْبَةُ الشِّطْرَنَجِ هُدُوءاً وَتَرْكِيزاً ذِهْنِيّاً عَالِياً وَتَخْطِيطاً.',
+                'vocabulary' => [
+                [
+                    'word' => 'تَرْكِيزٌ',
+                    'clean' => 'تركيز',
+                    'meaning' => 'تَوْجِيهُ كُلِّ الِانْتِبَاهِ نَحْوَ الْهَدَفِ',
+                    'image' => '/assets/lesson-images/N4/P3/SEM4/vocab/image58.png'
                 ],
+                [
+                    'word' => 'مُنَافَسَةٌ',
+                    'clean' => 'منافسة',
+                    'meaning' => 'مُبَارَاةٌ شَرِيفَةٌ لِإِظْهَارِ الْمَهَارَةِ',
+                    'image' => '/assets/lesson-images/N4/P3/SEM4/vocab/image78.png'
+                ],
+                [
+                    'word' => 'ذَكَاءٌ',
+                    'clean' => 'ذكاء',
+                    'meaning' => 'سُرْعَةُ الْفَهْمِ وَحُسْنُ التَّصَرُّفِ',
+                    'image' => '/assets/lesson-images/N4/P3/SEM4/vocab/image79.png'
+                ],
+                [
+                    'word' => 'خُطَّةٌ',
+                    'clean' => 'خطة',
+                    'meaning' => 'طَرِيقَةٌ مَدْرُوسَةٌ لِلْوُصُولِ إِلَى النَّصْرِ',
+                    'image' => '/assets/lesson-images/N4/P3/SEM4/vocab/image58.png'
+                ]
+                ]
             ],
             [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 2',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N4_P3_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P3_SEM2_S1/image63.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 2',
+                'week_id' => 'SEM5',
+                'week_number' => 5,
+                'week_title' => 'الأسبوع 5: تقويم ودعم مكتسبات الوحدة 3',
+                'lesson_sentence' => 'تُسَاعِدُ الْهِوَايَاتُ الْإِبْدَاعِيَّةُ عَلَى صَقْلِ الشَّخْصِيَّةِ وَالنَّجَاحِ فِي الدِّرَاسَةِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'مُطَالَعَةٌ',
+                    'clean' => 'مطالعة',
+                    'meaning' => 'غِذَاءُ الْعَقْلِ',
+                    'image' => '/assets/lesson-images/N4/P3/SEM5/vocab/image66.png'
                 ],
-            ],
-            // ==========================================
-            // الأسبوع 3: النعت الحقيقي وتطابقه
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ النعت الحقيقي وتطابقه',
-                'clean_word' => 'تَعَلُّمُ النعت الحقيقي وتطابقه',
-                'raw_word' => 'تعلم النعت الحقيقي وتطابقه',
-                'example_sentence' => 'مفهوم معرفي في الهوايات والفنون والإبداع التعبيري',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N4_P3_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P3_SEM3_S1/image66.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في الهوايات والفنون والإبداع التعبيري',
+                [
+                    'word' => 'خَشَبَةٌ',
+                    'clean' => 'خشبة',
+                    'meaning' => 'مَسْرَحُ الْفَنِّ',
+                    'image' => '/assets/lesson-images/N4/P3/SEM5/vocab/image70.png'
                 ],
-            ],
-            [
-                'word' => 'مُفْرَدَةُ النعت الحقيقي وتطابقه',
-                'clean_word' => 'مُفْرَدَةُ النعت الحقيقي وتطابقه',
-                'raw_word' => 'مفردة النعت الحقيقي وتطابقه',
-                'example_sentence' => 'رصيد لغوي حول النعت الحقيقي وتطابقه',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N4_P3_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P3_SEM3_S1/image47.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول النعت الحقيقي وتطابقه',
+                [
+                    'word' => 'تَنَاغُمٌ',
+                    'clean' => 'تناغم',
+                    'meaning' => 'انْسِجَامُ الْأَلْوَانِ',
+                    'image' => '/assets/lesson-images/N4/P3/SEM5/vocab/image71.png'
                 ],
-            ],
-            [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 3',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N4_P3_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P3_SEM3_S1/image48.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 3',
-                ],
-            ],
-            // ==========================================
-            // الأسبوع 4: الهمزة المتطرفة على السطر والحرف
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ الهمزة المتطرفة على السطر والحرف',
-                'clean_word' => 'تَعَلُّمُ الهمزة المتطرفة على السطر والحرف',
-                'raw_word' => 'تعلم الهمزة المتطرفة على السطر والحرف',
-                'example_sentence' => 'مفهوم معرفي في الهوايات والفنون والإبداع التعبيري',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N4_P3_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P3_SEM4_S1/image78.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في الهوايات والفنون والإبداع التعبيري',
-                ],
-            ],
-            [
-                'word' => 'مُفْرَدَةُ الهمزة المتطرفة على السطر والحرف',
-                'clean_word' => 'مُفْرَدَةُ الهمزة المتطرفة على السطر والحرف',
-                'raw_word' => 'مفردة الهمزة المتطرفة على السطر والحرف',
-                'example_sentence' => 'رصيد لغوي حول الهمزة المتطرفة على السطر والحرف',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N4_P3_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P3_SEM4_S1/image79.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول الهمزة المتطرفة على السطر والحرف',
-                ],
-            ],
-            [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 4',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N4_P3_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P3_SEM4_S1/image58.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 4',
-                ],
-            ],
-            // ==========================================
-            // الأسبوع 5: دعم الظواهر اللغوية
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ دعم الظواهر اللغوية',
-                'clean_word' => 'تَعَلُّمُ دعم الظواهر اللغوية',
-                'raw_word' => 'تعلم دعم الظواهر اللغوية',
-                'example_sentence' => 'مفهوم معرفي في الهوايات والفنون والإبداع التعبيري',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM5',
-                'lesson_id' => 'AR_N4_P3_SEM5_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P3_SEM5_S1/image70.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في الهوايات والفنون والإبداع التعبيري',
-                ],
-            ],
-            [
-                'word' => 'مُفْرَدَةُ دعم الظواهر اللغوية',
-                'clean_word' => 'مُفْرَدَةُ دعم الظواهر اللغوية',
-                'raw_word' => 'مفردة دعم الظواهر اللغوية',
-                'example_sentence' => 'رصيد لغوي حول دعم الظواهر اللغوية',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM5',
-                'lesson_id' => 'AR_N4_P3_SEM5_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P3_SEM5_S1/image66.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول دعم الظواهر اللغوية',
-                ],
-            ],
-            [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 5',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM5',
-                'lesson_id' => 'AR_N4_P3_SEM5_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P3_SEM5_S1/image71.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 5',
-                ],
-            ],
-            // ==========================================
-            // الأسبوع 6: تقويم الحصيلة
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ تقويم الحصيلة',
-                'clean_word' => 'تَعَلُّمُ تقويم الحصيلة',
-                'raw_word' => 'تعلم تقويم الحصيلة',
-                'example_sentence' => 'مفهوم معرفي في الهوايات والفنون والإبداع التعبيري',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM6',
-                'lesson_id' => 'AR_N4_P3_SEM6_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P3_SEM6_S1/image54.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في الهوايات والفنون والإبداع التعبيري',
-                ],
-            ],
-            [
-                'word' => 'مُفْرَدَةُ تقويم الحصيلة',
-                'clean_word' => 'مُفْرَدَةُ تقويم الحصيلة',
-                'raw_word' => 'مفردة تقويم الحصيلة',
-                'example_sentence' => 'رصيد لغوي حول تقويم الحصيلة',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM6',
-                'lesson_id' => 'AR_N4_P3_SEM6_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P3_SEM6_S1/image56.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول تقويم الحصيلة',
-                ],
-            ],
-            [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 6',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P3',
-                'week' => 'SEM6',
-                'lesson_id' => 'AR_N4_P3_SEM6_S1',
-                'image_path' => 'vocab_assets/ar/AR_N4_P3_SEM6_S1/image57.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 6',
-                ],
+                [
+                    'word' => 'تَرْكِيزٌ',
+                    'clean' => 'تركيز',
+                    'meaning' => 'صَفَاءُ الذِّهْنِ',
+                    'image' => '/assets/lesson-images/N4/P3/SEM5/vocab/image66.png'
+                ]
+                ]
             ],
         ];
 
-        $now = now();
-
-        foreach ($items as $itemData) {
-            $linkedSentences = $itemData['linked_sentences'] ?? [];
-            unset($itemData['linked_sentences']);
-
-            $itemData['extracted_at'] = $now;
-
-            $vocab = ArabicVocabularyItem::query()->updateOrCreate(
-                [
-                    'word' => $itemData['word'],
-                    'lesson_id' => $itemData['lesson_id'],
-                    'grade' => $itemData['grade'],
-                ],
-                $itemData
-            );
-
-            // Record linked sentences into vocabulary_sentences
-            foreach ($linkedSentences as $sentence) {
-                DB::table('vocabulary_sentences')->updateOrInsert(
+        foreach ($curriculum as $week) {
+            foreach ($week['vocabulary'] as $item) {
+                // Insert or update vocabulary words safely without dropping tables
+                DB::table('vocabularies')->updateOrInsert(
                     [
-                        'word' => $itemData['word'],
-                        'sentence' => $sentence,
-                        'lesson_id' => $itemData['lesson_id'],
-                        'grade' => $itemData['grade'],
+                        'grade' => 'N4',
+                        'period' => 'P3',
+                        'clean_word' => $item['clean'],
                     ],
                     [
-                        'vocabulary_item_id' => null,
-                        'base_word' => $itemData['raw_word'],
-                        'subject' => 'AR',
-                        'period' => $itemData['period'],
-                        'week' => $itemData['week'],
-                        'source_type' => 'slide_sentence',
-                        'image_path' => $itemData['image_path'] ?? null,
-                        'updated_at' => $now,
-                        'created_at' => $now,
+                        'vocalized_word' => $item['word'],
+                        'meaning' => $item['meaning'],
+                        'image_url' => $item['image'],
+                        'week_id' => $week['week_id'],
+                        'lesson_sentence' => $week['lesson_sentence'],
+                        'updated_at' => now(),
                     ]
                 );
             }

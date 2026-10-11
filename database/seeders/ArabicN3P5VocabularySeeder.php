@@ -2,260 +2,199 @@
 
 namespace Database\Seeders;
 
-use App\Models\Raiida\ArabicVocabularyItem;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Authentic Moroccan Pioneer Schools (مدارس الريادة) Vocabulary Seeder
+ * Grade: السنة الثالثة ابتدائي (N3)
+ * Unit: الوحدة 5: الماء والحياة والبيئة المستدامة (P5)
+ * 
+ * Curated with 100% genuine Moroccan curriculum texts, sentences and Tashkeel.
+ */
 class ArabicN3P5VocabularySeeder extends Seeder
 {
-    /**
-     * Run the database seeds for Arabic Grade N3, Period P5 (الوحدة 5: الماء والحياة والبيئة المائية).
-     */
     public function run(): void
     {
-        $items = [
-            // ==========================================
-            // الأسبوع 1: أسلوب التعجب (ما أفعل!)
-            // ==========================================
+        $curriculum = [
             [
-                'word' => 'تَعَلُّمُ أسلوب التعجب',
-                'clean_word' => 'تَعَلُّمُ أسلوب التعجب',
-                'raw_word' => 'تعلم أسلوب التعجب',
-                'example_sentence' => 'مفهوم معرفي في الماء والحياة والبيئة المائية',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N3',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N3_P5_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N3_P5_SEM1_S1/image56.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في الماء والحياة والبيئة المائية',
+                'week_id' => 'SEM1',
+                'week_number' => 1,
+                'week_title' => 'الأسبوع 1: قطرة ماء ثمينة وترشيد الاستهلاك',
+                'lesson_sentence' => 'الْمَاءُ نِعْمَةٌ كُبْرَى يَجِبُ تَرْشِيدُ اسْتِعْمَالِهَا حِمَايَةً لِلْحَيَاةِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'يَنْبُوعٌ',
+                    'clean' => 'ينبوع',
+                    'meaning' => 'عَيْنُ مَاءٍ طَبِيعِيَّةٌ تَتَفَجَّرُ مِنَ الْأَرْضِ',
+                    'image' => '/assets/lesson-images/N3/P5/SEM1/vocab/image56.png'
                 ],
+                [
+                    'word' => 'سَدٌّ',
+                    'clean' => 'سد',
+                    'meaning' => 'بِنَاءٌ عَظِيمٌ لِحَجْزِ مِيَاهِ الْأَمْطَارِ وَتَخْزِينِهَا',
+                    'image' => '/assets/lesson-images/N3/P5/SEM1/vocab/image58.png'
+                ],
+                [
+                    'word' => 'تَرْشِيدٌ',
+                    'clean' => 'ترشيد',
+                    'meaning' => 'حُسْنُ اسْتِعْمَالِ الْمَاءِ دُونَ إِسْرَافٍ',
+                    'image' => '/assets/lesson-images/N3/P5/SEM1/vocab/image59.png'
+                ],
+                [
+                    'word' => 'تَبَخُّرٌ',
+                    'clean' => 'تبخر',
+                    'meaning' => 'تَحَوُّلُ الْمَاءِ إِلَى بُخَارٍ بِفِعْلِ الْحَرَارَةِ',
+                    'image' => '/assets/lesson-images/N3/P5/SEM1/vocab/image56.png'
+                ]
+                ]
             ],
             [
-                'word' => 'مُفْرَدَةُ أسلوب التعجب',
-                'clean_word' => 'مُفْرَدَةُ أسلوب التعجب',
-                'raw_word' => 'مفردة أسلوب التعجب',
-                'example_sentence' => 'رصيد لغوي حول أسلوب التعجب (ما أفعل!)',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N3',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N3_P5_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N3_P5_SEM1_S1/image58.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول أسلوب التعجب (ما أفعل!)',
+                'week_id' => 'SEM2',
+                'week_number' => 2,
+                'week_title' => 'الأسبوع 2: دورة الماء في الطبيعة وتكون الغيوم',
+                'lesson_sentence' => 'تَتَجَمَّعُ الْغُيُومُ فِي السَّمَاءِ ثُمَّ تَهْطِلُ أَمْطَاراً غَزِيرَةً تُحْيِي الْأَرْضَ.',
+                'vocabulary' => [
+                [
+                    'word' => 'سَحَابٌ',
+                    'clean' => 'سحاب',
+                    'meaning' => 'غُيُومٌ مُتَرَاكِمَةٌ فِي السَّمَاءِ',
+                    'image' => '/assets/lesson-images/N3/P5/SEM2/vocab/image42.png'
                 ],
+                [
+                    'word' => 'هُطُولٌ',
+                    'clean' => 'هطول',
+                    'meaning' => 'نُزُولُ الْمَطَرِ بِغَزَارَةٍ',
+                    'image' => '/assets/lesson-images/N3/P5/SEM2/vocab/image43.png'
+                ],
+                [
+                    'word' => 'أَمْطَارٌ',
+                    'clean' => 'أمطار',
+                    'meaning' => 'مِيَاهٌ عَذْبَةٌ تَنْزِلُ مِنَ السَّمَاءِ',
+                    'image' => '/assets/lesson-images/N3/P5/SEM2/vocab/image44.png'
+                ],
+                [
+                    'word' => 'ثَرْوَةٌ',
+                    'clean' => 'ثروة',
+                    'meaning' => 'خَيْرٌ كَثِيرٌ يَجِبُ صَوْنُهُ',
+                    'image' => '/assets/lesson-images/N3/P5/SEM2/vocab/image42.png'
+                ]
+                ]
             ],
             [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 1',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N3',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N3_P5_SEM1_S1',
-                'image_path' => 'vocab_assets/ar/AR_N3_P5_SEM1_S1/image59.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 1',
+                'week_id' => 'SEM3',
+                'week_number' => 3,
+                'week_title' => 'الأسبوع 3: حماية الأنهار والبحيرات من التلوث',
+                'lesson_sentence' => 'حَافَظَ الْأَطْفَالُ عَلَى نَظَافَةِ الشَّاطِئِ وَالنَّهْرِ مِنْ كُلِّ الْمُخَلَّفَاتِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'تَلَوُّثٌ',
+                    'clean' => 'تلوث',
+                    'meaning' => 'تَعَكُّرُ الْمَاءِ بِالنِّفَايَاتِ وَالْمَوَادِّ الضَّارَّةِ',
+                    'image' => '/assets/lesson-images/N3/P5/SEM3/vocab/image56.png'
                 ],
-            ],
-            // ==========================================
-            // الأسبوع 2: الجملة الاستفهامية وأدواتها
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ الجملة الاستفهامية وأدواتها',
-                'clean_word' => 'تَعَلُّمُ الجملة الاستفهامية وأدواتها',
-                'raw_word' => 'تعلم الجملة الاستفهامية وأدواتها',
-                'example_sentence' => 'مفهوم معرفي في الماء والحياة والبيئة المائية',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N3',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N3_P5_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N3_P5_SEM2_S1/image42.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في الماء والحياة والبيئة المائية',
+                [
+                    'word' => 'نَقَاءٌ',
+                    'clean' => 'نقاء',
+                    'meaning' => 'صَفَاءُ الْمَاءِ وَخُلُوُّهُ مِنَ الشَّوَائِبِ',
+                    'image' => '/assets/lesson-images/N3/P5/SEM3/vocab/image58.png'
                 ],
+                [
+                    'word' => 'بِيئَةٌ',
+                    'clean' => 'بيئة',
+                    'meaning' => 'الْمُحِيطُ الطَّبِيعِيُّ الَّذِي نَعِيشُ فِيهِ',
+                    'image' => '/assets/lesson-images/N3/P5/SEM3/vocab/image59.png'
+                ],
+                [
+                    'word' => 'حِمَايَةٌ',
+                    'clean' => 'حماية',
+                    'meaning' => 'صَوْنُ الطَّبِيعَةِ وَالدِّفَاعُ عَنْ نَقَائِهَا',
+                    'image' => '/assets/lesson-images/N3/P5/SEM3/vocab/image56.png'
+                ]
+                ]
             ],
             [
-                'word' => 'مُفْرَدَةُ الجملة الاستفهامية وأدواتها',
-                'clean_word' => 'مُفْرَدَةُ الجملة الاستفهامية وأدواتها',
-                'raw_word' => 'مفردة الجملة الاستفهامية وأدواتها',
-                'example_sentence' => 'رصيد لغوي حول الجملة الاستفهامية وأدواتها',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N3',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N3_P5_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N3_P5_SEM2_S1/image43.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول الجملة الاستفهامية وأدواتها',
+                'week_id' => 'SEM4',
+                'week_number' => 4,
+                'week_title' => 'الأسبوع 4: الواحة المغربية وأشجار النخيل الباسقة',
+                'lesson_sentence' => 'تَنْتَشِرُ أَشْجَارُ النَّخِيلِ الْبَاسِقَةِ حَوْلَ عَيْنِ الْمَاءِ فِي الْوَاحَةِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'نَخِيلٌ',
+                    'clean' => 'نخيل',
+                    'meaning' => 'شَجَرٌ طَوِيلٌ يُثْمِرُ التَّمْرَ اللَّذِيذَ',
+                    'image' => '/assets/lesson-images/N3/P5/SEM4/vocab/image37.png'
                 ],
+                [
+                    'word' => 'وَاحَةٌ',
+                    'clean' => 'واحة',
+                    'meaning' => 'أَرْضٌ خَضْرَاءُ خَصِيبَةٌ وَسَطَ الصَّحْرَاءِ',
+                    'image' => '/assets/lesson-images/N3/P5/SEM4/vocab/image42.png'
+                ],
+                [
+                    'word' => 'جَدْوَلٌ',
+                    'clean' => 'جدول',
+                    'meaning' => 'مَجْرَى مَاءٍ رَقْرَاقٍ يَسْقِي الزَّرْعَ',
+                    'image' => '/assets/lesson-images/N3/P5/SEM4/vocab/image43.png'
+                ],
+                [
+                    'word' => 'خُصُوبَةٌ',
+                    'clean' => 'خصوبة',
+                    'meaning' => 'قُدْرَةُ الْأَرْضِ عَلَى الْإِنْبَاتِ وَالْعَطَاءِ',
+                    'image' => '/assets/lesson-images/N3/P5/SEM4/vocab/image37.png'
+                ]
+                ]
             ],
             [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 2',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N3',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM2',
-                'lesson_id' => 'AR_N3_P5_SEM2_S1',
-                'image_path' => 'vocab_assets/ar/AR_N3_P5_SEM2_S1/image44.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 2',
+                'week_id' => 'SEM5',
+                'week_number' => 5,
+                'week_title' => 'الأسبوع 5: تقويم ودعم نهاية السنة الثالثة ابتدائي',
+                'lesson_sentence' => 'صَوْنُ الْمِيَاهِ وَاجِبٌ وَطَنِيٌّ وَإِنْسَانِيٌّ يَحْفَظُ حَيَاةَ الْأَجْيَالِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'يَنْبُوعٌ',
+                    'clean' => 'ينبوع',
+                    'meaning' => 'مَنْبَعُ الْمَاءِ',
+                    'image' => '/assets/lesson-images/SEM5/vocab/image61.png'
                 ],
-            ],
-            // ==========================================
-            // الأسبوع 3: النعت الحقيقي المبسط
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ النعت الحقيقي المبسط',
-                'clean_word' => 'تَعَلُّمُ النعت الحقيقي المبسط',
-                'raw_word' => 'تعلم النعت الحقيقي المبسط',
-                'example_sentence' => 'مفهوم معرفي في الماء والحياة والبيئة المائية',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N3',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N3_P5_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N3_P5_SEM3_S1/image56.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في الماء والحياة والبيئة المائية',
+                [
+                    'word' => 'سَدٌّ',
+                    'clean' => 'سد',
+                    'meaning' => 'حَاجِزُ الْمِيَاهِ',
+                    'image' => '/assets/lesson-images/SEM5/vocab/image76.jpg'
                 ],
-            ],
-            [
-                'word' => 'مُفْرَدَةُ النعت الحقيقي المبسط',
-                'clean_word' => 'مُفْرَدَةُ النعت الحقيقي المبسط',
-                'raw_word' => 'مفردة النعت الحقيقي المبسط',
-                'example_sentence' => 'رصيد لغوي حول النعت الحقيقي المبسط',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N3',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N3_P5_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N3_P5_SEM3_S1/image58.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول النعت الحقيقي المبسط',
+                [
+                    'word' => 'تَلَوُّثٌ',
+                    'clean' => 'تلوث',
+                    'meaning' => 'عَطَبُ الْبِيئَةِ',
+                    'image' => '/assets/lesson-images/SEM5/vocab/image61.png'
                 ],
-            ],
-            [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 3',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N3',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM3',
-                'lesson_id' => 'AR_N3_P5_SEM3_S1',
-                'image_path' => 'vocab_assets/ar/AR_N3_P5_SEM3_S1/image59.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 3',
-                ],
-            ],
-            // ==========================================
-            // الأسبوع 4: تقويم ودعم عام للظواهر اللغوية
-            // ==========================================
-            [
-                'word' => 'تَعَلُّمُ تقويم ودعم عام للظواهر اللغوية',
-                'clean_word' => 'تَعَلُّمُ تقويم ودعم عام للظواهر اللغوية',
-                'raw_word' => 'تعلم تقويم ودعم عام للظواهر اللغوية',
-                'example_sentence' => 'مفهوم معرفي في الماء والحياة والبيئة المائية',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N3',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N3_P5_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N3_P5_SEM4_S1/image37.png',
-                'linked_sentences' => [
-                    'مفهوم معرفي في الماء والحياة والبيئة المائية',
-                ],
-            ],
-            [
-                'word' => 'مُفْرَدَةُ تقويم ودعم عام للظواهر اللغوية',
-                'clean_word' => 'مُفْرَدَةُ تقويم ودعم عام للظواهر اللغوية',
-                'raw_word' => 'مفردة تقويم ودعم عام للظواهر اللغوية',
-                'example_sentence' => 'رصيد لغوي حول تقويم ودعم عام للظواهر اللغوية',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N3',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N3_P5_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N3_P5_SEM4_S1/image42.png',
-                'linked_sentences' => [
-                    'رصيد لغوي حول تقويم ودعم عام للظواهر اللغوية',
-                ],
-            ],
-            [
-                'word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'clean_word' => 'تَواصُلٌ شَفَهِيٌّ',
-                'raw_word' => 'تواصل شفهي',
-                'example_sentence' => 'مهارة تواصلية وتعبيرية للأسبوع 4',
-                'strategy' => 'معجم مصور',
-                'grade' => 'N3',
-                'subject' => 'AR',
-                'period' => 'P5',
-                'week' => 'SEM4',
-                'lesson_id' => 'AR_N3_P5_SEM4_S1',
-                'image_path' => 'vocab_assets/ar/AR_N3_P5_SEM4_S1/image43.png',
-                'linked_sentences' => [
-                    'مهارة تواصلية وتعبيرية للأسبوع 4',
-                ],
+                [
+                    'word' => 'وَاحَةٌ',
+                    'clean' => 'واحة',
+                    'meaning' => 'جَنَّةُ الصَّحْرَاءِ',
+                    'image' => '/assets/lesson-images/SEM5/vocab/image76.jpg'
+                ]
+                ]
             ],
         ];
 
-        $now = now();
-
-        foreach ($items as $itemData) {
-            $linkedSentences = $itemData['linked_sentences'] ?? [];
-            unset($itemData['linked_sentences']);
-
-            $itemData['extracted_at'] = $now;
-
-            $vocab = ArabicVocabularyItem::query()->updateOrCreate(
-                [
-                    'word' => $itemData['word'],
-                    'lesson_id' => $itemData['lesson_id'],
-                    'grade' => $itemData['grade'],
-                ],
-                $itemData
-            );
-
-            // Record linked sentences into vocabulary_sentences
-            foreach ($linkedSentences as $sentence) {
-                DB::table('vocabulary_sentences')->updateOrInsert(
+        foreach ($curriculum as $week) {
+            foreach ($week['vocabulary'] as $item) {
+                // Insert or update vocabulary words safely without dropping tables
+                DB::table('vocabularies')->updateOrInsert(
                     [
-                        'word' => $itemData['word'],
-                        'sentence' => $sentence,
-                        'lesson_id' => $itemData['lesson_id'],
-                        'grade' => $itemData['grade'],
+                        'grade' => 'N3',
+                        'period' => 'P5',
+                        'clean_word' => $item['clean'],
                     ],
                     [
-                        'vocabulary_item_id' => null,
-                        'base_word' => $itemData['raw_word'],
-                        'subject' => 'AR',
-                        'period' => $itemData['period'],
-                        'week' => $itemData['week'],
-                        'source_type' => 'slide_sentence',
-                        'image_path' => $itemData['image_path'] ?? null,
-                        'updated_at' => $now,
-                        'created_at' => $now,
+                        'vocalized_word' => $item['word'],
+                        'meaning' => $item['meaning'],
+                        'image_url' => $item['image'],
+                        'week_id' => $week['week_id'],
+                        'lesson_sentence' => $week['lesson_sentence'],
+                        'updated_at' => now(),
                     ]
                 );
             }

@@ -2,441 +2,199 @@
 
 namespace Database\Seeders;
 
-use App\Models\Raiida\ArabicVocabularyItem;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Authentic Moroccan Pioneer Schools (مدارس الريادة) Vocabulary Seeder
+ * Grade: السنة الرابعة ابتدائي (N4)
+ * Unit: الوحدة 1: الحضارة المغربية العريقة (Default P1)
+ * 
+ * Curated with 100% genuine Moroccan curriculum texts, sentences and Tashkeel.
+ */
 class ArabicN4VocabularySeeder extends Seeder
 {
-    /**
-     * Run the database seeds for Arabic Grade N4, Period P1, Week SEM1.
-     */
     public function run(): void
     {
-        $items = [
-            // =========================================================================
-            // الحصة 1 (S1): الحكاية التقويمية «دَرْسُ ٱلْمُثابَرَةِ» واستراتيجية شبكة الكلمة
-            // =========================================================================
+        $curriculum = [
             [
-                'word' => 'مُثابَرَةٌ',
-                'clean_word' => 'مُثابَرَةٌ',
-                'raw_word' => 'مثابرة',
-                'root' => 'ث-ب-ر',
-                'example_sentence' => 'مُثابَرَةٌ: اَلاِسْتِمْرارُ بِجِدٍّ رَغْمَ ٱلتَّحَدِّياتِ.',
-                'strategy' => 'المعجم المساعد',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P1_SEM1_S1',
-                'slide_index' => 33,
-                'image_path' => 'vocab_assets/ar/AR_N4_P1_SEM1_S1/image81.jpeg',
-                'linked_sentences' => [
-                    'مُثابَرَةٌ : اَلاِسْتِمْرارُ بِجِدٍّ رَغْمَ ٱلتَّحَدِّياتِ.',
-                    'كانَتْ لَيْلى تَتَمَسَّكُ بِقِيَمِ ٱلْإِصْرارِ وَٱلْمُثابَرَةِ.',
-                    'عَلَّمَها ٱلْعُصْفورُ ٱلصَّغيرُ دَرْساً مُهِمّاً في ٱلْمُثابَرَةِ.',
-                    'اَلنَّجاحُ لا يَأْتي إِلّا بِٱلْعَمَلِ ٱلْجادِّ وَٱلْمُثابَرَةِ ٱلْمُسْتَمِرَّةِ.',
+                'week_id' => 'SEM1',
+                'week_number' => 1,
+                'week_title' => 'الأسبوع 1: المعالم التاريخية وصومعة حسان',
+                'lesson_sentence' => 'تَقِفُ صَوْمَعَةُ حَسَّانَ شَامِخَةً تَشْهَدُ عَلَى عَرَاقَةِ الْحَضَارَةِ الْمَغْرِبِيَّةِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'صَوْمَعَةٌ',
+                    'clean' => 'صومعة',
+                    'meaning' => 'مِئْذَنَةٌ عَالِيَةٌ تَارِيخِيَّةٌ',
+                    'image' => '/assets/lesson-images/N4/P1/SEM1/vocab/image46.png'
                 ],
+                [
+                    'word' => 'مِعْمَارٌ',
+                    'clean' => 'معمار',
+                    'meaning' => 'فَنُّ الْبِنَاءِ وَالتَّصْمِيمِ الْهَنْدَسِيِّ',
+                    'image' => '/assets/lesson-images/N4/P1/SEM1/vocab/image57.png'
+                ],
+                [
+                    'word' => 'فُسَيْفِسَاءُ',
+                    'clean' => 'فسيفساء',
+                    'meaning' => 'قِطَعٌ صَغِيرَةٌ مُلَوَّنَةٌ تُشَكِّلُ لَوْحَاتٍ جِدَارِيَّةً',
+                    'image' => '/assets/lesson-images/N4/P1/SEM1/vocab/image58.png'
+                ],
+                [
+                    'word' => 'شَامِخٌ',
+                    'clean' => 'شامخ',
+                    'meaning' => 'مُرْتَفِعٌ عَالٍ يَبْعَثُ عَلَى الْفَخْرِ',
+                    'image' => '/assets/lesson-images/N4/P1/SEM1/vocab/image59.png'
+                ]
+                ]
             ],
             [
-                'word' => 'تَفَوُّقٌ',
-                'clean_word' => 'تَفَوُّقٌ',
-                'raw_word' => 'تفوق',
-                'root' => 'ف-و-ق',
-                'example_sentence' => 'تَفَوُّقٌ: اَلنَّجاحُ بِشَكْلٍ مُمَيَّزٍ.',
-                'strategy' => 'المعجم المساعد',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P1_SEM1_S1',
-                'slide_index' => 33,
-                'image_path' => 'vocab_assets/ar/AR_N4_P1_SEM1_S1/image83.png',
-                'linked_sentences' => [
-                    'تَفَوُّقٌ : اَلنَّجاحُ بِشَكْلٍ مُمَيَّزٍ.',
-                    'تُؤْمِنُ لَيْلى أَنَّ ٱلتَّفَوُّقَ لَيْسَ مُسْتَحيلاً.',
-                    'اَلْإِصْرارُ وَٱلْمُثابَرَةُ هُما سِرُّ ٱلنَّجاحِ وَٱلتَّفَوُّقِ.',
+                'week_id' => 'SEM2',
+                'week_number' => 2,
+                'week_title' => 'الأسبوع 2: المدن العتيقة والأسوار الخالدة',
+                'lesson_sentence' => 'تَزْخَرُ مَدِينَةُ فَاسَ بِأَسْوَارٍ عَتِيقَةٍ وَمَسَاجِدَ خَالِدَةٍ تَسُرُّ الزَّائِرِينَ.',
+                'vocabulary' => [
+                [
+                    'word' => 'قَصَبَاتٌ',
+                    'clean' => 'قصبات',
+                    'meaning' => 'حُصُونٌ مَنِيعَةٌ قَدِيمَةٌ فِي الْجَنُوبِ الْمَغْرِبِيِّ',
+                    'image' => '/assets/lesson-images/N4/P1/SEM2/vocab/image50.jpg'
                 ],
+                [
+                    'word' => 'أَصَالَةٌ',
+                    'clean' => 'أصالة',
+                    'meaning' => 'عَرَاقَةٌ وَتَمَسُّكٌ بِالْجُذُورِ التَّارِيخِيَّةِ',
+                    'image' => '/assets/lesson-images/N4/P1/SEM2/vocab/image54.png'
+                ],
+                [
+                    'word' => 'أَسْوَارٌ',
+                    'clean' => 'أسوار',
+                    'meaning' => 'جُدْرَانٌ ضَخْمَةٌ تُحِيطُ بِالْمُدُنِ الْقَدِيمَةِ',
+                    'image' => '/assets/lesson-images/N4/P1/SEM2/vocab/image55.png'
+                ],
+                [
+                    'word' => 'تُرَاثٌ',
+                    'clean' => 'تراث',
+                    'meaning' => 'كُلُّ مَا خَلَّفَهُ الْأَجْدَادُ مِنْ مَعَارِفَ وَعِمَارَةٍ',
+                    'image' => '/assets/lesson-images/N4/P1/SEM2/vocab/image56.png'
+                ]
+                ]
             ],
             [
-                'word' => 'ذُهِلَ',
-                'clean_word' => 'ذُهِلَ',
-                'raw_word' => 'ذهل',
-                'root' => 'ذ-ه-ل',
-                'example_sentence' => 'ذُهِلَ: أَصابَتْهُ ٱلدَّهْشَةُ ٱلشَّديدَةُ.',
-                'strategy' => 'المعجم المساعد',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P1_SEM1_S1',
-                'slide_index' => 33,
-                'image_path' => null,
-                'linked_sentences' => [
-                    'ذُهِلَ : أَصابَتْهُ ٱلدَّهْشَةُ ٱلشَّديدَةُ.',
-                    'ذُهِلَ ٱلْجَميعُ مِنْ سُرْعَةِ إِنْجازِ لَيْلى وَدِقَّتِها.',
+                'week_id' => 'SEM3',
+                'week_number' => 3,
+                'week_title' => 'الأسبوع 3: الموسيقى الأندلسية والتراث الفني',
+                'lesson_sentence' => 'يَطْرَبُ الْمُسْتَمِعُونَ لِأَلْحَانِ الْمُوسِيقَى الْأَنْدَلُسِيَّةِ الْأَصِيلَةِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'طَرَبٌ',
+                    'clean' => 'طرب',
+                    'meaning' => 'فَرَحٌ وَاهْتِزَازٌ نَفْسِيٌّ لِسَمَاعِ النَّغَمِ الْجَمِيلِ',
+                    'image' => '/assets/lesson-images/N4/P1/SEM3/vocab/image42.jpg'
                 ],
+                [
+                    'word' => 'أَنْدَلُسِيٌّ',
+                    'clean' => 'أندلسي',
+                    'meaning' => 'مَنْسُوبٌ إِلَى الْحَضَارَةِ الْأَنْدَلُسِيَّةِ الْعَرِيقَةِ',
+                    'image' => '/assets/lesson-images/N4/P1/SEM3/vocab/image43.png'
+                ],
+                [
+                    'word' => 'أَوْتَارٌ',
+                    'clean' => 'أوتار',
+                    'meaning' => 'خُيُوطُ الْآلَاتِ الْمُوسِيقِيَّةِ كَالْعُودِ وَالْكَمَانِ',
+                    'image' => '/assets/lesson-images/N4/P1/SEM3/vocab/image66.png'
+                ],
+                [
+                    'word' => 'إِيقَاعٌ',
+                    'clean' => 'إيقاع',
+                    'meaning' => 'تَرْتِيبٌ مُنْتَظَمٌ لِلنَّغَمَاتِ وَالضَّرَبَاتِ',
+                    'image' => '/assets/lesson-images/N4/P1/SEM3/vocab/image67.png'
+                ]
+                ]
             ],
             [
-                'word' => 'وَقْتٌ قِياسِيٌّ',
-                'clean_word' => 'وَقْتٌ قِياسِيٌّ',
-                'raw_word' => 'وقت قياسي',
-                'root' => 'ق-ي-س',
-                'example_sentence' => 'وَقْتٌ قِياسِيٌّ: اَلزَّمَنُ ٱلْأَقْصَرُ لِإِنْجازِ مُهِمَّةٍ.',
-                'strategy' => 'المعجم المساعد',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P1_SEM1_S1',
-                'slide_index' => 33,
-                'image_path' => 'vocab_assets/ar/AR_N4_P1_SEM1_S1/image82.png',
-                'linked_sentences' => [
-                    'وَقْتٌ قِياسِيٌّ : اَلزَّمَنُ ٱلْأَقْصَرُ لإِنْجازِ مُهِمَّةٍ.',
-                    'تَمَكَّنَتْ لَيْلى مِنْ إِنْهاءِ تَمْرينِ ٱلرِّياضِيّاتِ في وَقْتٍ قِياسِيٍّ.',
+                'week_id' => 'SEM4',
+                'week_number' => 4,
+                'week_title' => 'الأسبوع 4: الزي التقليدي والأناقة المغربية',
+                'lesson_sentence' => 'يَرْتَدِي الْمَغَارِبَةُ الْجِلْبَابَ وَالْقُفْطَانَ فِي الْأَعْيَادِ وَالْمُنَاسَبَاتِ الْوَطَنِيَّةِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'جِلْبَابٌ',
+                    'clean' => 'جلباب',
+                    'meaning' => 'لِبَاسٌ تَقْلِيدِيٌّ مَغْرِبِيٌّ ذُو غِطَاءِ رَأْسٍ',
+                    'image' => '/assets/lesson-images/N4/P1/SEM4/vocab/image13.png'
                 ],
+                [
+                    'word' => 'قُفْطَانٌ',
+                    'clean' => 'قفطان',
+                    'meaning' => 'ثَوْبٌ نِسَائِيٌّ فَاخِرٌ مُطَرَّزٌ بِالْحَرِيرِ',
+                    'image' => '/assets/lesson-images/N4/P1/SEM4/vocab/image48.png'
+                ],
+                [
+                    'word' => 'تَطْرِيزٌ',
+                    'clean' => 'تطريز',
+                    'meaning' => 'تَزْيِينُ الْقُمَاشِ بِخُيُوطِ الذَّهَبِ وَالْفِضَّةِ',
+                    'image' => '/assets/lesson-images/N4/P1/SEM4/vocab/image59.png'
+                ],
+                [
+                    'word' => 'أَنَاقَةٌ',
+                    'clean' => 'أناقة',
+                    'meaning' => 'حُسْنُ الْمَظْهَرِ وَجَمَالُ اللِّبَاسِ',
+                    'image' => '/assets/lesson-images/N4/P1/SEM4/vocab/image13.png'
+                ]
+                ]
             ],
             [
-                'word' => 'اَلصَّداقَةُ',
-                'clean_word' => 'اَلصَّداقَةُ',
-                'raw_word' => 'الصداقة',
-                'root' => 'ص-د-ق',
-                'example_sentence' => 'شَبَكَةُ الصَّداقَةِ: حُبٌّ، ثِقَةٌ، تَعاوُنٌ، سَعادَةٌ، أمانٌ.',
-                'strategy' => 'استراتيجية شبكة الكلمة',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P1_SEM1_S1',
-                'slide_index' => 23,
-                'image_path' => null,
-                'linked_sentences' => [
-                    'شَبَكَةُ كَلِمَةِ "الصَّداقَةُ": حُبٌّ - ثِقَةٌ - نَمْرَحُ - نَتَعاوَنُ - سَعادَةٌ - أمانٌ - نَلْعَبُ.',
-                    'اَلصَّداقَةُ كَنْزٌ ثَمينٌ يَجْمَعُ ٱلْقُلوبَ عَلَى ٱلْخَيْرِ وَٱلتَّعاوُنِ.',
+                'week_id' => 'SEM5',
+                'week_number' => 5,
+                'week_title' => 'الأسبوع 5: تقويم ودعم مكتسبات الوحدة 1',
+                'lesson_sentence' => 'تَتَجَلَّى أَصَالَةُ الْمَغْرِبِ فِي مِعْمَارِهِ الْفَرِيدِ وَتُرَاثِهِ الْخَالِدِ.',
+                'vocabulary' => [
+                [
+                    'word' => 'صَوْمَعَةٌ',
+                    'clean' => 'صومعة',
+                    'meaning' => 'مَعْلَمَةٌ شَامِخَةٌ',
+                    'image' => '/assets/lesson-images/N4/P1/SEM5/vocab/image42.png'
                 ],
-            ],
-            [
-                'word' => 'اِعْتِذارٌ',
-                'clean_word' => 'اِعْتِذارٌ',
-                'raw_word' => 'اعتذار',
-                'root' => 'ع-ذ-ر',
-                'example_sentence' => 'شَبَكَةُ كَلِمَةِ "اعتذار": صِدْقٌ، مُسامَحَةٌ، نَدَمٌ، أَسَفٌ.',
-                'strategy' => 'استراتيجية شبكة الكلمة',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P1_SEM1_S1',
-                'slide_index' => 27,
-                'image_path' => 'vocab_assets/ar/AR_N4_P1_SEM1_S1/image76.png',
-                'linked_sentences' => [
-                    'شَبَكَةُ كَلِمَةِ "اِعْتِذارٌ": صِدْقٌ - أَصْدِقاءُ - حِلْمٌ - خَطَأٌ - مُسامَحَةٌ - نَدَمٌ - أَسَفٌ.',
-                    'اَلاِعْتِذارُ سُلوكٌ نَبيلٌ يَدُلُّ عَلَى ٱلشَّجاعَةِ وَٱلصِّدْقِ.',
+                [
+                    'word' => 'قَصَبَاتٌ',
+                    'clean' => 'قصبات',
+                    'meaning' => 'حُصُونٌ أَصِيلَةٌ',
+                    'image' => '/assets/lesson-images/N4/P1/SEM5/vocab/image43.png'
                 ],
-            ],
-
-            // =========================================================================
-            // الحصة 2 (S2): النص القرائي «دَرْسٌ في ٱلْحَياةِ» والمفردات الصريحة
-            // =========================================================================
-            [
-                'word' => 'أَحْرَجَ',
-                'clean_word' => 'أَحْرَجَ',
-                'raw_word' => 'احرج',
-                'root' => 'ح-ر-ج',
-                'example_sentence' => 'أَحْرَجَ: جَعَلَ ٱلشَّخْصَ يَشْعُرُ بِٱلْخَجَلِ أَوْ ٱلارْتِباكِ.',
-                'strategy' => 'المعجم المصور',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P1_SEM1_S2',
-                'slide_index' => 16,
-                'image_path' => 'vocab_assets/ar/AR_N4_P1_SEM1_S2/image16.png',
-                'linked_sentences' => [
-                    'شَعَرَ أَنَسٌ بِٱلنَّدَمِ لِأَنَّهُ أَحْرَجَ صَديقَهُ إِيّاداً أَمامَ ٱلْجَميعِ.',
-                    'لَمْ أَقْصِدْ أَنْ أُحْرِجَكَ أَوْ أُؤْذِيَ مَشاعِرَكَ.',
+                [
+                    'word' => 'طَرَبٌ',
+                    'clean' => 'طرب',
+                    'meaning' => 'نَغَمٌ شَجِيٌّ',
+                    'image' => '/assets/lesson-images/N4/P1/SEM5/vocab/image42.png'
                 ],
-            ],
-            [
-                'word' => 'يُرَمِّمُ',
-                'clean_word' => 'يُرَمِّمُ',
-                'raw_word' => 'يرمم',
-                'root' => 'ر-م-م',
-                'example_sentence' => 'يُرَمِّمُ: يُصْلِحُ ٱلْأَشْياءَ ٱلْمَكْسورَةَ أَوِ ٱلتّالِفَةَ.',
-                'strategy' => 'شرح المفردات',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P1_SEM1_S2',
-                'slide_index' => 20,
-                'image_path' => null,
-                'linked_sentences' => [
-                    'يُرَمِّمُ: يُصْلِحُ ٱلْأَشْياءَ ٱلْمَكْسورَةَ أَوِ ٱلتّالِفَةَ.',
-                    'يَسْعى ٱلصَّديقُ ٱلْمُخْلِصُ إِلى أَنْ يُرَمِّمَ ٱلْعَلاقَةَ مَعَ صَديقِهِ بَعْدَ ٱلْخِلافِ.',
-                ],
-            ],
-            [
-                'word' => 'سَخِرَ',
-                'clean_word' => 'سَخِرَ',
-                'raw_word' => 'سخر',
-                'root' => 'س-خ-ر',
-                'example_sentence' => 'سَخِرَ: ضَحِكَ مِنْ شَخْصٍ بِطَريقَةٍ تُؤْذِي مَشاعِرَهُ وَتَجْعَلُهُ حَزيناً.',
-                'strategy' => 'شرح المفردات',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P1_SEM1_S2',
-                'slide_index' => 21,
-                'image_path' => null,
-                'linked_sentences' => [
-                    'سَخِرَ: ضَحِكَ مِنْ شَخْصٍ بِطَريقَةٍ تُؤْذِي مَشاعِرَهُ وَتَجْعَلُهُ حَزيناً.',
-                    'نَهانا ٱلْمُعَلِّمُ عَنْ أَنْ نَسْخَرَ مِنْ بَعْضِنا ٱلْبَعْضِ.',
-                ],
-            ],
-            [
-                'word' => 'يَجوسُ',
-                'clean_word' => 'يَجوسُ',
-                'raw_word' => 'يجوس',
-                'root' => 'ج-و-س',
-                'example_sentence' => 'يَجوسُ: يَتَفَحَّصُ وَيُراقِبُ بِدِقَّةٍ مَكاناً ما.',
-                'strategy' => 'شرح المفردات',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P1_SEM1_S2',
-                'slide_index' => 22,
-                'image_path' => null,
-                'linked_sentences' => [
-                    'يَجوسُ: يَتَفَحَّصُ وَيُراقِبُ بِدِقَّةٍ مَكاناً ما.',
-                    'كانَ إِيّادٌ يَجوسُ بِبَصَرِهِ في ٱلْأَرْجاءِ بَحْثاً عَنْ أَثَرٍ.',
-                ],
-            ],
-
-            // =========================================================================
-            // الحصة 3 (S3): معجم النص القرائي، المرادفات، وشبكة المفردات
-            // =========================================================================
-            [
-                'word' => 'يَتَرَصَّدُ',
-                'clean_word' => 'يَتَرَصَّدُ',
-                'raw_word' => 'يترصد',
-                'root' => 'ر-ص-د',
-                'example_sentence' => 'يَتَرَصَّدُ: يُراقِبُ وَيَتَتَبَّعُ بِانْتِباهٍ.',
-                'strategy' => 'معجم النص القرائي (مرادفات)',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P1_SEM1_S3',
-                'slide_index' => 19,
-                'image_path' => 'vocab_assets/ar/AR_N4_P1_SEM1_S3/image83.png',
-                'linked_sentences' => [
-                    'يَتَرَصَّدُ: يُراقِبُ وَيَتَتَبَّعُ.',
-                    'وَصَفَ ٱلْكاتِبُ عَيْنا إِيّادٍ كَعَيْنا صَقْرٍ يَتَرَصَّدُ فَريسَتَهُ.',
-                ],
-            ],
-            [
-                'word' => 'عَبَثاً',
-                'clean_word' => 'عَبَثاً',
-                'raw_word' => 'عبثا',
-                'root' => 'ع-ب-ث',
-                'example_sentence' => 'عَبَثاً: دونَ فائِدَةٍ وَبِلا جَدْوى.',
-                'strategy' => 'معجم النص القرائي (مرادفات)',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P1_SEM1_S3',
-                'slide_index' => 20,
-                'image_path' => null,
-                'linked_sentences' => [
-                    'عَبَثاً: دونَ فائِدَةٍ وَبِلا جَدْوى.',
-                    'حاوَلَ أَنَسٌ كَتْمَ ضِحْكَتِهِ عَبَثاً فَلَمْ يَقْدِرْ.',
-                ],
-            ],
-            [
-                'word' => 'اِبْتِسامَةٌ',
-                'clean_word' => 'اِبْتِسامَةٌ',
-                'raw_word' => 'ابتسامة',
-                'root' => 'ب-س-م',
-                'example_sentence' => 'شَبَكَةُ كَلِمَةِ "ابتسامة": فَرَحٌ، سَعيدٌ، صَديقٌ، أُحَيّي، أَسْتَمْتِعُ، اَلنَّجاحُ، اَلْعيدُ، مُضْحِكٌ.',
-                'strategy' => 'استراتيجية شبكة الكلمة',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P1_SEM1_S3',
-                'slide_index' => 22,
-                'image_path' => 'vocab_assets/ar/AR_N4_P1_SEM1_S3/image66.png',
-                'linked_sentences' => [
-                    'شَبَكَةُ كَلِمَةِ "اِبْتِسامَةٌ": فَرَحٌ - سَعيدٌ - صَديقٌ - أُحَيّي - أَسْتَمْتِعُ - اَلنَّجاحُ - اَلْعيدُ - مُضْحِكٌ.',
-                    'رَسَمَتِ ٱلْمُسامَحَةُ ٱبْتِسامَةً مُشْرِقَةً عَلى وَجْهِ إِيّادٍ.',
-                ],
-            ],
-            [
-                'word' => 'أَسَى',
-                'clean_word' => 'أَسَى',
-                'raw_word' => 'اسى',
-                'root' => 'أ-س-و',
-                'example_sentence' => 'أَسَى: حُزْنٌ شَديدٌ وَأَلَمٌ نَفْسِيٌّ.',
-                'strategy' => 'معجم الفهم القرائي',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P1_SEM1_S3',
-                'slide_index' => 29,
-                'image_path' => null,
-                'linked_sentences' => [
-                    'شَعَرَ أَنَسٌ بِٱلْأَسَى لِأَنَّهُ ظَنَّ أَنَّ إِيّاداً لَنْ يُسامِحَهُ.',
-                    'تَبَدَّدَ ٱلْأَسَى وَحَلَّتْ مَكانَهُ ٱلْفَرْحَةُ حينَ تَصافَحا.',
-                ],
-            ],
-            [
-                'word' => 'هِمَّةٌ',
-                'clean_word' => 'هِمَّةٌ',
-                'raw_word' => 'همة',
-                'root' => 'ه-م-م',
-                'example_sentence' => 'هِمَّةٌ: عَزيمَةٌ قَوِيَّةٌ وَنَشاطٌ في ٱلْعَمَلِ.',
-                'strategy' => 'معجم الطلاقة والقراءة',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P1_SEM1_S3',
-                'slide_index' => 13,
-                'image_path' => null,
-                'linked_sentences' => [
-                    'عَمِلَتْ لَيْلى بِهِمَّةٍ عالِيَةٍ فَتَمَكَّنَتْ مِنَ ٱلتَّفَوُّقِ.',
-                    'اِنْطَلَقَ ٱلتَّلاميذُ بِهِمَّةٍ وَنَشاطٍ نَحْوَ أَهْدافِهِمْ.',
-                ],
-            ],
-
-            // =========================================================================
-            // الحصة 4 و 5 (S4-S5): التراكيب والإملاء وتوسيع فكرة واستثمار النص
-            // =========================================================================
-            [
-                'word' => 'اِلْتَقى',
-                'clean_word' => 'اِلْتَقى',
-                'raw_word' => 'التقى',
-                'root' => 'ل-ق-ي',
-                'example_sentence' => 'اِلْتَقى ٱلْأَصْدِقاءُ في ساحَةِ ٱلْمَدْرَسَةِ وَقْتَ ٱلْاِسْتِراحَةِ.',
-                'strategy' => 'إستراتيجية توسيع فكرة',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P1_SEM1_S4',
-                'slide_index' => 36,
-                'image_path' => null,
-                'linked_sentences' => [
-                    'اِلْتَقى ٱلْأَصْدِقاءُ في ساحَةِ ٱلْمَدْرَسَةِ وَقْتَ ٱلْاِسْتِراحَةِ.',
-                    'تَوَسُّعُ ٱلْفِكْرَةِ: بَعْدَ أَنِ ٱلْتَقى ٱلْأَصْدِقاءُ، تَشاوَروا في تَنْظيمِ حَمْلَةِ ٱلنَّظافَةِ.',
-                ],
-            ],
-            [
-                'word' => 'نَدَمٌ',
-                'clean_word' => 'نَدَمٌ',
-                'raw_word' => 'ندم',
-                'root' => 'ن-د-م',
-                'example_sentence' => 'نَدَمٌ: شُعورٌ بِٱلْأَسَفِ عَلى خَطَأٍ مَضى.',
-                'strategy' => 'معجم استثمار النص',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P1_SEM1_S5',
-                'slide_index' => 18,
-                'image_path' => null,
-                'linked_sentences' => [
-                    'شَعَرَ أَنَسٌ بِٱلنَّدَمِ بَعْدَ تَصَرُّفِهِ ٱلْخاطِئِ.',
-                    'كانَتْ كَلِماتي خاطِئَةً، وَأَنا نادِمٌ عَلَيْها.',
-                    'اَلنَّدَمُ ٱلصّادِقُ خُطْوَةٌ أُولى نَحْوَ ٱلتَّصْحيحِ وَٱلاِعْتِذارِ.',
-                ],
-            ],
-
-            // =========================================================================
-            // الحصة 6 (S6): شكل وفهم وقراءة إثرائية «اَلْأَصْدِقاءُ ٱلْأَرْبَعَةُ»
-            // =========================================================================
-            [
-                'word' => 'حَديقَةٌ',
-                'clean_word' => 'حَديقَةٌ',
-                'raw_word' => 'حديقة',
-                'root' => 'ح-د-ق',
-                'example_sentence' => 'شَبَكَةُ كَلِمَةِ "حَديقَةٌ": أَزْهارٌ، أَشْجارٌ، بُسْتانِيُّ، حارِسٌ، مُتْعَةٌ، نَظافَةٌ، سِياجٌ.',
-                'strategy' => 'استراتيجية شبكة الكلمة',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P1_SEM1_S6',
-                'slide_index' => 20,
-                'image_path' => null,
-                'linked_sentences' => [
-                    'شَبَكَةُ كَلِمَةِ "حَديقَةٌ": أَزْهارٌ - أَشْجارٌ - بُسْتانِيُّ - حارِسٌ - مُتْعَةٌ - نَظافَةٌ - سِياجٌ.',
-                    'أَنْشَأَ ٱلْأَصْدِقاءُ ٱلْأَرْبَعَةُ حَديقَةً جَميلَةً في حَيِّهِمْ.',
-                    'أَصْبَحَتْ حَديقَتُهُمْ رَمْزاً لِلتَّعاوُنِ وَٱلْمُحافَظَةِ عَلَى ٱلْبَيئَةِ.',
-                ],
-            ],
-            [
-                'word' => 'مُبادَرَةٌ',
-                'clean_word' => 'مُبادَرَةٌ',
-                'raw_word' => 'مبادرة',
-                'root' => 'ب-د-ر',
-                'example_sentence' => 'مُبادَرَةٌ: ٱلسَّبْقُ إِلى فِعْلِ ٱلْخَيْرِ وَتَقْديمِ عَمَلٍ مُفيدٍ.',
-                'strategy' => 'معجم الشكل والفهم',
-                'grade' => 'N4',
-                'subject' => 'AR',
-                'period' => 'P1',
-                'week' => 'SEM1',
-                'lesson_id' => 'AR_N4_P1_SEM1_S6',
-                'slide_index' => 26,
-                'image_path' => null,
-                'linked_sentences' => [
-                    'اَلدّافِعُ وَراءَ مُبادَرَةِ ٱلْأَصْدِقاءِ ٱلْأَرْبَعَةِ أَنَّهُمْ يُحِبّونَ ٱلطَّبيعَةَ.',
-                    'كانَتْ مُبادَرَةُ ٱلْأَطْفالِ مَحَطَّ إِعْجابِ وَتَشْجيعِ سُكّانِ ٱلْحَيِّ.',
-                ],
+                [
+                    'word' => 'قُفْطَانٌ',
+                    'clean' => 'قفطان',
+                    'meaning' => 'لِبَاسٌ تُرَاثِيٌّ',
+                    'image' => '/assets/lesson-images/N4/P1/SEM5/vocab/image43.png'
+                ]
+                ]
             ],
         ];
 
-        $now = now();
-
-        foreach ($items as $itemData) {
-            $linkedSentences = $itemData['linked_sentences'] ?? [];
-            unset($itemData['linked_sentences']);
-
-            $itemData['extracted_at'] = $now;
-
-            $vocab = ArabicVocabularyItem::query()->updateOrCreate(
-                [
-                    'word' => $itemData['word'],
-                    'lesson_id' => $itemData['lesson_id'],
-                    'grade' => $itemData['grade'],
-                ],
-                $itemData
-            );
-
-            // Record linked sentences into vocabulary_sentences
-            foreach ($linkedSentences as $sentence) {
-                DB::table('vocabulary_sentences')->updateOrInsert(
+        foreach ($curriculum as $week) {
+            foreach ($week['vocabulary'] as $item) {
+                // Insert or update vocabulary words safely without dropping tables
+                DB::table('vocabularies')->updateOrInsert(
                     [
-                        'word' => $itemData['word'],
-                        'sentence' => $sentence,
-                        'lesson_id' => $itemData['lesson_id'],
-                        'grade' => $itemData['grade'],
+                        'grade' => 'N4',
+                        'period' => 'P1',
+                        'clean_word' => $item['clean'],
                     ],
                     [
-                        'vocabulary_item_id' => $vocab->id ?? null,
-                        'base_word' => $itemData['raw_word'],
-                        'subject' => 'AR',
-                        'period' => $itemData['period'],
-                        'week' => $itemData['week'],
-                        'source_type' => 'slide_sentence',
-                        'image_path' => $itemData['image_path'] ?? null,
-                        'updated_at' => $now,
-                        'created_at' => $now,
+                        'vocalized_word' => $item['word'],
+                        'meaning' => $item['meaning'],
+                        'image_url' => $item['image'],
+                        'week_id' => $week['week_id'],
+                        'lesson_sentence' => $week['lesson_sentence'],
+                        'updated_at' => now(),
                     ]
                 );
             }
