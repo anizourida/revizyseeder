@@ -14,8 +14,12 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             ConjugaisonReferenceSeeder::class,
+            ArabicN1VocabularySeeder::class,
+            ArabicN2VocabularySeeder::class,
             ArabicN3VocabularySeeder::class,
             ArabicN4VocabularySeeder::class,
+            ArabicN5VocabularySeeder::class,
+            ArabicN6VocabularySeeder::class,
         ]);
     }
 }
